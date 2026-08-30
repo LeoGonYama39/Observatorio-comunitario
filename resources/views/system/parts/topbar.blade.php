@@ -53,10 +53,10 @@
   </div>
   <div class="user-chip">
     <div class="avatar">
-      LG
+      {{ $otros->initNombre }}{{ $otros->initApPat }}
     </div>
     <span>
-      Leo González
+      {{ $persona->nombre }} {{ $persona->ap_pat }}, {{ $otros->tipo }}
     </span>
   </div>
 </header>

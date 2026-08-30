@@ -1,6 +1,6 @@
 <aside class="sidebar">
   <div class="sidebar-logo">
-    <img src="assets/logo.png" alt="Centro Ibero Meneses" />
+    <img src="{{ asset('assets/logo.png') }}" alt="Centro Ibero Meneses" />
   </div>
   <div class="nav-scroll">
     <nav>
@@ -51,13 +51,13 @@
         </svg>
       </button>
       <div class="submenu">
-        <a href="#" data-url="{{ route('p_centro.index') }}" class="sub-item {{ request()->routeIs('p_centro.index') ? 'active' : '' }}">
+        <a href="{{ route('p_centro.index') }}" data-url="{{ route('p_centro.index') }}" class="sub-item {{ request()->routeIs('p_centro.index') ? 'active' : '' }}">
           Centro
         </a>
-        <a href="#" data-url="{{ route('p_externo.index') }}" class="sub-item {{ request()->routeIs('p_externo.index') ? 'active' : '' }}">
+        <a href="{{ route('p_externo.index') }}" data-url="{{ route('p_externo.index') }}" class="sub-item {{ request()->routeIs('p_externo.index') ? 'active' : '' }}">
           Externas
       </a>
-      <a href="#" data-url="{{ route('p_comunidad.index') }}" class="sub-item {{ request()->routeIs('p_comunidad.index') ? 'active' : '' }}">
+      <a href="{{ route('p_comunidad.index') }}" data-url="{{ route('p_comunidad.index') }}" class="sub-item {{ request()->routeIs('p_comunidad.index') ? 'active' : '' }}">
          Usuarias
       </a>
         <a href="#" class="sub-item">Lideres comun.</a>
@@ -65,7 +65,7 @@
       </div>
       <a
             class="nav-item {{ request()->routeIs('proyectos.index') ? 'active' : '' }}"
-            href="#" data-url="{{ route('proyectos.index') }}"
+            href="{{ route('proyectos.index') }}" data-url="{{ route('proyectos.index') }}"
          >
         <svg
                width="18"

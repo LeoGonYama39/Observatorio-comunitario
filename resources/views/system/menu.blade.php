@@ -15,7 +15,7 @@
     <div class="bg-shape">
     </div>
     <header>
-      <img src="assets/logo.png" alt="Centro Ibero Meneses">
+      <img src="{{ asset('assets/logo.png') }}" alt="Centro Ibero Meneses">
       <div class="header-right">
         <div class="user-chip">
           <div class="avatar">
