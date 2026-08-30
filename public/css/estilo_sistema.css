@@ -118,6 +118,7 @@
      text-align: left;
      font-family: var(--font-main);
      transition: background 0.15s ease, color 0.15s ease;
+     text-decoration: none;
 }
  .nav-item:hover {
      background: var(--pearl);

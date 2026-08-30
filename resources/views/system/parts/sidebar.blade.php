@@ -51,21 +51,21 @@
         </svg>
       </button>
       <div class="submenu">
-        <a href="#" data-url="{{ route('p_centro.index') }}" class="sub-item active">
+        <a href="#" data-url="{{ route('p_centro.index') }}" class="sub-item {{ request()->routeIs('p_centro.index') ? 'active' : '' }}">
           Centro
         </a>
-        <a href="#" data-url="{{ route('p_externo.index') }}" class="sub-item">
+        <a href="#" data-url="{{ route('p_externo.index') }}" class="sub-item {{ request()->routeIs('p_externo.index') ? 'active' : '' }}">
           Externas
       </a>
-      <a href="#" data-url="{{ route('p_comunidad.index') }}" class="sub-item">
+      <a href="#" data-url="{{ route('p_comunidad.index') }}" class="sub-item {{ request()->routeIs('p_comunidad.index') ? 'active' : '' }}">
          Usuarias
       </a>
         <a href="#" class="sub-item">Lideres comun.</a>
         <a href="#" class="sub-item">Dir. de saberes</a>
       </div>
-      <button
-            class="nav-item"
-            onclick="window.location.href='sistema_proyectos.html'"
+      <a
+            class="nav-item {{ request()->routeIs('proyectos.index') ? 'active' : '' }}"
+            href="#" data-url="{{ route('proyectos.index') }}"
          >
         <svg
                width="18"
@@ -82,7 +82,7 @@
                />
         </svg>
         Proyectos
-      </button>
+</a>
       <button class="nav-item parent-active">
         <svg
                width="18"

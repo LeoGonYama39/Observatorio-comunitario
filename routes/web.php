@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Nav\NavPCentro;
 use App\Http\Controllers\Nav\NavPExterno;
 use App\Http\Controllers\Nav\NavPComunidad;
+use App\Http\Controllers\Nav\NavProyectos;
 
 // Para usuarios sin inicio de sesión
 Route::middleware('guest')->group(function () {
@@ -21,12 +22,8 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::get('/sistema/personas-centro', [NavPCentro::class, 'show'])->name('p_centro.index');
     Route::get('/sistema/personas-externo', [NavPExterno::class, 'show'])->name('p_externo.index');
     Route::get('/sistema/personas-usuarias', [NavPComunidad::class, 'show'])->name('p_comunidad.index');
+    Route::get('/sistema/proyectos', [NavProyectos::class, 'show'])->name('proyectos.index');
     Route::get('/sistema', function () {return redirect()->route('p_centro.index');});
-
-    //Vistas del sistema con post
-    Route::post('/sistema/personas-centro', [NavPCentro::class, 'show']);
-    Route::post('/sistema/personas-externo', [NavPExterno::class, 'show']);
-    Route::post('/sistema/personas-usuarias', [NavPComunidad::class, 'show']);
 });
 
 // Redirijir a login o menu (dashboard), dependiendo de la sesión
