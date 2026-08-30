@@ -1,0 +1,39 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Nav\NavPCentro;
+use App\Http\Controllers\Nav\NavPExterno;
+use App\Http\Controllers\Nav\NavPComunidad;
+
+// Para usuarios sin inicio de sesión
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [LoginController::class, 'create'])->name('login');
+    Route::post('/login', [LoginController::class, 'store']);
+});
+
+// Para usuarios con inicio de sesión
+Route::middleware('auth:centro,externo')->group(function () {
+    Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
+    Route::get('/menu', [LoginController::class, 'abrirMenu'])->name('dashboard');
+
+    //Vistas del sistema con get (y asignación del nombre)
+    Route::get('/sistema/personas-centro', [NavPCentro::class, 'show'])->name('p_centro.index');
+    Route::get('/sistema/personas-externo', [NavPExterno::class, 'show'])->name('p_externo.index');
+    Route::get('/sistema/personas-usuarias', [NavPComunidad::class, 'show'])->name('p_comunidad.index');
+    Route::get('/sistema', function () {return redirect()->route('p_centro.index');});
+
+    //Vistas del sistema con post
+    Route::post('/sistema/personas-centro', [NavPCentro::class, 'show']);
+    Route::post('/sistema/personas-externo', [NavPExterno::class, 'show']);
+    Route::post('/sistema/personas-usuarias', [NavPComunidad::class, 'show']);
+});
+
+// Redirijir a login o menu (dashboard), dependiendo de la sesión
+Route::get('/', function () {
+    return Auth::check() ? redirect()->route('dashboard') : redirect()->route('login');
+});
+
+
+
+

@@ -1,0 +1,30 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('acomp_acad_externo', function (Blueprint $table) {
+            $table->integer('acomp_acad_gen_id')->index('acomp_acad_gen_id');
+            $table->integer('participacion_id');
+            $table->timestamps();
+
+            $table->primary(['participacion_id', 'acomp_acad_gen_id']);
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('acomp_acad_externo');
+    }
+};

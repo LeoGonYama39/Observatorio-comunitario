@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iniciar sesión · Centro Ibero Meneses</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ asset('css/estilo_login.css') }}">
+</head>
+
+<body>
+  <div class="bg-shape"></div>
+  <div class="bg-shape small"></div>
+
+  <div class="card">
+    <div class="logo-wrap">
+      <img src="{{ asset('assets/logo.png') }}" alt="Centro Ibero Meneses">
+    </div>
+
+    <h1>Bienvenido de nuevo</h1>
+    <p class="subtitle">Ingresa tus datos para continuar</p>
+
+    <form method="POST" action="{{ route('login') }}">
+      @csrf
+      <div class="field">
+        <label for="usuario">Usuario</label>
+        <div class="input-shell">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          <input id="usuario" name="usuario" type="text" placeholder="Usuario" value="{{ old('usuario') }}">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="password">Contraseña</label>
+        <div class="input-shell">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="10.5" width="16" height="10" rx="2.5"/>
+            <path d="M7.5 10.5V7a4.5 4.5 0 0 1 9 0v3.5"/>
+          </svg>
+          <input id="password" type="password" placeholder="Contraseña" name="password">
+          <button type="button" class="toggle-pass" onclick="togglePassword()" aria-label="Mostrar contraseña">
+            <svg id="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="remember-row">
+        <input type="checkbox" id="recordar" name="remember">
+        <label for="recordar">Mantener sesión iniciada</label>
+      </div>
+
+      @error('usuario')
+          <p style="color:#b3261e; font-size:13px; font-weight:600; margin-top:-8px;">{{ $message }}</p>
+      @enderror
+
+      <button type="submit" class="btn-login">Ingresar</button>
+    </form>
+
+    <p class="foot-note">Centro Ibero Meneses</p>
+  </div>
+
+<script>
+  let visible = false;
+  function togglePassword() {
+    visible = !visible;
+    const input = document.getElementById('password');
+    const icon = document.getElementById('eye-icon');
+    input.type = visible ? 'text' : 'password';
+    icon.innerHTML = visible
+      ? '<path d="M3 3l18 18"/><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.5 5.3A9.8 9.8 0 0 1 12 5c6.5 0 10 7 10 7a15.6 15.6 0 0 1-3.4 4.4M6.6 6.6C4 8.3 2 12 2 12s3.5 7 10 7a9.7 9.7 0 0 0 4-.8"/>'
+      : '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>';
+  }
+</script>
+
+</body>
+</html>
