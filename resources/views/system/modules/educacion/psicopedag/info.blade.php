@@ -5,7 +5,7 @@
 @section('content')
 <div class="breadcrumb">
   <a href="{{ route('psicopedag.index') }}" data-url="{{ route('psicopedag.index') }}" class="return-index">
-    Consultas médicas
+    Atención psicopedagógica
   </a>
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M9 6l6 6-6 6"/>
@@ -16,18 +16,11 @@
 </div>
 <div class="content-header">
   <div>
-    <span class="type-eyebrow">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M19 14c1.5-2 2-3.5 2-5a5 5 0 0 0-9-3 5 5 0 0 0-9 3c0 5.5 9 12 9 12s3-2.2 5.3-4.8"/>
-        <path d="M17 17l2 2 4-4"/>
-      </svg>
-      Consulta médica
-    </span>
     <h1>
       Rosa Elena Camposeco Vidal
     </h1>
     <p>
-      Ficha de caso
+      Ficha
     </p>
   </div>
   <div class="header-actions">
@@ -73,10 +66,10 @@
     </div>
     <div class="info-field">
       <label>
-        Paciente
+        Tipo
       </label>
       <div class="value">
-        Rosa Elena Camposeco Vidal
+        Socioemocional
       </div>
     </div>
     <div class="info-field">
@@ -85,10 +78,10 @@
       </label>
       <div class="simple-tag-list">
         <span class="tag">
-          Diabetes
+          Depresión
         </span>
         <span class="tag">
-          Control prenatal
+          Ansiedad
         </span>
       </div>
     </div>

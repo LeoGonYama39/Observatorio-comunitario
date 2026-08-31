@@ -90,6 +90,14 @@
         Preparatoria
       </div>
     </div>
+    <div class="info-field">
+      <label>
+        Teléfono
+      </label>
+      <div class="value">
+        55 5556 5543
+      </div>
+    </div>
   </div>
 </div>
 <div class="related-grid">
