@@ -132,11 +132,23 @@
  .nav-item:hover svg {
      stroke: var(--ink);
 }
- .nav-item.parent-active {
-     color: var(--ink);
+.nav-item.section-active {
+    color: var(--ink);
 }
- .nav-item.parent-active svg {
-     stroke: var(--ink);
+.nav-item.section-active svg {
+    stroke: var(--ink);
+}
+.nav-item .active-dot {
+    display: none;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ink);
+    margin-left: auto;
+    flex-shrink: 0;
+}
+.nav-item.section-active:not(.parent-active) .active-dot {
+    display: block;
 }
  .nav-item .chevron {
      margin-left: auto;
@@ -167,6 +179,13 @@
      margin: 2px 0 6px;
      border-left: 1.5px solid var(--mist);
      margin-left: 26px;
+}
+.submenu {
+    display: none;
+}
+
+.nav-item.parent-active + .submenu {
+    display: flex;
 }
  .sub-item {
      display: block;

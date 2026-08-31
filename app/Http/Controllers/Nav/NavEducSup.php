@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Nav\DatosUsuario;
 use Illuminate\Http\Request;
 
-class NavEducBasic extends Controller {
+class NavEducSup extends Controller {
 
     public function show(Request $request)
     {
@@ -15,7 +15,7 @@ class NavEducBasic extends Controller {
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.educacion.educ_basica.index", compact('persona', 'otros'));
+        $view = view("system.modules.educacion.educ_sup.index", compact('persona', 'otros'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -35,7 +35,7 @@ class NavEducBasic extends Controller {
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.educacion.educ_basica.info", compact('persona', 'otros'));
+        $view = view("system.modules.educacion.educ_sup.info", compact('persona', 'otros'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();

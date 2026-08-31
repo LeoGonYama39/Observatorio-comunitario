@@ -108,7 +108,7 @@
         22 de julio, 2026
       </div>
       <p class="timeline-text">
-        Se ajustó el tratamiento de insulina tras revisión de niveles de glucosa en ayuno.
+        Reunión con los padres.
       </p>
       <div class="attendees">
         <span class="mini-label">
@@ -137,7 +137,7 @@
         10 de junio, 2026
       </div>
       <p class="timeline-text">
-        Consulta de seguimiento, se solicitaron estudios de laboratorio complementarios.
+        Seguimiento del caso.
       </p>
       <div class="attendees">
         <span class="mini-label">
@@ -159,7 +159,7 @@
         15 de marzo, 2026
       </div>
       <p class="timeline-text">
-        Apertura del caso y primera valoración médica general.
+        Primera consulta.
       </p>
       <div class="attendees">
         <span class="mini-label">

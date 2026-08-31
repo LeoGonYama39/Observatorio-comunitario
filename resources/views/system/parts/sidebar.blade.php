@@ -21,8 +21,8 @@
         </svg>
         Áreas
       </button>
-      <button class="nav-item parent-active">
-        <svg
+      <button class="nav-item has-submenu {{ request()->routeIs('p_centro.*') || request()->routeIs('p_externo.*') || request()->routeIs('p_comunidad.*') ? 'section-active parent-active' : '' }}"> 
+      <svg
                width="18"
                height="18"
                viewBox="0 0 24 24"
@@ -37,6 +37,7 @@
           <path d="M16 3.13a4 4 0 0 1 0 7.75" />
         </svg>
         Personas
+        <span class="active-dot"></span> 
         <svg
                class="chevron"
                width="15"
@@ -90,7 +91,7 @@
         </svg>
         Proyectos
       </a>
-      <button class="nav-item parent-active">
+      <button class="nav-item has-submenu">
         <svg
                width="18"
                height="18"
@@ -138,12 +139,13 @@
           Asesoría jurídica
         </a>
       </div>
-      <button class="nav-item parent-active">
+      <button class="nav-item has-submenu {{ request()->routeIs('educ_basica.*') || request()->routeIs('educ_sup.*') || request()->routeIs('psicopedag.*') ? 'section-active parent-active' : '' }}">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
           <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
         </svg>
         Educación
+        <span class="active-dot"></span>  
         <svg class="chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 6l6 6-6 6"/>
         </svg>
@@ -153,7 +155,8 @@
           routeIs('educ_basica.*') ? 'active' : '' }}">
               Educación básica
         </a>
-        <a href="#" class="sub-item">
+        <a href="{{ route('educ_sup.index') }}" data-url="{{ route('educ_sup.index') }}" 
+        class="sub-item {{ request()->routeIs('educ_sup.*') ? 'active' : '' }}">
           Educación media-superior
         </a>
         <a href="ststema_materias.html" class="sub-item">

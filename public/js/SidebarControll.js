@@ -31,27 +31,7 @@ window.addEventListener('resize', () =>  {
 
 //Evento Click para cada elemento del sidebar
 //Linkeo cada botón
-document.querySelectorAll('.sidebar .nav-item[data-url], .sidebar .sub-item[data-url]').forEach(link => {
-    link.addEventListener('click', function(e) {
-    //Evito que el navegador haga su función por defecto
-    e.preventDefault();
 
-    //Obtengo el url, viene de la etiqueta del HTML
-    const url = this.getAttribute('data-url');
-    if (!url) return;
-
-    //Gestiono los active
-    actualizarActivo(url)
-
-    //Cierro la sidebar si estaba en modo ocultar
-    if (window.innerWidth <=
-    MOBILE_BREAKPOINT && typeof closeSidebar === 'function')   {
-      closeSidebar();
-    }
-
-    navigateTo(url)
-  });
-});
 
 // Listener para las filas de las tablas
 document.addEventListener('click', function(e) {
@@ -146,3 +126,45 @@ function actualizarActivo(url)   {
     elemento.classList.add('active');
   }
 }
+
+//Control de los submenus
+document.querySelectorAll('.sidebar .nav-item.has-submenu').forEach(item => {
+    item.addEventListener('click', function(e) {
+        e.preventDefault();
+        this.classList.toggle('parent-active');
+    });
+});
+
+function clearActiveStates() {
+    document.querySelectorAll('.sidebar .nav-item').forEach(el => {
+        el.classList.remove('active', 'section-active');
+    });
+    document.querySelectorAll('.sidebar .sub-item').forEach(el => {
+        el.classList.remove('active');
+    });
+}
+
+document.querySelectorAll('.sidebar .nav-item[data-url], .sidebar .sub-item[data-url]').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        clearActiveStates();
+
+        if (this.classList.contains('sub-item')) {
+            this.classList.add('active');
+
+            // Busca el nav-item padre (el submenu siempre es su hermano justo después)
+            const submenu = this.closest('.submenu');
+            const parentNavItem = submenu ? submenu.previousElementSibling : null;
+            if (parentNavItem) parentNavItem.classList.add('section-active');
+        } else {
+            this.classList.add('active');
+        }
+
+        if (window.innerWidth <= MOBILE_BREAKPOINT && typeof closeSidebar === 'function') {
+            closeSidebar();
+        }
+
+        navigateTo(this.getAttribute('data-url'));
+    });
+});
