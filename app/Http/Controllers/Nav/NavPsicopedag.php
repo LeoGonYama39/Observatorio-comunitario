@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Nav\DatosUsuario;
 use Illuminate\Http\Request;
 
-class NavPComunidad extends Controller{
-
+class NavPsicopedag extends Controller
+{
     public function show(Request $request)
     {
         $datosUsuario = new DatosUsuario();
@@ -15,7 +15,7 @@ class NavPComunidad extends Controller{
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.personas.p_comunidad.index", compact('persona', 'otros'));
+        $view = view("system.modules.educacion.psicopedag.index", compact('persona', 'otros'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();

@@ -51,20 +51,28 @@
         </svg>
       </button>
       <div class="submenu">
-        <a href="{{ route('p_centro.index') }}" data-url="{{ route('p_centro.index') }}" class="sub-item {{ request()->routeIs('p_centro.index') ? 'active' : '' }}">
+        <a href="{{ route('p_centro.index') }}" data-url="{{ route('p_centro.index') }}" class="sub-item {{ request()->
+          routeIs('p_centro.index') ? 'active' : '' }}">
           Centro
         </a>
-        <a href="{{ route('p_externo.index') }}" data-url="{{ route('p_externo.index') }}" class="sub-item {{ request()->routeIs('p_externo.index') ? 'active' : '' }}">
+        <a href="{{ route('p_externo.index') }}" data-url="{{ route('p_externo.index') }}" class="sub-item {{ request()->
+          routeIs('p_externo.index') ? 'active' : '' }}">
           Externas
-      </a>
-      <a href="{{ route('p_comunidad.index') }}" data-url="{{ route('p_comunidad.index') }}" class="sub-item {{ request()->routeIs('p_comunidad.index') ? 'active' : '' }}">
+        </a>
+        <a href="{{ route('p_comunidad.index') }}" data-url="{{ route('p_comunidad.index') }}" class="sub-item {{ request()->
+          routeIs('p_comunidad.index') ? 'active' : '' }}">
          Usuarias
-      </a>
-        <a href="#" class="sub-item">Lideres comun.</a>
-        <a href="#" class="sub-item">Dir. de saberes</a>
+        </a>
+        <a href="#" class="sub-item">
+          Lideres comun.
+        </a>
+        <a href="#" class="sub-item">
+          Dir. de saberes
+        </a>
       </div>
       <a
-            class="nav-item {{ request()->routeIs('proyectos.index') ? 'active' : '' }}"
+            class="nav-item {{ request()->
+        routeIs('proyectos.index') ? 'active' : '' }}"
             href="{{ route('proyectos.index') }}" data-url="{{ route('proyectos.index') }}"
          >
         <svg
@@ -82,7 +90,7 @@
                />
         </svg>
         Proyectos
-</a>
+      </a>
       <button class="nav-item parent-active">
         <svg
                width="18"
@@ -131,33 +139,36 @@
           Asesoría jurídica
         </a>
       </div>
-                <button class="nav-item parent-active">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-            </svg>
-            Educación
-            <svg class="chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 6l6 6-6 6"/>
-            </svg>
-          </button>
-          <div class="submenu">
-            <a href="sistema_educ_basc.html" class="sub-item">
+      <button class="nav-item parent-active">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+        </svg>
+        Educación
+        <svg class="chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 6l6 6-6 6"/>
+        </svg>
+      </button>
+      <div class="submenu">
+        <a href="{{ route('educ_basica.index') }}" data-url="{{ route('educ_basica.index') }}" class="sub-item {{ request()->
+          routeIs('educ_basica.index') ? 'active' : '' }}">
               Educación básica
-            </a>
-            <a href="#" class="sub-item">
-              Educación media-superior
-            </a>
-            <a href="ststema_materias.html" class="sub-item">
-              Materias
-            </a>
-            <a href="sistema_psicopedago.html" class="sub-item">
-              Psicopedagogía
-            </a>
-          </div>
-      <button
-            class="nav-item"
-            onclick="window.location.href='sistema_talleres.html'"
+        </a>
+        <a href="#" class="sub-item">
+          Educación media-superior
+        </a>
+        <a href="ststema_materias.html" class="sub-item">
+          Materias
+        </a>
+        <a href="{{ route('psicopedag.index') }}" data-url="{{ route('psicopedag.index') }}" 
+        class="sub-item {{ request()->routeIs('psicopedag.index') ? 'active' : '' }}">
+          Psicopedagogía
+        </a>
+      </div>
+        <a 
+            class="nav-item {{ request()->
+            routeIs('talleres.index') ? 'active' : '' }}"
+            href="{{ route('talleres.index') }}" data-url="{{ route('talleres.index') }}"
          >
         <svg
                width="18"
@@ -173,21 +184,20 @@
           <path d="M15 9l5-5" />
         </svg>
         Talleres
-      </button>
-                <button class="nav-item" onclick="window.location.href='sistema_eventos.html'">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="5" width="18" height="16" rx="2"/>
-              <path d="M16 3v4"/>
-              <path d="M8 3v4"/>
-              <path d="M3 10h18"/>
-              <circle cx="8.5" cy="14.5" r="1.2" fill="currentColor" stroke="none"/>
-            </svg>
-            Eventos/Charlas
-          </button>
-      <button
-            class="nav-item"
-            onclick="window.location.href='sistema_colonias.html'"
-         >
+      </a>
+      <a class="nav-item {{ request()->routeIs('eventos.index') ? 'active' : '' }}" 
+        href="{{ route('eventos.index') }}" data-url="{{ route('eventos.index') }}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="5" width="18" height="16" rx="2"/>
+          <path d="M16 3v4"/>
+          <path d="M8 3v4"/>
+          <path d="M3 10h18"/>
+          <circle cx="8.5" cy="14.5" r="1.2" fill="currentColor" stroke="none"/>
+        </svg>
+        Eventos/Charlas
+      </a>
+      <a class="nav-item {{ request()->routeIs('colonias.index') ? 'active' : '' }}" 
+        href="{{ route('colonias.index') }}" data-url="{{ route('colonias.index') }}">
         <svg
                width="18"
                height="18"
@@ -202,7 +212,7 @@
           <path d="M10 21v-6h4v6" />
         </svg>
         Colonias
-      </button>
+</a>
       <button class="nav-item">
         <svg
                width="18"
@@ -222,9 +232,9 @@
     </nav>
   </div>
   <div class="sidebar-logout">
-<form method="POST" action="{{ route('logout') }}">
-<button class="nav-item">
-      <svg
+    <form method="POST" action="{{ route('logout') }}">
+      <button class="nav-item">
+        <svg
             width="18"
             height="18"
             viewBox="0 0 24 24"
@@ -233,13 +243,12 @@
             stroke-linecap="round"
             stroke-linejoin="round"
          >
-        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-        <path d="M16 17l5-5-5-5" />
-        <path d="M21 12H9" />
-      </svg>
-      Cerrar sesión
-    </button>
-</form>  
-  
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+          <path d="M16 17l5-5-5-5" />
+          <path d="M21 12H9" />
+        </svg>
+        Cerrar sesión
+      </button>
+    </form>
   </div>
 </aside>

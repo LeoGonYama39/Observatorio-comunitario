@@ -15,7 +15,7 @@ class NavPCentro extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.p_centro.index", compact('persona', 'otros'));
+        $view = view("system.modules.personas.p_centro.index", compact('persona', 'otros'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();

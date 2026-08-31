@@ -6,6 +6,12 @@ use App\Http\Controllers\Nav\NavPCentro;
 use App\Http\Controllers\Nav\NavPExterno;
 use App\Http\Controllers\Nav\NavPComunidad;
 use App\Http\Controllers\Nav\NavProyectos;
+use App\Http\Controllers\Nav\NavEducBasic;
+use App\Http\Controllers\Nav\NavTalleres;
+use App\Http\Controllers\Nav\NavEventos;
+use App\Http\Controllers\Nav\NavColonias;
+use App\Http\Controllers\Nav\NavPsicopedag;
+
 
 // Para usuarios sin inicio de sesión
 Route::middleware('guest')->group(function () {
@@ -23,6 +29,11 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::get('/sistema/personas-externo', [NavPExterno::class, 'show'])->name('p_externo.index');
     Route::get('/sistema/personas-usuarias', [NavPComunidad::class, 'show'])->name('p_comunidad.index');
     Route::get('/sistema/proyectos', [NavProyectos::class, 'show'])->name('proyectos.index');
+    Route::get('/sistema/educ_basica', [NavEducBasic::class, 'show'])->name('educ_basica.index');
+    Route::get('/sistema/talleres', [NavTalleres::class, 'show'])->name('talleres.index');
+    Route::get('/sistema/eventos', [NavEventos::class, 'show'])->name('eventos.index');
+    Route::get('/sistema/colonias', [NavColonias::class, 'show'])->name('colonias.index');
+    Route::get('/sistema/psicopedag', [NavPsicopedag::class, 'show'])->name('psicopedag.index');
     Route::get('/sistema', function () {return redirect()->route('p_centro.index');});
 });
 

@@ -15,7 +15,7 @@ class NavPExterno extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.p_externo.index", compact('persona', 'otros'));
+        $view = view("system.modules.personas.p_externo.index", compact('persona', 'otros'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();

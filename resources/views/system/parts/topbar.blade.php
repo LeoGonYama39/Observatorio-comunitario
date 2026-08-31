@@ -56,7 +56,7 @@
       {{ $otros->initNombre }}{{ $otros->initApPat }}
     </div>
     <span>
-      {{ $persona->nombre }} {{ $persona->ap_pat }}, {{ $otros->tipo }}
+      {{ $persona->nombre }} {{ $persona->ap_pat }}
     </span>
   </div>
 </header>
