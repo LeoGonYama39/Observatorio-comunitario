@@ -38,6 +38,7 @@ Route::middleware('auth:centro,externo')->group(function () {
 
     //Vistas del sistema con get para info
     Route::get('/sistema/personas-centro/info', [NavPCentro::class, 'info'])->name('p_centro.info');
+    Route::get('/sistema/personas-externo/info', [NavPExterno::class, 'info'])->name('p_externo.info');
 });
 
 // Redirijir a login o menu (dashboard), dependiendo de la sesión

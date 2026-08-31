@@ -844,6 +844,11 @@
      align-items: start;
      margin-bottom: 32px;
 }
+ .star-icon {
+     display: inline-block;
+     vertical-align: -2px;
+     margin-right: 6px;
+}
  @media (max-width: 880px) {
      .doc-layout {
          grid-template-columns: 1fr;
@@ -997,6 +1002,142 @@
      color: var(--graphite);
      line-height: 1.55;
 }
+ .type-eyebrow {
+     display: inline-flex;
+     align-items: center;
+     gap: 7px;
+     font-size: 11.5px;
+     font-weight: 700;
+     letter-spacing: 0.04em;
+     text-transform: uppercase;
+     color: var(--white);
+     background: var(--ink);
+     padding: 6px 14px;
+     border-radius: 999px;
+     margin-bottom: 12px;
+}
+ .type-eyebrow svg {
+     stroke: var(--white);
+}
+ .attendees {
+     display: flex;
+     align-items: center;
+     flex-wrap: wrap;
+     gap: 6px;
+     margin-top: 10px;
+}
+ .attendees .mini-label {
+     margin: 0 4px 0 0;
+     align-self: center;
+}
+ .attendee-chip {
+     display: inline-flex;
+     align-items: center;
+     gap: 5px;
+     font-size: 12px;
+     font-weight: 600;
+     color: var(--graphite);
+     background: var(--pearl);
+     border: 1.5px solid var(--mist);
+     border-radius: 999px;
+     padding: 4px 10px 4px 8px;
+}
+ .attendee-chip svg {
+     stroke: var(--steel);
+     flex-shrink: 0;
+}
+ .generations-list {
+     display: flex;
+     flex-direction: column;
+     gap: 14px;
+}
+ .generation-card {
+     background: var(--white);
+     border: 1.5px solid var(--mist);
+     border-radius: var(--radius-md);
+     padding: 20px 24px;
+     display: flex;
+     flex-direction: column;
+     gap: 12px;
+}
+ .generation-top {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     flex-wrap: wrap;
+     gap: 10px;
+}
+ .generation-period {
+     font-size: 14.5px;
+     font-weight: 700;
+     color: var(--ink);
+}
+ .generation-eval {
+     margin-top: 2px;
+}
+ .generation-eval p {
+     font-size: 13.5px;
+     font-weight: 500;
+     color: var(--graphite);
+     line-height: 1.55;
+     margin-top: 4px;
+}
+ .generation-eval p.empty {
+     color: var(--mist);
+     font-weight: 500;
+}
+ .breakdown-toggle {
+     display: flex;
+     align-items: center;
+     gap: 6px;
+     align-self: flex-start;
+     background: none;
+     border: none;
+     padding: 0;
+     font-family: var(--font-main);
+     font-size: 12.5px;
+     font-weight: 700;
+     color: var(--graphite);
+     cursor: pointer;
+}
+ .breakdown-toggle:hover {
+     color: var(--ink);
+}
+ .breakdown-toggle .chevron-icon {
+     stroke: var(--steel);
+     transition: transform 0.2s ease;
+}
+ .breakdown-toggle.open .chevron-icon {
+     transform: rotate(180deg);
+}
+ .generation-breakdown {
+     display: flex;
+     flex-direction: column;
+     gap: 10px;
+     padding-top: 12px;
+     border-top: 1px solid var(--mist-soft);
+     margin-top: 2px;
+}
+ .generation-breakdown[hidden] {
+     display: none;
+}
+ .breakdown-row .mini-label {
+     margin-top: 0;
+     margin-bottom: 6px;
+     display: block;
+}
+ .participants-count {
+     display: flex;
+     align-items: center;
+     gap: 6px;
+     font-size: 13px;
+     font-weight: 600;
+     color: var(--graphite);
+}
+ .participants-count svg {
+     stroke: var(--steel);
+     flex-shrink: 0;
+}
  .table-card {
      background: var(--white);
      border: 1.5px solid var(--mist);
@@ -1073,4 +1214,124 @@
          text-align: left;
     }
 }
- 
+/* Para el progreso de materias en educación */
+ .progress-card {
+     background: var(--white);
+     border: 1.5px solid var(--mist);
+     border-radius: var(--radius-lg);
+     padding: 28px 32px;
+     margin-bottom: 24px;
+}
+ .progress-top {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     flex-wrap: wrap;
+     gap: 12px;
+     margin-bottom: 6px;
+}
+ .progress-top h3 {
+     font-size: 16px;
+     font-weight: 800;
+     color: var(--ink);
+}
+.progress-top .btn-danger {
+  margin-left: auto;
+}
+ .progress-meta {
+     font-size: 12.5px;
+     font-weight: 500;
+     color: var(--steel);
+     margin-bottom: 22px;
+}
+ .progress-summary {
+     display: flex;
+     align-items: center;
+     gap: 14px;
+     margin-bottom: 20px;
+}
+ .progress-summary .count {
+     font-size: 13.5px;
+     font-weight: 700;
+     color: var(--ink);
+     white-space: nowrap;
+}
+ .progress-bar-track {
+     flex: 1;
+     height: 8px;
+     background: var(--mist-soft);
+     border-radius: 999px;
+     overflow: hidden;
+}
+ .progress-bar-fill {
+     height: 100%;
+     background: var(--ink);
+     border-radius: 999px;
+}
+ .materias-grid {
+     display: grid;
+     grid-template-columns: repeat(5, 1fr);
+     gap: 10px;
+}
+ @media (max-width: 720px) {
+     .materias-grid {
+         grid-template-columns: repeat(3, 1fr);
+    }
+}
+ @media (max-width: 480px) {
+     .materias-grid {
+         grid-template-columns: repeat(2, 1fr);
+    }
+}
+ .materia-box {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+  gap: 8px;
+  text-align: center;
+  padding: 16px 10px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--mist);
+  background: var(--white);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+ .materia-box .check-circle {
+     width: 26px;
+     height: 26px;
+     border-radius: 50%;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     border: 1.5px solid var(--mist);
+     background: var(--pearl);
+}
+ .materia-box .check-circle svg {
+     stroke: var(--mist);
+}
+ .materia-box span {
+     font-size: 12px;
+     font-weight: 600;
+     color: var(--steel);
+     line-height: 1.3;
+}
+ .materia-box.done {
+     border-color: var(--ink);
+     background: var(--mist-soft);
+}
+ .materia-box.done .check-circle {
+     border-color: var(--ink);
+     background: var(--ink);
+}
+ .materia-box.done .check-circle svg {
+     stroke: var(--white);
+}
+ .materia-box.done span {
+     color: var(--ink);
+}
+
+.materia-box:not(.done):hover {
+  border-color: var(--steel);
+  background: var(--pearl);
+}

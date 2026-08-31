@@ -55,21 +55,29 @@ document.querySelectorAll('.sidebar .nav-item[data-url], .sidebar .sub-item[data
 
 // Listener para las filas de las tablas
 document.addEventListener('click', function(e) {
-    e.preventDefault();
+    
     const row = e.target.closest('tr[data-url]');
-    if (!row) return;
-    const url = row.getAttribute('data-url');
+    if (!row){
+      return; 
+    } else {
+      e.preventDefault();
+      const url = row.getAttribute('data-url');
     navigateTo(url);
+    } 
 });
 
 
 // Listener para regresar al index
 document.addEventListener('click', function(e) {
     const link = e.target.closest('a.return-index');
-    if (!link) return;
-    e.preventDefault();
+    if (!link){
+return;
+    } else {
+      e.preventDefault();
     const url = link.getAttribute('data-url');
     navigateTo(url);
+    }
+    
 });
 
 ///Función para navegar a hacer un get a un url,
