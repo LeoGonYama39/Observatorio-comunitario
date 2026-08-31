@@ -11,23 +11,20 @@ class NavProyectos extends Controller
     public function show(Request $request)
     {
         $datosUsuario = new DatosUsuario();
-
         $aux = $datosUsuario->getDatosUsuario();
-
         $persona = $aux[0];
         $otros = $aux[1];
 
+        $view = view("system.modules.proyectos.index",compact('persona', 'otros'));
+
         if ($request->ajax()) {
-            return view(
-                "system.modules.proyectos.index",
-                compact("persona", "otros")
-            )->renderSections()["content"];
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
         }
 
-        // Si entran escribiendo la URL o recargan con F5, entrega el layout completo
-        return view(
-            "system.modules.proyectos.index",
-            compact("persona", "otros")
-        );
+        return $view;
     }
 }

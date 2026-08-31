@@ -6,28 +6,25 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Nav\DatosUsuario;
 use Illuminate\Http\Request;
 
-class NavPComunidad extends Controller
-{
+class NavPComunidad extends Controller{
+
     public function show(Request $request)
     {
         $datosUsuario = new DatosUsuario();
-
         $aux = $datosUsuario->getDatosUsuario();
-
         $persona = $aux[0];
         $otros = $aux[1];
 
+        $view = view("system.modules.p_comunidad.index", compact('persona', 'otros'));
+
         if ($request->ajax()) {
-            return view(
-                "system.modules.p_comunidad.index",
-                compact("persona", "otros")
-            )->renderSections()["content"];
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
         }
 
-        // Si entran escribiendo la URL o recargan con F5, entrega el layout completo
-        return view(
-            "system.modules.p_comunidad.index",
-            compact("persona", "otros")
-        );
+        return $view;
     }
 }
