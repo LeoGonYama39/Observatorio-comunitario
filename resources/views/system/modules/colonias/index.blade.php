@@ -46,7 +46,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr onclick="window.location.href='colonia_detalle.html'">
+      <tr data-url="{{ route('colonias.info') }}">
         <td>
           <div class="person-name">
             Colonia 1

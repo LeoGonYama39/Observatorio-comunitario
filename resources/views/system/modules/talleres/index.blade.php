@@ -50,7 +50,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr onclick="window.location.href='taller_detalle.html'">
+      <tr data-url="{{ route('talleres.info') }}">
         <td>
           <div class="person-name">
             Alimentación Saludable

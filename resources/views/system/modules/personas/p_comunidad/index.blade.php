@@ -42,37 +42,37 @@
           <thead>
             <tr>
               <th>Nombre</th>
-              <th>Rango de edad</th>
+              <th>Edad</th>
             </tr>
           </thead>
           <tbody>
-            <tr onclick="window.location.href='persona_comunidad_detalle.html'">
+            <tr data-url="{{ route('p_comunidad.info') }}">
               <td>
                 <div class="person-name">David López Aldama</div>
                 <div class="person-role">Masculino</div>
               </td>
-              <td><span class="area-tag">25-35 años</span></td>
+              <td><span class="area-tag">30 años</span></td>
             </tr>
             <tr>
               <td>
                 <div class="person-name">Angélica Rodríguez Pérez</div>
                 <div class="person-role">Femenino</div>
               </td>
-              <td><span class="area-tag">36-45 años</span></td>
+              <td><span class="area-tag">50 años</span></td>
             </tr>
             <tr>
               <td>
                 <div class="person-name">Kevin Ortega Salazar</div>
                 <div class="person-role">Masculino</div>
               </td>
-              <td><span class="area-tag">10-25 años</span></td>
+              <td><span class="area-tag">12 años</span></td>
             </tr>
             <tr>
               <td>
                 <div class="person-name">María González López</div>
-                <div class="person-role">Femenino</div>
+                <div class="person-role">Otro</div>
               </td>
-              <td><span class="area-tag">46-55 años</span></td>
+              <td><span class="area-tag">23 años</span></td>
             </tr>
           </tbody>
         </table>

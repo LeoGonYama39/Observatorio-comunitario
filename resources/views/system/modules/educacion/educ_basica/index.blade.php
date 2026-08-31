@@ -56,7 +56,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr onclick="window.location.href='educ_basc_detalle.html'">
+      <tr data-url="{{ route('educ_basica.info') }}">
         <td>
           <div class="person-name">
             José Castillo Gaitan

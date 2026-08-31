@@ -56,7 +56,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr onclick="window.location.href='caso_detalle.html'">
+      <tr data-url="{{ route('psicopedag.info') }}">
         <td>
           <div class="person-name">
             Rosa Elena Camposeco Vidal

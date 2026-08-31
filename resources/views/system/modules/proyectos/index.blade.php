@@ -46,7 +46,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr onclick="window.location.href='proyecto_detalle.html'">
+            <tr data-url="{{ route('proyectos.info') }}">
               <td>
                 <div class="person-name">
                   <svg class="star-icon" width="13" height="13" viewBox="0 0 24 24" fill="#111111" stroke="#111111" stroke-width="1.5" stroke-linejoin="round">

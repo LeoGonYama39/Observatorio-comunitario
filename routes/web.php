@@ -39,6 +39,13 @@ Route::middleware('auth:centro,externo')->group(function () {
     //Vistas del sistema con get para info
     Route::get('/sistema/personas-centro/info', [NavPCentro::class, 'info'])->name('p_centro.info');
     Route::get('/sistema/personas-externo/info', [NavPExterno::class, 'info'])->name('p_externo.info');
+    Route::get('/sistema/personas-usuarias/info', [NavPComunidad::class, 'info'])->name('p_comunidad.info');
+    Route::get('/sistema/proyectos/info', [NavProyectos::class, 'info'])->name('proyectos.info');
+    Route::get('/sistema/educ_basica/info', [NavEducBasic::class, 'info'])->name('educ_basica.info');
+    Route::get('/sistema/psicopedag/info', [NavPsicopedag::class, 'info'])->name('psicopedag.info');
+    Route::get('/sistema/talleres/info', [NavTalleres::class, 'info'])->name('talleres.info');
+    Route::get('/sistema/eventos/info', [NavEventos::class, 'info'])->name('eventos.info');
+    Route::get('/sistema/colonias/info', [NavColonias::class, 'info'])->name('colonias.info');
 });
 
 // Redirijir a login o menu (dashboard), dependiendo de la sesión

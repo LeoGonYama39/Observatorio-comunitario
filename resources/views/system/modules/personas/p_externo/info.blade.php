@@ -1,6 +1,6 @@
 @extends('system.app')
 
-@section('title', 'info · Centro Ibero Meneses')
+@section('title', 'Sofía Ramírez Duarte · Centro Ibero Meneses')
 
 @section('content')
 <div class="breadcrumb">

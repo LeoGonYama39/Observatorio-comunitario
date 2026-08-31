@@ -50,7 +50,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr onclick="window.location.href='evento_detalle.html'">
+      <tr data-url="{{ route('eventos.info') }}">
         <td>
           <div class="person-name">
             Charla: concienciación sobre la diabetes

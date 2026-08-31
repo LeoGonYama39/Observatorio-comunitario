@@ -71,8 +71,7 @@
         </a>
       </div>
       <a
-            class="nav-item {{ request()->
-        routeIs('proyectos.index') ? 'active' : '' }}"
+            class="nav-item {{ request()->routeIs('proyectos.*') ? 'active' : '' }}"
             href="{{ route('proyectos.index') }}" data-url="{{ route('proyectos.index') }}"
          >
         <svg
@@ -151,7 +150,7 @@
       </button>
       <div class="submenu">
         <a href="{{ route('educ_basica.index') }}" data-url="{{ route('educ_basica.index') }}" class="sub-item {{ request()->
-          routeIs('educ_basica.index') ? 'active' : '' }}">
+          routeIs('educ_basica.*') ? 'active' : '' }}">
               Educación básica
         </a>
         <a href="#" class="sub-item">
@@ -161,13 +160,13 @@
           Materias
         </a>
         <a href="{{ route('psicopedag.index') }}" data-url="{{ route('psicopedag.index') }}" 
-        class="sub-item {{ request()->routeIs('psicopedag.index') ? 'active' : '' }}">
+        class="sub-item {{ request()->routeIs('psicopedag.*') ? 'active' : '' }}">
           Psicopedagogía
         </a>
       </div>
         <a 
             class="nav-item {{ request()->
-            routeIs('talleres.index') ? 'active' : '' }}"
+            routeIs('talleres.*') ? 'active' : '' }}"
             href="{{ route('talleres.index') }}" data-url="{{ route('talleres.index') }}"
          >
         <svg
@@ -185,7 +184,7 @@
         </svg>
         Talleres
       </a>
-      <a class="nav-item {{ request()->routeIs('eventos.index') ? 'active' : '' }}" 
+      <a class="nav-item {{ request()->routeIs('eventos.*') ? 'active' : '' }}" 
         href="{{ route('eventos.index') }}" data-url="{{ route('eventos.index') }}">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="5" width="18" height="16" rx="2"/>
@@ -196,7 +195,7 @@
         </svg>
         Eventos/Charlas
       </a>
-      <a class="nav-item {{ request()->routeIs('colonias.index') ? 'active' : '' }}" 
+      <a class="nav-item {{ request()->routeIs('colonias.*') ? 'active' : '' }}" 
         href="{{ route('colonias.index') }}" data-url="{{ route('colonias.index') }}">
         <svg
                width="18"
