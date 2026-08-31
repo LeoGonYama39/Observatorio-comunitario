@@ -51,16 +51,16 @@
         </svg>
       </button>
       <div class="submenu">
-        <a href="{{ route('p_centro.index') }}" data-url="{{ route('p_centro.index') }}" class="sub-item {{ request()->
-          routeIs('p_centro.index') ? 'active' : '' }}">
+        <a href="{{ route('p_centro.index') }}" data-url="{{ route('p_centro.index') }}" 
+        class="sub-item {{ request()->routeIs('p_centro.*') ? 'active' : '' }}">
           Centro
         </a>
-        <a href="{{ route('p_externo.index') }}" data-url="{{ route('p_externo.index') }}" class="sub-item {{ request()->
-          routeIs('p_externo.index') ? 'active' : '' }}">
+        <a href="{{ route('p_externo.index') }}" data-url="{{ route('p_externo.index') }}" 
+        class="sub-item {{ request()->routeIs('p_externo.*') ? 'active' : '' }}">
           Externas
         </a>
-        <a href="{{ route('p_comunidad.index') }}" data-url="{{ route('p_comunidad.index') }}" class="sub-item {{ request()->
-          routeIs('p_comunidad.index') ? 'active' : '' }}">
+        <a href="{{ route('p_comunidad.index') }}" data-url="{{ route('p_comunidad.index') }}" 
+        class="sub-item {{ request()->routeIs('p_comunidad.*') ? 'active' : '' }}">
          Usuarias
         </a>
         <a href="#" class="sub-item">

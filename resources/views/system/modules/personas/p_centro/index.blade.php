@@ -85,25 +85,10 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
+      <tr data-url="{{ route('p_centro.info') }}">
         <td>
           <div class="person-name">
-            Juan Pérez Robles
-          </div>
-          <div class="person-role">
-            Seguridad
-          </div>
-        </td>
-        <td>
-          <span class="area-tag empty">
-            —
-          </span>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <div class="person-name">
-            María Torres Salinas
+             María Torres Salinas
           </div>
           <div class="person-role">
             Coordinadora
@@ -118,6 +103,21 @@
       <tr>
         <td>
           <div class="person-name">
+            Juán Pérez Robles
+          </div>
+          <div class="person-role">
+            Coordinadora
+          </div>
+        </td>
+        <td>
+          <span class="area-tag empty">
+            -
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class="person-name">
             Roberto Gómez Iñárritu
           </div>
           <div class="person-role">
@@ -126,7 +126,7 @@
         </td>
         <td>
           <span class="area-tag empty">
-            —
+            -
           </span>
         </td>
       </tr>

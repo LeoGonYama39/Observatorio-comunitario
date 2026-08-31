@@ -24,7 +24,7 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
     Route::get('/menu', [LoginController::class, 'abrirMenu'])->name('dashboard');
 
-    //Vistas del sistema con get (y asignación del nombre)
+    //Vistas del sistema con get (y asignación del nombre) para index
     Route::get('/sistema/personas-centro', [NavPCentro::class, 'show'])->name('p_centro.index');
     Route::get('/sistema/personas-externo', [NavPExterno::class, 'show'])->name('p_externo.index');
     Route::get('/sistema/personas-usuarias', [NavPComunidad::class, 'show'])->name('p_comunidad.index');
@@ -35,6 +35,9 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::get('/sistema/colonias', [NavColonias::class, 'show'])->name('colonias.index');
     Route::get('/sistema/psicopedag', [NavPsicopedag::class, 'show'])->name('psicopedag.index');
     Route::get('/sistema', function () {return redirect()->route('p_centro.index');});
+
+    //Vistas del sistema con get para info
+    Route::get('/sistema/personas-centro/info', [NavPCentro::class, 'info'])->name('p_centro.info');
 });
 
 // Redirijir a login o menu (dashboard), dependiendo de la sesión

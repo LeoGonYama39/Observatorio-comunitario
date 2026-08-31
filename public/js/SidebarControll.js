@@ -31,43 +31,72 @@ window.addEventListener('resize', () =>  {
 
 //Evento Click para cada elemento del sidebar
 //Linkeo cada botón
-document.querySelectorAll('.sidebar .nav-item[data-url], .sidebar .sub-item[data-url]').forEach(link =>   {
-  link.addEventListener('click', async function(e)   {
+document.querySelectorAll('.sidebar .nav-item[data-url], .sidebar .sub-item[data-url]').forEach(link => {
+    link.addEventListener('click', function(e) {
     //Evito que el navegador haga su función por defecto
     e.preventDefault();
+
     //Obtengo el url, viene de la etiqueta del HTML
     const url = this.getAttribute('data-url');
     if (!url) return;
+
     //Gestiono los active
     actualizarActivo(url)
+
     //Cierro la sidebar si estaba en modo ocultar
     if (window.innerWidth <=
     MOBILE_BREAKPOINT && typeof closeSidebar === 'function')   {
       closeSidebar();
     }
-    //Petición GET a url, con fetch y await
-    try   {
+
+    navigateTo(url)
+  });
+});
+
+// Listener para las filas de las tablas
+document.addEventListener('click', function(e) {
+    e.preventDefault();
+    const row = e.target.closest('tr[data-url]');
+    if (!row) return;
+    const url = row.getAttribute('data-url');
+    navigateTo(url);
+});
+
+
+// Listener para regresar al index
+document.addEventListener('click', function(e) {
+    const link = e.target.closest('a.return-index');
+    if (!link) return;
+    e.preventDefault();
+    const url = link.getAttribute('data-url');
+    navigateTo(url);
+});
+
+///Función para navegar a hacer un get a un url,
+///esperar la respuesta y reemplazar el contenido
+
+async function navigateTo(url) {
+    try{
       const res = await fetch(url,   {
         headers:   {
           'X-Requested-With': 'XMLHttpRequest'
         }
-      }
-      );
+      });
+
       if (!res.ok) throw new Error('Error al cargar la sección');
+      
       //Laravel responde con un json con varias cosas
       const data = await res.json();
+      
       //Reempazar
       document.getElementById('mainContent').innerHTML = data.content;
       document.title = data.title;
+      
       //Actualizo la barra de enlace, sin recargar
-      window.history.pushState(  {
-      }
-      , '', url);
-    } catch (err)   {
+      window.history.pushState({}, '', url);} catch (err)   {
       console.error(err);
     }
-  });
-});
+}
 
 
 // Soporte para botones Atrás/Adelante del navegador
