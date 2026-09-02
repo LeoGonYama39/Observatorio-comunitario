@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Nav;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Nav\DatosUsuario;
 use Illuminate\Http\Request;
+use App\Models\PCentro;
 
 class NavPCentro extends Controller
 {
@@ -15,7 +16,9 @@ class NavPCentro extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.personas.p_centro.index", compact('persona', 'otros'));
+        $centros  = PCentro::select('id', 'nombre', 'ap_pat', 'ap_mat', 'cargo')->get();
+
+        $view = view("system.modules.personas.p_centro.index", compact('persona', 'otros', 'centros'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();

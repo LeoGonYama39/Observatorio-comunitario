@@ -85,28 +85,14 @@
       </tr>
     </thead>
     <tbody>
+      @foreach ($centros as $centro)
       <tr data-url="{{ route('p_centro.info') }}">
         <td>
           <div class="person-name">
-             María Torres Salinas
+             {{ $centro->nombre }} {{ $centro->ap_pat }} {{ $centro->ap_mat }}
           </div>
           <div class="person-role">
-            Coordinadora
-          </div>
-        </td>
-        <td>
-          <span class="area-tag">
-            Nutrición Comunitaria
-          </span>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <div class="person-name">
-            Juán Pérez Robles
-          </div>
-          <div class="person-role">
-            Coordinadora
+            {{ $centro->cargo }}
           </div>
         </td>
         <td>
@@ -115,36 +101,7 @@
           </span>
         </td>
       </tr>
-      <tr>
-        <td>
-          <div class="person-name">
-            Roberto Gómez Iñárritu
-          </div>
-          <div class="person-role">
-            Administrativo
-          </div>
-        </td>
-        <td>
-          <span class="area-tag empty">
-            -
-          </span>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <div class="person-name">
-            Ana Lucía Fernández Ruiz
-          </div>
-          <div class="person-role">
-            Coordinadora
-          </div>
-        </td>
-        <td>
-          <span class="area-tag">
-            Talleres y Capacitación
-          </span>
-        </td>
-      </tr>
+      @endforeach
     </tbody>
   </table>
 </div>
