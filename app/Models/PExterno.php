@@ -9,7 +9,7 @@ class PExterno extends Authenticatable
 {
     use HasFactory;
 
-    public $timestamps = true;
+    public $timestamps = false;
     protected $table = 'p_externo';
 
     protected $fillable = [

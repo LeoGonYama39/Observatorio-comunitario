@@ -9,7 +9,7 @@ class PCentro extends Authenticatable
 {
     use HasFactory;
 
-    public $timestamps = true;
+    public $timestamps = false;
     protected $table = 'p_centro';
 
     protected $fillable = [
