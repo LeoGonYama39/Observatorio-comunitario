@@ -69,7 +69,7 @@
         Tipo
       </label>
       <div class="value">
-        Socioemocional
+        Psicoeducativa
       </div>
     </div>
     <div class="info-field">
@@ -85,8 +85,52 @@
         </span>
       </div>
     </div>
+    <div class="info-field">
+      <label>Canalizado</label>
+      <div class="value">Institución canalizado</div>
+    </div>
   </div>
 </div>
+<div class="doc-card" style="margin-bottom: 32px;">
+  <div class="doc-section">
+    <h3>Petición de la persona</h3>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+  </div>
+</div>
+
+<div class="section-header">
+  <h3>
+    Tutor(es)
+  </h3>
+  <button class="btn-outline btn-small">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 5v14"/>
+      <path d="M5 12h14"/>
+    </svg>
+    Agregar tutor
+  </button>
+</div>
+<div class="table-card" style="margin-bottom: 32px;">
+  <div style="padding: 6px 24px;">
+    <div class="related-row">
+      <span class="name">
+        Alejandra Vidal Reyes
+      </span>
+      <span class="role-badge participante">
+        Madre
+      </span>
+    </div>
+    <div class="related-row">
+      <span class="name">
+        Marco Camposeco Ruiz
+      </span>
+      <span class="role-badge participante">
+        Padre
+      </span>
+    </div>
+  </div>
+</div>
+
 <div class="section-header">
   <h3>
     Historial

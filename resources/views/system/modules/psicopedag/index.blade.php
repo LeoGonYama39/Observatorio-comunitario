@@ -72,7 +72,7 @@
         </td>
         <td>
           <span class="area-tag">
-            Socioemocional
+            Psicoeducativa 
           </span>
         </td>
       </tr>
@@ -112,7 +112,7 @@
         </td>
         <td>
           <span class="area-tag">
-            Socioemocional
+            Psicoeducativa
           </span>
         </td>
       </tr>
@@ -132,7 +132,7 @@
         </td>
         <td>
           <span class="area-tag">
-            Socioemocional
+            Evaluación psicológica
           </span>
         </td>
       </tr>
