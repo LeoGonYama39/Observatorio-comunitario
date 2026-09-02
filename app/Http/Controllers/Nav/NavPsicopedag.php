@@ -15,7 +15,7 @@ class NavPsicopedag extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.educacion.psicopedag.index", compact('persona', 'otros'));
+        $view = view("system.modules.psicopedag.index", compact('persona', 'otros'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -35,7 +35,7 @@ class NavPsicopedag extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.educacion.psicopedag.info", compact('persona', 'otros'));
+        $view = view("system.modules.psicopedag.info", compact('persona', 'otros'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
