@@ -66,10 +66,10 @@
           </div>
         </td>
         <td class="area-tag">
-          Alfabetización
+          Secundaria
         </td>
         <td class="area-tag">
-          6/8 acreditadas
+          4/9 acreditadas
         </td>
       </tr>
       <tr>
@@ -85,7 +85,7 @@
           Alfabetización
         </td>
         <td class="area-tag">
-          3/8 acreditadas
+          1/3 acreditadas
         </td>
       </tr>
       <tr>
@@ -98,10 +98,10 @@
           </div>
         </td>
         <td class="area-tag">
-          Primaria
+          Regularización primaria
         </td>
         <td class="area-tag">
-          10/10 acreditadas
+          6/6 acreditadas
         </td>
       </tr>
       <tr>
@@ -114,10 +114,10 @@
           </div>
         </td>
         <td class="area-tag">
-          Secundaria
+          Primaria (12-14)
         </td>
         <td class="area-tag">
-          7/12 acreditadas
+          7/9 acreditadas
         </td>
       </tr>
     </tbody>

@@ -71,15 +71,15 @@
         Edad
       </label>
       <div class="value">
-        30 años
+        13 años
       </div>
     </div>
     <div class="info-field">
       <label>
-        Fecha de ingreso
+        CURP
       </label>
       <div class="value">
-        26 de agosto de 2026
+        CURPEJEMPLO123344
       </div>
     </div>
     <div class="info-field">
@@ -108,12 +108,25 @@
     </div>
   </div>
 </div>
+<div class="section-header">
+  <h3>
+    Cursos
+  </h3>
+  <button class="btn-outline btn-small">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 5v14"/>
+      <path d="M5 12h14"/>
+    </svg>
+    Nueva inscripción
+  </button>
+</div>
+
 <div class="progress-card">
   <div class="progress-top">
     <h3>
-      Primaria
+      Secundaria
     </h3>
-    <span class="meta-badge on">
+    <span class="meta-badge">
       Activo
     </span>
     <button class="btn-danger btn-small">
@@ -128,14 +141,14 @@
     </button>
   </div>
   <p class="progress-meta">
-    RFE: CURP01020304HDFXXX01 · Ingreso: 12 de febrero, 2025
+    Ingreso: 12 de diciembre, 2025
   </p>
   <div class="progress-summary">
     <span class="count">
-      6 de 10 materias
+      4 de 9 materias
     </span>
     <div class="progress-bar-track">
-      <div class="progress-bar-fill" style="width: 60%;">
+      <div class="progress-bar-fill" style="width: 44.44%;">
       </div>
     </div>
   </div>
@@ -147,7 +160,7 @@
         </svg>
       </div>
       <span>
-        Español I
+        LyC III
       </span>
     </div>
     <div class="materia-box done" onclick="toggleMateria(this)">
@@ -157,7 +170,7 @@
         </svg>
       </div>
       <span>
-        Matemáticas I
+        LyC VI
       </span>
     </div>
     <div class="materia-box done" onclick="toggleMateria(this)">
@@ -167,7 +180,7 @@
         </svg>
       </div>
       <span>
-        Ciencias I
+        PM III
       </span>
     </div>
     <div class="materia-box done" onclick="toggleMateria(this)">
@@ -177,55 +190,167 @@
         </svg>
       </div>
       <span>
-        Historia I
-      </span>
-    </div>
-    <div class="materia-box done" onclick="toggleMateria(this)">
-      <div class="check-circle">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20 6 9 17l-5-5"/>
-        </svg>
-      </div>
-      <span>
-        Geografía
-      </span>
-    </div>
-    <div class="materia-box done" onclick="toggleMateria(this)">
-      <div class="check-circle">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20 6 9 17l-5-5"/>
-        </svg>
-      </div>
-      <span>
-        Español II
+        PM IV
       </span>
     </div>
     <div class="materia-box" onclick="toggleMateria(this)">
       <div class="check-circle">
       </div>
       <span>
-        Matemáticas II
+        PM V
       </span>
     </div>
     <div class="materia-box" onclick="toggleMateria(this)">
       <div class="check-circle">
       </div>
       <span>
-        Ciencias II
+        VC II
       </span>
     </div>
     <div class="materia-box" onclick="toggleMateria(this)">
       <div class="check-circle">
       </div>
       <span>
-        Historia II
+        VC III
       </span>
     </div>
     <div class="materia-box" onclick="toggleMateria(this)">
       <div class="check-circle">
       </div>
       <span>
-        Formación Cívica
+        DIV I
+      </span>
+    </div>
+    <div class="materia-box" onclick="toggleMateria(this)">
+      <div class="check-circle">
+      </div>
+      <span>
+        DIV II
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="progress-card">
+  <div class="progress-top">
+    <h3>
+      Primaria (12-14)
+    </h3>
+    <span class="meta-badge on">
+      Completo
+    </span>
+    <button class="btn-danger btn-small">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 6h18"/>
+        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+        <path d="M10 11v6"/>
+        <path d="M14 11v6"/>
+      </svg>
+      Eliminar
+    </button>
+  </div>
+  <p class="progress-meta">
+    Ingreso: 12 de diciembre, 2025
+  </p>
+  <div class="progress-summary">
+    <span class="count">
+      9 de 9 materias
+    </span>
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" style="width: 100%;">
+      </div>
+    </div>
+  </div>
+  <div class="materias-grid">
+    <div class="materia-box done" onclick="toggleMateria(this)">
+      <div class="check-circle">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 6 9 17l-5-5"/>
+        </svg>
+      </div>
+      <span>
+        LP
+      </span>
+    </div>
+    <div class="materia-box done" onclick="toggleMateria(this)">
+      <div class="check-circle">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 6 9 17l-5-5"/>
+        </svg>
+      </div>
+      <span>
+        PE
+      </span>
+    </div>
+    <div class="materia-box done" onclick="toggleMateria(this)">
+      <div class="check-circle">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 6 9 17l-5-5"/>
+        </svg>
+      </div>
+      <span>
+        MPE
+      </span>
+    </div>
+    <div class="materia-box done" onclick="toggleMateria(this)">
+      <div class="check-circle">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 6 9 17l-5-5"/>
+        </svg>
+      </div>
+      <span>
+        LyC I
+      </span>
+    </div>
+    <div class="materia-box done" onclick="toggleMateria(this)">
+      <div class="check-circle">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 6 9 17l-5-5"/>
+        </svg>
+      </div>
+      <span>
+        LyC II
+      </span>
+    </div>
+    <div class="materia-box done" onclick="toggleMateria(this)">
+      <div class="check-circle">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 6 9 17l-5-5"/>
+        </svg>
+      </div>
+      <span>
+        PM I
+      </span>
+    </div>
+    <div class="materia-box done" onclick="toggleMateria(this)">
+      <div class="check-circle">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 6 9 17l-5-5"/>
+        </svg>
+      </div>
+      <span>
+        PM II
+      </span>
+    </div>
+    <div class="materia-box done" onclick="toggleMateria(this)">
+      <div class="check-circle">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 6 9 17l-5-5"/>
+        </svg>
+      </div>
+      <span>
+        VC I
+      </span>
+    </div>
+    <div class="materia-box done" onclick="toggleMateria(this)">
+      <div class="check-circle">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 6 9 17l-5-5"/>
+        </svg>
+      </div>
+      <span>
+        DIV I
       </span>
     </div>
   </div>

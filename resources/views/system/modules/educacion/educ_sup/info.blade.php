@@ -76,10 +76,10 @@
     </div>
     <div class="info-field">
       <label>
-        Fecha de ingreso
+        Matrícula
       </label>
       <div class="value">
-        26 de agosto de 2026
+        658545
       </div>
     </div>
     <div class="info-field">
@@ -140,7 +140,7 @@
     </button>
   </div>
   <p class="progress-meta">
-    CURP: CURPEJEMPLO12345 · Ingreso: 8 de agosto, 2026
+    Ingreso: 8 de agosto, 2026
   </p>
   <div class="progress-summary">
     <span class="count">
@@ -261,7 +261,7 @@
     </button>
   </div>
   <p class="progress-meta">
-    Matrícula: 123456 · Ingreso: 1 de febrero, 2026
+    Ingreso: 1 de febrero, 2026
   </p>
   <div class="progress-summary">
     <span class="count">

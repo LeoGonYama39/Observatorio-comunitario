@@ -168,9 +168,11 @@
           routeIs('educ_sup.*') ? 'active' : '' }}">
           Educación media-superior
         </a>
+        @if (0 === 1)
         <a href="ststema_materias.html" class="sub-item">
           Materias
         </a>
+        @endif
       </div>
       <button class="nav-item has-submenu {{ request()->routeIs('psicopedag.*') ? 'section-active parent-active' : '' }}">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
