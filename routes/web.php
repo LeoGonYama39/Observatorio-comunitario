@@ -24,7 +24,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth:centro,externo')->group(function () {
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
     Route::get('/menu', [LoginController::class, 'abrirMenu'])->name('dashboard');
-    Route::get('/', [LoginController::class, 'abrirMenu']);
+    Route::get('/',  function () {return redirect()->route('dashboard');});
 
     //Vistas del sistema con get (y asignación del nombre) para index
     Route::get('/sistema/personas-centro', [NavPCentro::class, 'show'])->name('p_centro.index');
