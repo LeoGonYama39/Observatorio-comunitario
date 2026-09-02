@@ -510,4 +510,16 @@
     </div>
   </div>
 </div>
+<script>
+  function toggleBreakdown(btn) {
+      const panel = btn.nextElementSibling;
+      if (panel.hasAttribute('hidden')) {
+        panel.removeAttribute('hidden');
+        btn.classList.add('open');
+      } else {
+        panel.setAttribute('hidden', '');
+        btn.classList.remove('open');
+      }
+    }
+</script>
 @endsection
