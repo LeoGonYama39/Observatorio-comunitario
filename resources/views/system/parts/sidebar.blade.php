@@ -174,7 +174,7 @@
         </a>
         @endif
       </div>
-      <button class="nav-item has-submenu {{ request()->routeIs('psicopedag.*') ? 'section-active parent-active' : '' }}">
+      <button class="nav-item has-submenu {{ request()->routeIs('aten_pers.*') || request()->routeIs('proc_grup.*') ? 'section-active parent-active' : '' }}">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M10 3a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0-1 1v1a2 2 0 0 1-4 0v-1a1 1 0 0 0-1-1H8a2 2 0 0 1 0-4h1a1 1 0 0 0 1-1Z"/>
           <path d="M6 10H5a2 2 0 0 0-2 2v1a1 1 0 0 0 1 1v1a2 2 0 0 0 2 2h1"/>
@@ -197,12 +197,13 @@
         </svg>
       </button>
       <div class="submenu">
-        <a href="{{ route('psicopedag.index') }}" data-url="{{ route('psicopedag.index') }}" 
-        class="sub-item {{ request()->routeIs('psicopedag.*') ? 'active' : '' }}">
+        <a href="{{ route('aten_pers.index') }}" data-url="{{ route('aten_pers.index') }}" 
+        class="sub-item {{ request()->routeIs('aten_pers.*') ? 'active' : '' }}">
           Atención individual
         </a>
         <a
-        class="sub-item">
+        <a href="{{ route('proc_grup.index') }}" data-url="{{ route('proc_grup.index') }}" 
+        class="sub-item {{ request()->routeIs('proc_grup.*') ? 'active' : '' }}">
           Procesos grupales
         </a>
       </div>

@@ -9,6 +9,7 @@ use App\Http\Controllers\Nav\NavProyectos;
 use App\Http\Controllers\Nav\NavEducBasic;
 use App\Http\Controllers\Nav\NavEducSup;
 use App\Http\Controllers\Nav\NavPsicopedag;
+use App\Http\Controllers\Nav\NavProcGrup;
 use App\Http\Controllers\Nav\NavTalleres;
 use App\Http\Controllers\Nav\NavEventos;
 use App\Http\Controllers\Nav\NavColonias;
@@ -33,7 +34,8 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::get('/sistema/proyectos', [NavProyectos::class, 'show'])->name('proyectos.index');
     Route::get('/sistema/educ_basica', [NavEducBasic::class, 'show'])->name('educ_basica.index');
     Route::get('/sistema/educ_sup', [NavEducSup::class, 'show'])->name('educ_sup.index');
-    Route::get('/sistema/psicopedag', [NavPsicopedag::class, 'show'])->name('psicopedag.index');
+    Route::get('/sistema/aten_pers', [NavPsicopedag::class, 'show'])->name('aten_pers.index');
+    Route::get('/sistema/proc_grup', [NavProcGrup::class, 'show'])->name('proc_grup.index');
     Route::get('/sistema/talleres', [NavTalleres::class, 'show'])->name('talleres.index');
     Route::get('/sistema/eventos', [NavEventos::class, 'show'])->name('eventos.index');
     Route::get('/sistema/colonias', [NavColonias::class, 'show'])->name('colonias.index');
@@ -46,7 +48,8 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::get('/sistema/proyectos/info', [NavProyectos::class, 'info'])->name('proyectos.info');
     Route::get('/sistema/educ_basica/info', [NavEducBasic::class, 'info'])->name('educ_basica.info');
     Route::get('/sistema/educ_sup/info', [NavEducSup::class, 'info'])->name('educ_sup.info');
-    Route::get('/sistema/psicopedag/info', [NavPsicopedag::class, 'info'])->name('psicopedag.info');
+    Route::get('/sistema/aten_pers/info', [NavPsicopedag::class, 'info'])->name('aten_pers.info');
+    Route::get('/sistema/proc_grup/info', [NavProcGrup::class, 'info'])->name('proc_grup.info');
     Route::get('/sistema/talleres/info', [NavTalleres::class, 'info'])->name('talleres.info');
     Route::get('/sistema/eventos/info', [NavEventos::class, 'info'])->name('eventos.info');
     Route::get('/sistema/colonias/info', [NavColonias::class, 'info'])->name('colonias.info');

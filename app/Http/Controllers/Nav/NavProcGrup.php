@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Nav\DatosUsuario;
 use Illuminate\Http\Request;
 
-class NavPsicopedag extends Controller
+class NavProcGrup extends Controller
 {
     public function show(Request $request)
     {
@@ -15,7 +15,7 @@ class NavPsicopedag extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.psicopedag.aten_pers.index", compact('persona', 'otros'));
+        $view = view("system.modules.psicopedag..proc_grup.index", compact('persona', 'otros'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -35,7 +35,7 @@ class NavPsicopedag extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.psicopedag.aten_pers.info", compact('persona', 'otros'));
+        $view = view("system.modules.psicopedag.proc_grup.info", compact('persona', 'otros'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();

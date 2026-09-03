@@ -1,15 +1,15 @@
 @extends('system.app')
 
-@section('title', 'Psicopedagogía · Centro Ibero Meneses')
+@section('title', 'Procesos grupales · Centro Ibero Meneses')
 
 @section('content')
 <div class="content-header">
   <div>
     <h1>
-      Atención psicopedagógica
+      Procesos grupales
     </h1>
     <p>
-      Casos de atención psicopedagógica del centro
+      ---
     </p>
   </div>
   <button class="btn-new">
@@ -56,7 +56,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr data-url="{{ route('psicopedag.info') }}">
+      <tr data-url="{{ route('proc_grup.info') }}">
         <td>
           <div class="person-name">
             Rosa Elena Camposeco Vidal
