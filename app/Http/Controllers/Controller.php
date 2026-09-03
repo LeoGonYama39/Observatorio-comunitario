@@ -4,5 +4,5 @@ namespace App\Http\Controllers;
 
 abstract class Controller
 {
-    //Commit de prueba
+    //Commit de prueba, recibí el comit
 }
