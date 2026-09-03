@@ -32,5 +32,6 @@
     <div class="sidebar-backdrop" id="sidebarBackdrop">
     </div>
     <script src="{{ asset('js/SidebarControll.js') }}"></script>
+    <script src="{{ asset('js/ScriptVarios.js') }}"></script>
   </body>
 </html>

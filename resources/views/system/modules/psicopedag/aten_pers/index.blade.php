@@ -1,12 +1,12 @@
 @extends('system.app')
 
-@section('title', 'Atención personal · Centro Ibero Meneses')
+@section('title', 'Atención individual · Centro Ibero Meneses')
 
 @section('content')
 <div class="content-header">
   <div>
     <h1>
-      Atención psicopedagógica
+      Atención individual
     </h1>
     <p>
       Casos de atención psicopedagógica del centro

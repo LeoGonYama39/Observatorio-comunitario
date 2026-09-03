@@ -45,13 +45,10 @@
     <thead>
       <tr>
         <th>
-          Estudiante
+          Ciclo
         </th>
         <th>
-          Última actualización
-        </th>
-        <th>
-          Tipo de atención
+          Periodo
         </th>
       </tr>
     </thead>
@@ -59,7 +56,7 @@
       <tr data-url="{{ route('proc_grup.info') }}">
         <td>
           <div class="person-name">
-            Rosa Elena Camposeco Vidal
+            Ciclo I
           </div>
           <div class="person-role">
             Activo
@@ -67,59 +64,14 @@
         </td>
         <td>
           <span class="area-tag">
-            22 jul 2026
-          </span>
-        </td>
-        <td>
-          <span class="area-tag">
-            Psicoeducativa 
+            Otoño 2026 - Primavera 2028
           </span>
         </td>
       </tr>
       <tr>
         <td>
           <div class="person-name">
-            Manuel Ortiz Beltrán
-          </div>
-          <div class="person-role">
-            Cerrado
-          </div>
-        </td>
-        <td>
-          <span class="area-tag">
-            10 jun 2026
-          </span>
-        </td>
-        <td>
-          <span class="area-tag">
-            Académica
-          </span>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <div class="person-name">
-            Guadalupe Salcido Nájera
-          </div>
-          <div class="person-role">
-            Inactivo
-          </div>
-        </td>
-        <td>
-          <span class="area-tag">
-            5 jul 2026
-          </span>
-        </td>
-        <td>
-          <span class="area-tag">
-            Psicoeducativa
-          </span>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <div class="person-name">
-            Fernando Castellanos Uc
+            Ciclo II
           </div>
           <div class="person-role">
             Activo
@@ -127,12 +79,7 @@
         </td>
         <td>
           <span class="area-tag">
-            28 jun 2026
-          </span>
-        </td>
-        <td>
-          <span class="area-tag">
-            Evaluación psicológica
+            Primavera 2029 - Primavera 2030
           </span>
         </td>
       </tr>

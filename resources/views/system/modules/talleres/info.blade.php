@@ -198,14 +198,14 @@
 </div>
 <div class="section-header">
   <h3>
-    Generaciones
+    Grupos
   </h3>
   <button class="btn-outline btn-small">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M12 5v14"/>
       <path d="M5 12h14"/>
     </svg>
-    Nueva generación
+    Nuevo grupo
   </button>
 </div>
 <div class="generations-list">
@@ -510,16 +510,4 @@
     </div>
   </div>
 </div>
-<script>
-  function toggleBreakdown(btn) {
-      const panel = btn.nextElementSibling;
-      if (panel.hasAttribute('hidden')) {
-        panel.removeAttribute('hidden');
-        btn.classList.add('open');
-      } else {
-        panel.setAttribute('hidden', '');
-        btn.classList.remove('open');
-      }
-    }
-</script>
 @endsection
