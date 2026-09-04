@@ -61,20 +61,10 @@ window.addEventListener('popstate', async () =>   {
         return url.includes(dataUrl);
     });
 
-    if (elemento.classList.contains('sub-item')) {
-        elemento.classList.add('active');
-
-        // Busca el nav-item padre (el submenu siempre es su hermano justo después)
-        const submenu = elemento.closest('.submenu');
-        const parentNavItem = submenu ? submenu.previousElementSibling : null;
-        if (parentNavItem) parentNavItem.classList.add('section-active');
-      } else {
-        elemento.classList.add('active');
-    }
-
+    gestionMenuParent(elemento);
 
   //GET a url
-  navigateTo(url, 2)
+  navigateTo(url, 2);
 });
 
 //Control de los submenus
@@ -88,19 +78,8 @@ document.querySelectorAll('.sidebar .nav-item.has-submenu').forEach(item => {
 document.querySelectorAll('.sidebar .nav-item[data-url], .sidebar .sub-item[data-url]').forEach(link => {
     link.addEventListener('click', function(e) {
         e.preventDefault();
-
         clearActiveStates();
-
-        if (this.classList.contains('sub-item')) {
-            this.classList.add('active');
-
-            // Busca el nav-item padre (el submenu siempre es su hermano justo después)
-            const submenu = this.closest('.submenu');
-            const parentNavItem = submenu ? submenu.previousElementSibling : null;
-            if (parentNavItem) parentNavItem.classList.add('section-active');
-        } else {
-            this.classList.add('active');
-        }
+        gestionMenuParent(this);
 
         if (window.innerWidth <= MOBILE_BREAKPOINT && typeof closeSidebar === 'function') {
             closeSidebar();
@@ -168,4 +147,17 @@ async function navigateTo(url, tipo) {
       } catch (err)   {
       console.error(err);
       }
+}
+
+function gestionMenuParent(elemento){
+  if (elemento.classList.contains('sub-item')) {
+        elemento.classList.add('active');
+
+        // Busca el nav-item padre (el submenu siempre es su hermano justo después)
+        const submenu = elemento.closest('.submenu');
+        const parentNavItem = submenu ? submenu.previousElementSibling : null;
+        if (parentNavItem) parentNavItem.classList.add('section-active');
+      } else {
+        elemento.classList.add('active');
+    }
 }
