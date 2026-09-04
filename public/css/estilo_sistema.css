@@ -460,6 +460,7 @@
      cursor: pointer;
      flex-shrink: 0;
      transition: background 0.15s ease, transform 0.1s ease;
+     text-decoration: none;
 }
  .btn-new:hover {
      background: var(--graphite);
@@ -571,6 +572,7 @@
      cursor: pointer;
      flex-shrink: 0;
      transition: border-color 0.15s ease, background 0.15s ease;
+     text-decoration: none;
 }
  .btn-outline:hover {
      border-color: var(--steel);
@@ -1354,3 +1356,175 @@
   border-color: var(--steel);
   background: var(--pearl);
 }
+
+/*Para el formulario de nuevos registros*/
+.form-card {
+  background: var(--white);
+  border: 1.5px solid var(--mist);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  margin-bottom: 24px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px 24px;
+}
+
+@media (max-width: 560px) {
+  .form-grid { grid-template-columns: 1fr; }
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.form-field label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--graphite);
+}
+
+.form-field .required { color: var(--ink); }
+
+.form-input,
+.select-shell {
+  border: 1.5px solid var(--mist);
+  border-radius: var(--radius-sm);
+  background: var(--pearl);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.form-input {
+  padding: 12px 14px;
+  font-family: var(--font-main);
+  font-size: 14px;
+  color: var(--ink);
+}
+.form-input:focus {
+  outline: none;
+  border-color: var(--ink);
+  background: var(--white);
+}
+
+.select-shell {
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  height: 46px;
+}
+.select-shell:focus-within { border-color: var(--ink); background: var(--white); }
+.select-shell svg { stroke: var(--steel); flex-shrink: 0; margin-left: -22px; pointer-events: none; }
+
+.form-select {
+  appearance: none;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: var(--font-main);
+  font-size: 14px;
+  color: var(--ink);
+  width: 100%;
+  padding: 12px 0;
+  cursor: pointer;
+}
+
+.field-error {
+  font-size: 12px;
+  font-weight: 600;
+  color: #b3261e;
+}
+
+.form-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1.5px solid var(--mist-soft);
+}
+
+.form-checkbox-row input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--mist);
+  border-radius: 6px;
+  background: var(--pearl);
+  cursor: pointer;
+  flex-shrink: 0;
+  position: relative;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.form-checkbox-row input[type="checkbox"]:checked {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+.form-checkbox-row input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 5.5px;
+  top: 1.5px;
+  width: 4px;
+  height: 9px;
+  border: solid var(--white);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.form-checkbox-row label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--graphite);
+  cursor: pointer;
+}
+
+.acceso-fields {
+  margin-top: 20px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.input-shell {
+  display: flex;
+  align-items: center;
+  background: var(--pearl);
+  border: 1.5px solid var(--mist);
+  border-radius: var(--radius-sm);
+  padding: 0 14px;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.input-shell:focus-within {
+  border-color: var(--ink);
+  background: var(--white);
+}
+.input-shell input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: var(--font-main);
+  font-size: 14px;
+  color: var(--ink);
+  padding: 12px 10px;
+  width: 100%;
+}
+.input-shell input::placeholder { color: #b4b5b5; }
+
+.toggle-pass {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  flex-shrink: 0;
+}
+.toggle-pass svg { stroke: var(--steel); }
+.toggle-pass:hover svg { stroke: var(--ink); }

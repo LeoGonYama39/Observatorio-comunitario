@@ -60,6 +60,30 @@ return;
     
 });
 
+// Listener para abrir create con botón de "Nuevo registro"
+document.addEventListener('click', function(e) {
+    const link = e.target.closest('a.btn-new[data-url]');
+    if (!link){
+return;
+    } else {
+      e.preventDefault();
+    const url = link.getAttribute('data-url');
+    navigateTo(url);
+    }
+});
+
+// Listener para regresas al index desde una subopción 
+document.addEventListener('click', function(e) {
+    const link = e.target.closest('a.btn-outline[data-url]');
+    if (!link){
+return;
+    } else {
+      e.preventDefault();
+    const url = link.getAttribute('data-url');
+    navigateTo(url);
+    }
+});
+
 ///Función para navegar a hacer un get a un url,
 ///esperar la respuesta y reemplazar el contenido
 

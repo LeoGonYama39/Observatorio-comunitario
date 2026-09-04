@@ -50,7 +50,7 @@
     <h1>
       ¿Qué necesitas hacer hoy?
     </h1>
-      <a href="{{ route('p_centro.index') }}" class="primary-action">
+      <a href="{{ route('personas-centro.index') }}" class="primary-action">
         <div class="icon-frame">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="3" width="7" height="7" rx="1.5"/>

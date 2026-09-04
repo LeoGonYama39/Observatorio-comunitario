@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Nav\NavPCentro;
+use App\Http\Controllers\Nav\PCentroController;
 use App\Http\Controllers\Nav\NavPExterno;
 use App\Http\Controllers\Nav\NavPComunidad;
 use App\Http\Controllers\Nav\NavProyectos;
@@ -13,7 +13,6 @@ use App\Http\Controllers\Nav\NavProcGrup;
 use App\Http\Controllers\Nav\NavTalleres;
 use App\Http\Controllers\Nav\NavEventos;
 use App\Http\Controllers\Nav\NavColonias;
-
 
 // Para usuarios sin inicio de sesión
 Route::middleware('guest')->group(function () {
@@ -28,7 +27,6 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::get('/',  function () {return redirect()->route('dashboard');});
 
     //Vistas del sistema con get (y asignación del nombre) para index
-    Route::get('/sistema/personas-centro', [NavPCentro::class, 'show'])->name('p_centro.index');
     Route::get('/sistema/personas-externo', [NavPExterno::class, 'show'])->name('p_externo.index');
     Route::get('/sistema/personas-usuarias', [NavPComunidad::class, 'show'])->name('p_comunidad.index');
     Route::get('/sistema/proyectos', [NavProyectos::class, 'show'])->name('proyectos.index');
@@ -42,7 +40,6 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::get('/sistema', function () {return redirect()->route('p_centro.index');});
 
     //Vistas del sistema con get para info
-    Route::get('/sistema/personas-centro/info', [NavPCentro::class, 'info'])->name('p_centro.info');
     Route::get('/sistema/personas-externo/info', [NavPExterno::class, 'info'])->name('p_externo.info');
     Route::get('/sistema/personas-usuarias/info', [NavPComunidad::class, 'info'])->name('p_comunidad.info');
     Route::get('/sistema/proyectos/info', [NavProyectos::class, 'info'])->name('proyectos.info');
@@ -53,6 +50,9 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::get('/sistema/talleres/info', [NavTalleres::class, 'info'])->name('talleres.info');
     Route::get('/sistema/eventos/info', [NavEventos::class, 'info'])->name('eventos.info');
     Route::get('/sistema/colonias/info', [NavColonias::class, 'info'])->name('colonias.info');
+
+    //Con las generadas por Laravel
+    Route::resource('personas-centro', PCentroController::class)->only(['index', 'show', 'create', 'store']);
 });
 
 

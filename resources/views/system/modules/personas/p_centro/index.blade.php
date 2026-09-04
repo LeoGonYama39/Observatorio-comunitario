@@ -1,6 +1,6 @@
 @extends('system.app')
 
-@section('title', 'Personas del centro · Centro Ibero Meneses')
+@section('title', 'Personas del centro')
 
 @section('content')
 <div class="content-header">
@@ -12,7 +12,7 @@
       Personal que trabaja directamente en el centro comunitario
     </p>
   </div>
-  <button class="btn-new">
+  <a href="{{ route('personas-centro.create') }}" data-url="{{ route('personas-centro.create') }}" class="btn-new">
     <svg
             width="16"
             height="16"
@@ -26,7 +26,7 @@
       <path d="M5 12h14" />
     </svg>
     Nuevo registro
-  </button>
+</a>
 </div>
 <div class="table-toolbar">
   <div class="table-search">
@@ -86,7 +86,7 @@
     </thead>
     <tbody>
       @foreach ($centros as $centro)
-      <tr data-url="{{ route('p_centro.info') }}">
+      <tr data-url="{{ route('personas-centro.show', $centro->id) }}">
         <td>
           <div class="person-name">
              {{ $centro->nombre }} {{ $centro->ap_pat }} {{ $centro->ap_mat }}

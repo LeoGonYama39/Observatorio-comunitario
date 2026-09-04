@@ -22,7 +22,7 @@
         Áreas
       </button>
       <button class="nav-item has-submenu {{ request()->
-        routeIs('p_centro.*') || request()->routeIs('p_externo.*') || request()->routeIs('p_comunidad.*') ? 'section-active parent-active' : '' }}">
+        routeIs('personas-centro.*') || request()->routeIs('p_externo.*') || request()->routeIs('p_comunidad.*') ? 'section-active parent-active' : '' }}">
         <svg
                width="18"
                height="18"
@@ -54,9 +54,9 @@
         </svg>
       </button>
       <div class="submenu">
-        <a href="{{ route('p_centro.index') }}" data-url="{{ route('p_centro.index') }}" 
+        <a href="{{ route('personas-centro.index') }}" data-url="{{ route('personas-centro.index') }}" 
         class="sub-item {{ request()->
-          routeIs('p_centro.*') ? 'active' : '' }}">
+          routeIs('personas-centro.*') ? 'active' : '' }}">
           Centro
         </a>
         <a href="{{ route('p_externo.index') }}" data-url="{{ route('p_externo.index') }}" 

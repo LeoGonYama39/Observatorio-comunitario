@@ -1,10 +1,10 @@
 @extends('system.app')
 
-@section('title', 'María Torres Salinas · Centro Ibero Meneses')
+@section('title', 'María Torres Salinas (ficha)')
 
 @section('content')
 <div class="breadcrumb">
-  <a href="{{ route('p_centro.index') }}" data-url="{{ route('p_centro.index') }}" class="return-index">
+  <a href="{{ route('personas-centro.index') }}" data-url="{{ route('personas-centro.index') }}" class="return-index">
     Personas del Centro
   </a>
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
