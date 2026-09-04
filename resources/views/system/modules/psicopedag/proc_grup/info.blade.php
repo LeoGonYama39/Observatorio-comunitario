@@ -181,14 +181,6 @@
         </div>
       </div>
     </div>
-    <div class="generation-eval">
-      <span class="mini-label">
-        Evaluación
-      </span>
-      <p class="empty">
-        — aún sin evaluación registrada, el grupo sigue en curso
-      </p>
-    </div>
   </div>
   <div class="generation-card">
     <div class="generation-top">
@@ -283,21 +275,13 @@
         </div>
       </div>
     </div>
-    <div class="generation-eval">
-      <span class="mini-label">
-        Evaluación
-      </span>
-      <p class="empty">
-        — aún sin evaluación registrada, el grupo sigue en curso
-      </p>
-    </div>
   </div>
   <div class="generation-card">
     <div class="generation-top">
       <span class="generation-period">
         Nombre-taller · Otoño 2027
       </span>
-      <span class="meta-badge on">
+      <span class="meta-badge">
         A impartir
       </span>
     </div>
@@ -379,14 +363,6 @@
         </div>
       </div>
     </div>
-    <div class="generation-eval">
-      <span class="mini-label">
-        Evaluación
-      </span>
-      <p class="empty">
-        — aún sin evaluación registrada, el grupo sigue en curso
-      </p>
-    </div>
   </div>
   <div class="generation-card">
     <div class="generation-top">
@@ -394,7 +370,7 @@
         Nombre-taller · Primavera 2028  
       </span>
       <span class="meta-badge">
-        Finalizada
+        A impartir
       </span>
     </div>
     <div class="attendees">
@@ -480,14 +456,6 @@
           </span>
         </div>
       </div>
-    </div>
-    <div class="generation-eval">
-      <span class="mini-label">
-        Evaluación
-      </span>
-      <p>
-        Buena participación y asistencia constante; varias familias solicitaron una segunda edición del taller.
-      </p>
     </div>
   </div>
 </div>

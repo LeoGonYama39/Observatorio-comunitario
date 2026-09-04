@@ -37,7 +37,7 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::get('/sistema/talleres', [NavTalleres::class, 'show'])->name('talleres.index');
     Route::get('/sistema/eventos', [NavEventos::class, 'show'])->name('eventos.index');
     Route::get('/sistema/colonias', [NavColonias::class, 'show'])->name('colonias.index');
-    Route::get('/sistema', function () {return redirect()->route('p_centro.index');});
+    Route::get('/sistema', function () {return redirect()->route('personas-centro.index');});
 
     //Vistas del sistema con get para info
     Route::get('/sistema/personas-externo/info', [NavPExterno::class, 'info'])->name('p_externo.info');
@@ -52,7 +52,7 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::get('/sistema/colonias/info', [NavColonias::class, 'info'])->name('colonias.info');
 
     //Con las generadas por Laravel
-    Route::resource('personas-centro', PCentroController::class)->only(['index', 'show', 'create', 'store']);
+    Route::resource('/sistema/personas-centro', PCentroController::class)->only(['index', 'show', 'create', 'store']);
 });
 
 
