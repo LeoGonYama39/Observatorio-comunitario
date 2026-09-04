@@ -29,64 +29,24 @@ window.addEventListener('resize', () =>  {
 });
 
 
-//Evento Click para cada elemento del sidebar
-//Linkeo cada botón
 
-
-// Listener para las filas de las tablas
+//---------------------------ç
+//Función para navegación AJAX con elementos que aparecen y desaparecen del main-content
+//Agregar los elementos correspondientes a closest si hay nuevos
 document.addEventListener('click', function(e) {
-    
-    const row = e.target.closest('tr[data-url]');
-    if (!row){
-      return; 
-    } else {
-      e.preventDefault();
-      const url = row.getAttribute('data-url');
+  const elemento = e.target.closest(
+    'tr[data-url], a.return-index[data-url], a.btn-new[data-url], a.btn-outline[data-url]');
+  if (!elemento){
+    return;
+  } else {
+    e.preventDefault();
+    const url = elemento.getAttribute('data-url');
     navigateTo(url);
-    } 
-});
-
-
-// Listener para regresar al index
-document.addEventListener('click', function(e) {
-    const link = e.target.closest('a.return-index');
-    if (!link){
-return;
-    } else {
-      e.preventDefault();
-    const url = link.getAttribute('data-url');
-    navigateTo(url);
-    }
-    
-});
-
-// Listener para abrir create con botón de "Nuevo registro"
-document.addEventListener('click', function(e) {
-    const link = e.target.closest('a.btn-new[data-url]');
-    if (!link){
-return;
-    } else {
-      e.preventDefault();
-    const url = link.getAttribute('data-url');
-    navigateTo(url);
-    }
-});
-
-// Listener para regresas al index desde una subopción 
-document.addEventListener('click', function(e) {
-    const link = e.target.closest('a.btn-outline[data-url]');
-    if (!link){
-return;
-    } else {
-      e.preventDefault();
-    const url = link.getAttribute('data-url');
-    navigateTo(url);
-    }
+  }  
 });
 
 ///Función para navegar a hacer un get a un url,
 ///esperar la respuesta y reemplazar el contenido
-
 async function navigateTo(url) {
     try{
       const res = await fetch(url,   {
