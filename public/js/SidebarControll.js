@@ -45,31 +45,6 @@ document.addEventListener('click', function(e) {
   }  
 });
 
-///Función para navegar a hacer un get a un url,
-///esperar la respuesta y reemplazar el contenido
-async function navigateTo(url) {
-    try{
-      const res = await fetch(url,   {
-        headers:   {
-          'X-Requested-With': 'XMLHttpRequest'
-        }
-      });
-
-      if (!res.ok) throw new Error('Error al cargar la sección');
-      
-      //Laravel responde con un json con varias cosas
-      const data = await res.json();
-      
-      //Reempazar
-      document.getElementById('mainContent').innerHTML = data.content;
-      document.title = data.title;
-      
-      //Actualizo la barra de enlace, sin recargar
-      window.history.pushState({}, '', url);} catch (err)   {
-      console.error(err);
-    }
-}
-
 
 // Soporte para botones Atrás/Adelante del navegador
 //Agrego evento a popstate
@@ -94,23 +69,6 @@ window.addEventListener('popstate', async () =>   {
 });
 
 
-//Función para el control de los botones active o no active
-//Para poder hacerlo con click o popstate
-function actualizarActivo(url)   {
-  // Quitar active de todos
-  document
-  .querySelectorAll('.sidebar .sub-item, .sidebar .nav-item')
-  .forEach(el => el.classList.remove('active'));
-  // Buscar el botón cuya data-url coincide con la URL actual
-  const elemento = document.querySelector(
-  `.sidebar [data-url="${url}"]`
-  );
-  // Activarlo
-  if (elemento)   {
-    elemento.classList.add('active');
-  }
-}
-
 //Control de los submenus
 document.querySelectorAll('.sidebar .nav-item.has-submenu').forEach(item => {
     item.addEventListener('click', function(e) {
@@ -118,15 +76,6 @@ document.querySelectorAll('.sidebar .nav-item.has-submenu').forEach(item => {
         this.classList.toggle('parent-active');
     });
 });
-
-function clearActiveStates() {
-    document.querySelectorAll('.sidebar .nav-item').forEach(el => {
-        el.classList.remove('active', 'section-active');
-    });
-    document.querySelectorAll('.sidebar .sub-item').forEach(el => {
-        el.classList.remove('active');
-    });
-}
 
 document.querySelectorAll('.sidebar .nav-item[data-url], .sidebar .sub-item[data-url]').forEach(link => {
     link.addEventListener('click', function(e) {
@@ -152,3 +101,61 @@ document.querySelectorAll('.sidebar .nav-item[data-url], .sidebar .sub-item[data
         navigateTo(this.getAttribute('data-url'));
     });
 });
+
+
+//-------------------------
+//Funciones de apoyo
+//-------------------------
+
+//Función para limpiar todos los active y setction-active de la sidebar
+function clearActiveStates() {
+    document.querySelectorAll('.sidebar .nav-item').forEach(el => {
+        el.classList.remove('active', 'section-active');
+    });
+    document.querySelectorAll('.sidebar .sub-item').forEach(el => {
+        el.classList.remove('active');
+    });
+}
+
+//Función para el control de los botones active o no active
+//Para poder hacerlo con click o popstate
+function actualizarActivo(url)   {
+  // Quitar active de todos
+  document
+  .querySelectorAll('.sidebar .sub-item, .sidebar .nav-item')
+  .forEach(el => el.classList.remove('active'));
+  // Buscar el botón cuya data-url coincide con la URL actual
+  const elemento = document.querySelector(
+  `.sidebar [data-url="${url}"]`
+  );
+  // Activarlo
+  if (elemento)   {
+    elemento.classList.add('active');
+  }
+}
+
+
+///Función para navegar a hacer un get a un url,
+///esperar la respuesta y reemplazar el contenido
+async function navigateTo(url) {
+    try{
+      const res = await fetch(url,   {
+        headers:   {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      });
+
+      if (!res.ok) throw new Error('Error al cargar la sección');
+      
+      //Laravel responde con un json con varias cosas
+      const data = await res.json();
+      
+      //Reempazar
+      document.getElementById('mainContent').innerHTML = data.content;
+      document.title = data.title;
+      
+      //Actualizo la barra de enlace, sin recargar
+      window.history.pushState({}, '', url);} catch (err)   {
+      console.error(err);
+    }
+}
