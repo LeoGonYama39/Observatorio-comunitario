@@ -41,7 +41,7 @@ document.addEventListener('click', function(e) {
   } else {
     e.preventDefault();
     const url = elemento.getAttribute('data-url');
-    navigateTo(url);
+    navigateTo(url, 1);
   }  
 });
 
@@ -49,25 +49,33 @@ document.addEventListener('click', function(e) {
 // Soporte para botones Atrás/Adelante del navegador
 //Agrego evento a popstate
 window.addEventListener('popstate', async () =>   {
+
+  clearActiveStates();
+  
   //Obtengo el nuevo url al que salté con atrás o adelante
   const url = location.href;
-  //Gestiono los active
-  actualizarActivo(url);
-  //GET a url
-  const res = await fetch(url,   {
-    headers:   {
-      'X-Requested-With': 'XMLHttpRequest'
-    }
-  }
-  );
-  //Lo mismo que con click
-  if (res.ok)   {
-    const data = await res.json();
-    document.getElementById('mainContent').innerHTML = data.content;
-    document.title = data.title;
-  }
-});
+  const elemento = [...document.querySelectorAll(
+        '.sidebar .sub-item[data-url], .sidebar .nav-item[data-url]'
+    )].find(el => {
+        const dataUrl = el.getAttribute('data-url');
+        return url.includes(dataUrl);
+    });
 
+    if (elemento.classList.contains('sub-item')) {
+        elemento.classList.add('active');
+
+        // Busca el nav-item padre (el submenu siempre es su hermano justo después)
+        const submenu = elemento.closest('.submenu');
+        const parentNavItem = submenu ? submenu.previousElementSibling : null;
+        if (parentNavItem) parentNavItem.classList.add('section-active');
+      } else {
+        elemento.classList.add('active');
+    }
+
+
+  //GET a url
+  navigateTo(url, 2)
+});
 
 //Control de los submenus
 document.querySelectorAll('.sidebar .nav-item.has-submenu').forEach(item => {
@@ -98,7 +106,7 @@ document.querySelectorAll('.sidebar .nav-item[data-url], .sidebar .sub-item[data
             closeSidebar();
         }
 
-        navigateTo(this.getAttribute('data-url'));
+        navigateTo(this.getAttribute('data-url'), 1);
     });
 });
 
@@ -137,7 +145,7 @@ function actualizarActivo(url)   {
 
 ///Función para navegar a hacer un get a un url,
 ///esperar la respuesta y reemplazar el contenido
-async function navigateTo(url) {
+async function navigateTo(url, tipo) {
     try{
       const res = await fetch(url,   {
         headers:   {
@@ -154,8 +162,10 @@ async function navigateTo(url) {
       document.getElementById('mainContent').innerHTML = data.content;
       document.title = data.title;
       
-      //Actualizo la barra de enlace, sin recargar
-      window.history.pushState({}, '', url);} catch (err)   {
+      if(tipo === 1){
+        //Actualizo la barra de enlace, sin recargar
+        window.history.pushState({}, '', url);} 
+      } catch (err)   {
       console.error(err);
-    }
+      }
 }
