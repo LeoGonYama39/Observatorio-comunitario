@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="breadcrumb">
-  <a href="{{ route('p_externo.index') }}" data-url="{{ route('p_externo.index') }}" class="return-index">
+  <a href="{{ route('personas-externo.index') }}" data-url="{{ route('personas-externo.index') }}" class="return-index">
     Personas Externas
   </a>
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

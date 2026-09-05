@@ -46,7 +46,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr data-url="{{ route('p_comunidad.info') }}">
+            <tr data-url="{{ route('personas-usuarias.show', 1) }}">
               <td>
                 <div class="person-name">David López Aldama</div>
                 <div class="person-role">Masculino</div>

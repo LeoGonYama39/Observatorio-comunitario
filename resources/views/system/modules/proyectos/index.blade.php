@@ -46,7 +46,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr data-url="{{ route('proyectos.info') }}">
+            <tr data-url="{{ route('proyectos.show', 1) }}">
               <td>
                 <div class="person-name">
                   <svg class="star-icon" width="13" height="13" viewBox="0 0 24 24" fill="#111111" stroke="#111111" stroke-width="1.5" stroke-linejoin="round">

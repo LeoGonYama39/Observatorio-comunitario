@@ -86,7 +86,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr data-url="{{ route('p_externo.info') }}">
+            <tr data-url="{{ route('personas-externo.show', 1) }}">
                 <td>
                 <div class="person-name">Sofía Ramírez Duarte</div>
                 <div class="person-role">Servicio social</div>

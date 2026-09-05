@@ -3,9 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Nav\PCentroController;
-use App\Http\Controllers\Nav\NavPExterno;
-use App\Http\Controllers\Nav\NavPComunidad;
-use App\Http\Controllers\Nav\NavProyectos;
+use App\Http\Controllers\Nav\PExternoController;
+use App\Http\Controllers\Nav\PComunidadController;
+use App\Http\Controllers\Nav\ProyectosController;
 use App\Http\Controllers\Nav\NavEducBasic;
 use App\Http\Controllers\Nav\NavEducSup;
 use App\Http\Controllers\Nav\NavPsicopedag;
@@ -27,8 +27,6 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::get('/',  function () {return redirect()->route('dashboard');});
 
     //Vistas del sistema con get (y asignación del nombre) para index
-    Route::get('/sistema/personas-externo', [NavPExterno::class, 'show'])->name('p_externo.index');
-    Route::get('/sistema/personas-usuarias', [NavPComunidad::class, 'show'])->name('p_comunidad.index');
     Route::get('/sistema/proyectos', [NavProyectos::class, 'show'])->name('proyectos.index');
     Route::get('/sistema/educ_basica', [NavEducBasic::class, 'show'])->name('educ_basica.index');
     Route::get('/sistema/educ_sup', [NavEducSup::class, 'show'])->name('educ_sup.index');
@@ -40,8 +38,6 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::get('/sistema', function () {return redirect()->route('personas-centro.index');});
 
     //Vistas del sistema con get para info
-    Route::get('/sistema/personas-externo/info', [NavPExterno::class, 'info'])->name('p_externo.info');
-    Route::get('/sistema/personas-usuarias/info', [NavPComunidad::class, 'info'])->name('p_comunidad.info');
     Route::get('/sistema/proyectos/info', [NavProyectos::class, 'info'])->name('proyectos.info');
     Route::get('/sistema/educ_basica/info', [NavEducBasic::class, 'info'])->name('educ_basica.info');
     Route::get('/sistema/educ_sup/info', [NavEducSup::class, 'info'])->name('educ_sup.info');
@@ -53,6 +49,9 @@ Route::middleware('auth:centro,externo')->group(function () {
 
     //Con las generadas por Laravel
     Route::resource('/sistema/personas-centro', PCentroController::class)->only(['index', 'show', 'create', 'store']);
+    Route::resource('/sistema/personas-externo', PExternoController::class)->only(['index', 'show', 'create', 'store']);
+    Route::resource('/sistema/personas-usuarias', PComunidadController::class)->only(['index', 'show', 'create', 'store']);
+    Route::resource('/sistema/proyectos', ProyectosController::class)->only(['index', 'show', 'create', 'store']);
 });
 
 

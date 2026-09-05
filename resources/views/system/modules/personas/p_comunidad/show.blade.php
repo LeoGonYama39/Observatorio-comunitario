@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="breadcrumb">
-  <a href="{{ route('p_comunidad.index') }}" data-url="{{ route('p_comunidad.index') }}" class="return-index">
+  <a href="{{ route('personas-usuarias.index') }}" data-url="{{ route('personas-usuarias.index') }}" class="return-index">
     Personas usuarias
   </a>
   <svg

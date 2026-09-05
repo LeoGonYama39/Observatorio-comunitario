@@ -22,7 +22,7 @@
         Áreas
       </button>
       <button class="nav-item has-submenu {{ request()->
-        routeIs('personas-centro.*') || request()->routeIs('p_externo.*') || request()->routeIs('p_comunidad.*') ? 'section-active parent-active' : '' }}">
+        routeIs('personas-centro.*') || request()->routeIs('personas-externo.*') || request()->routeIs('personas-usuarias.*') ? 'section-active parent-active' : '' }}">
         <svg
                width="18"
                height="18"
@@ -59,21 +59,15 @@
           routeIs('personas-centro.*') ? 'active' : '' }}">
           Centro
         </a>
-        <a href="{{ route('p_externo.index') }}" data-url="{{ route('p_externo.index') }}" 
+        <a href="{{ route('personas-externo.index') }}" data-url="{{ route('personas-externo.index') }}" 
         class="sub-item {{ request()->
-          routeIs('p_externo.*') ? 'active' : '' }}">
+          routeIs('personas-externo.*') ? 'active' : '' }}">
           Externas
         </a>
-        <a href="{{ route('p_comunidad.index') }}" data-url="{{ route('p_comunidad.index') }}" 
+        <a href="{{ route('personas-usuarias.index') }}" data-url="{{ route('personas-usuarias.index') }}" 
         class="sub-item {{ request()->
-          routeIs('p_comunidad.*') ? 'active' : '' }}">
+          routeIs('personas-usuarias.*') ? 'active' : '' }}">
          Usuarias
-        </a>
-        <a href="#" class="sub-item">
-          Lideres comun.
-        </a>
-        <a href="#" class="sub-item">
-          Dir. de saberes
         </a>
       </div>
       <a
