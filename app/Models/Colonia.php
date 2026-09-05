@@ -16,4 +16,10 @@ class Colonia extends Model
         'ninos',
         'poblacion_total',
     ];
+
+    //Crear una nueva columna fake
+    protected $appends = ['pob_total'];
+
+    //Función para obtener la edad, con la fecha de nacimiento guardada
+    public function getPobTotalAttribute() { return $this->adultos + $this->ninos; }
 }

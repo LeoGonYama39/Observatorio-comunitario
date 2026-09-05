@@ -43,37 +43,32 @@
             <tr>
               <th>Nombre</th>
               <th>Edad</th>
+              <th>Colonia</th>
             </tr>
           </thead>
           <tbody>
-            <tr data-url="{{ route('personas-usuarias.show', 1) }}">
+            @foreach ($usuarias as $usuaria)
+            <tr data-url="{{ route('personas-usuarias.show', $usuaria->id) }}">
               <td>
-                <div class="person-name">David López Aldama</div>
-                <div class="person-role">Masculino</div>
+                <div class="person-name">
+                  {{ $usuaria->nombre }} {{ $usuaria->ap_pat }} {{ $usuaria->ap_mat }}
+                </div>
+                <div class="person-role">
+                  {{ $usuaria->genero }}
+                </div>
               </td>
-              <td><span class="area-tag">30 años</span></td>
-            </tr>
-            <tr>
               <td>
-                <div class="person-name">Angélica Rodríguez Pérez</div>
-                <div class="person-role">Femenino</div>
+                <span class="area-tag">
+                  {{ $usuaria->edad }} años
+                </span>
               </td>
-              <td><span class="area-tag">50 años</span></td>
-            </tr>
-            <tr>
               <td>
-                <div class="person-name">Kevin Ortega Salazar</div>
-                <div class="person-role">Masculino</div>
+                <span class="area-tag">
+                  {{ $usuaria->colonia }}
+                </span>
               </td>
-              <td><span class="area-tag">12 años</span></td>
             </tr>
-            <tr>
-              <td>
-                <div class="person-name">María González López</div>
-                <div class="person-role">Otro</div>
-              </td>
-              <td><span class="area-tag">23 años</span></td>
-            </tr>
+            @endforeach
           </tbody>
         </table>
       </div>

@@ -16,7 +16,28 @@ class PComunidadController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.personas.p_comunidad.index", compact('persona', 'otros'));
+        $usuarias = PComunidad::join(
+            'colonia',                  // tabla que quiero unir
+            'p_comunidad.colonia_id',   // FK
+            '=',                        // operador
+            'colonia.id'                // PK
+        )
+        ->select('p_comunidad.id', 
+                 'p_comunidad.nombre', 
+                 'p_comunidad.ap_pat',
+                 'p_comunidad.ap_mat',
+                 'p_comunidad.birth_date',
+                 'p_comunidad.genero',
+                 'colonia.nombre AS colonia')
+        ->orderBy('nombre')
+        ->get();
+
+        //Adaptar de db a UI
+        foreach ($usuarias as $usuaria) {
+            $usuaria->genero = ucfirst($usuaria->genero);
+        }
+
+        $view = view("system.modules.personas.p_comunidad.index", compact('persona', 'otros', 'usuarias'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();

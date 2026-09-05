@@ -46,66 +46,23 @@
       </tr>
     </thead>
     <tbody>
-      <tr data-url="{{ route('colonias.show', 1) }}">
+      @foreach ($colonias as $colonia)
+      <tr data-url="{{ route('colonias.show', $colonia->id) }}">
         <td>
           <div class="person-name">
-            Colonia 1
+             {{ $colonia->nombre }}
           </div>
           <div class="person-role">
-            612 habitantes
+            {{ $colonia->pob_total }} personas
           </div>
         </td>
         <td>
-          <span class="area-tag">
-            3
+          <span class="area-tag empty">
+            -
           </span>
         </td>
       </tr>
-      <tr>
-        <td>
-          <div class="person-name">
-            Colonia 2
-          </div>
-          <div class="person-role">
-            348 habitantes
-          </div>
-        </td>
-        <td>
-          <span class="area-tag">
-            2
-          </span>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <div class="person-name">
-            Colonia 3
-          </div>
-          <div class="person-role">
-            890 habitantes
-          </div>
-        </td>
-        <td>
-          <span class="area-tag">
-            4
-          </span>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <div class="person-name">
-            Colonia 4
-          </div>
-          <div class="person-role">
-            205 habitantes
-          </div>
-        </td>
-        <td>
-          <span class="area-tag">
-            1
-          </span>
-        </td>
-      </tr>
+      @endforeach
     </tbody>
   </table>
 </div>

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Nav;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sup\DatosUsuario;
 use Illuminate\Http\Request;
-//use App\Models\;
+use App\Models\Colonia;
 
 class ColoniasController extends Controller
 {
@@ -16,7 +16,9 @@ class ColoniasController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.colonias.index", compact('persona', 'otros'));
+        $colonias = Colonia::select('id', 'nombre', 'adultos', 'ninos')->orderBy('nombre')->get();
+
+        $view = view("system.modules.colonias.index", compact('persona', 'otros', 'colonias'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();

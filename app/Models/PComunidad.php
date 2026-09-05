@@ -21,4 +21,10 @@ class PComunidad extends Model
         'lider',
         'saberes',
     ];
+
+    //Crear una nueva columna fake
+    protected $appends = ['edad'];
+
+    //Función para obtener la edad, con la fecha de nacimiento guardada
+    public function getEdadAttribute() { return \Carbon\Carbon::parse($this->birth_date)->age; }
 }
