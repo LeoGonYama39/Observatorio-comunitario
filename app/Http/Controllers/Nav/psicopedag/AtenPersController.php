@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Nav;
+namespace App\Http\Controllers\Nav\psicopedag;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sup\DatosUsuario;

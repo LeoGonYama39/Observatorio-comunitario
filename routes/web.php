@@ -2,14 +2,14 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Nav\PCentroController;
-use App\Http\Controllers\Nav\PExternoController;
-use App\Http\Controllers\Nav\PComunidadController;
+use App\Http\Controllers\Nav\personas\PCentroController;
+use App\Http\Controllers\Nav\personas\PExternoController;
+use App\Http\Controllers\Nav\personas\PComunidadController;
 use App\Http\Controllers\Nav\ProyectosController;
-use App\Http\Controllers\Nav\EducBasicController;
-use App\Http\Controllers\Nav\EducSupController;
-use App\Http\Controllers\Nav\AtenPersController;
-use App\Http\Controllers\Nav\ProcGrupController;
+use App\Http\Controllers\Nav\educacion\EducBasicController;
+use App\Http\Controllers\Nav\educacion\EducSupController;
+use App\Http\Controllers\Nav\psicopedag\AtenPersController;
+use App\Http\Controllers\Nav\psicopedag\ProcGrupController;
 use App\Http\Controllers\Nav\TalleresController;
 use App\Http\Controllers\Nav\EventosController;
 use App\Http\Controllers\Nav\ColoniasController;

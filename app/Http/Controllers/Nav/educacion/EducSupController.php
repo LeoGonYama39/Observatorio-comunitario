@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Nav;
+namespace App\Http\Controllers\Nav\educacion;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sup\DatosUsuario;
 use Illuminate\Http\Request;
 //use App\Models\;
 
-class ProcGrupController extends Controller
+class EducSupController extends Controller
 {
     public function index(Request $request)
     {
@@ -16,7 +16,7 @@ class ProcGrupController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.psicopedag.proc_grup.index", compact('persona', 'otros'));
+        $view = view("system.modules.educacion.educ_sup.index", compact('persona', 'otros'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -45,14 +45,14 @@ class ProcGrupController extends Controller
         //
     }
 
-    public function show(Request $request)
+    public function show(Request $request, $id)
     {
         $datosUsuario = new DatosUsuario();
         $aux = $datosUsuario->getDatosUsuario();
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.psicopedag.proc_grup.show", compact('persona', 'otros'));
+        $view = view("system.modules.educacion.educ_sup.show", compact('persona', 'otros'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();

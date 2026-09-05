@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Nav;
+namespace App\Http\Controllers\Nav\educacion;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sup\DatosUsuario;
 use Illuminate\Http\Request;
 //use App\Models\;
 
-class EducSupController extends Controller
+class EducBasicController extends Controller
 {
     public function index(Request $request)
     {
@@ -16,7 +16,7 @@ class EducSupController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.educacion.educ_sup.index", compact('persona', 'otros'));
+        $view = view("system.modules.educacion.educ_basica.index", compact('persona', 'otros'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -52,7 +52,7 @@ class EducSupController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.educacion.educ_sup.show", compact('persona', 'otros'));
+        $view = view("system.modules.educacion.educ_basica.show", compact('persona', 'otros'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();

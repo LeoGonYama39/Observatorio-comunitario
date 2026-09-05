@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Nav;
+namespace App\Http\Controllers\Nav\psicopedag;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sup\DatosUsuario;
 use Illuminate\Http\Request;
-use App\Models\PCentro;
+//use App\Models\;
 
-class PCentroController extends Controller
+class ProcGrupController extends Controller
 {
     public function index(Request $request)
     {
@@ -16,32 +16,7 @@ class PCentroController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $centros = PCentro::select('id', 'nombre', 'ap_pat', 'ap_mat', 'cargo')->get();
-
-        $view = view("system.modules.personas.p_centro.index", compact('persona', 'otros', 'centros'));
-
-        if ($request->ajax()) {
-            $sections = $view->renderSections();
-            return response()->json([
-                'content' => $sections['content'],
-                'title' => $sections['title'],
-            ]);
-        }
-
-        return $view;
-    }
-
-
-    public function create(Request $request)
-    {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
-        $centros = PCentro::select('id', 'nombre', 'ap_pat', 'ap_mat', 'cargo')->get();
-
-        $view = view("system.modules.personas.p_centro.create", compact('persona', 'otros', 'centros'));
+        $view = view("system.modules.psicopedag.proc_grup.index", compact('persona', 'otros'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -55,6 +30,14 @@ class PCentroController extends Controller
     }
 
     /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -62,17 +45,14 @@ class PCentroController extends Controller
         //
     }
 
-
-    public function show(Request $request, $id)
+    public function show(Request $request)
     {
         $datosUsuario = new DatosUsuario();
         $aux = $datosUsuario->getDatosUsuario();
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $centroSeleccionado = $id;
-
-        $view = view("system.modules.personas.p_centro.show", compact('persona', 'otros', 'centroSeleccionado'));
+        $view = view("system.modules.psicopedag.proc_grup.show", compact('persona', 'otros'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();

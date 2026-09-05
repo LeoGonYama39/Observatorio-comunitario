@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Nav;
+namespace App\Http\Controllers\Nav\personas;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sup\DatosUsuario;
 use Illuminate\Http\Request;
-use App\Models\PComunidad;
+use App\Models\PCentro;
 
-class PComunidadController extends Controller
+class PCentroController extends Controller
 {
     public function index(Request $request)
     {
@@ -16,7 +16,32 @@ class PComunidadController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.personas.p_comunidad.index", compact('persona', 'otros'));
+        $centros = PCentro::select('id', 'nombre', 'ap_pat', 'ap_mat', 'cargo')->get();
+
+        $view = view("system.modules.personas.p_centro.index", compact('persona', 'otros', 'centros'));
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
+    }
+
+
+    public function create(Request $request)
+    {
+        $datosUsuario = new DatosUsuario();
+        $aux = $datosUsuario->getDatosUsuario();
+        $persona = $aux[0];
+        $otros = $aux[1];
+
+        $centros = PCentro::select('id', 'nombre', 'ap_pat', 'ap_mat', 'cargo')->get();
+
+        $view = view("system.modules.personas.p_centro.create", compact('persona', 'otros', 'centros'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -30,20 +55,13 @@ class PComunidadController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
         //
     }
+
 
     public function show(Request $request, $id)
     {
@@ -52,7 +70,9 @@ class PComunidadController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.personas.p_comunidad.show", compact('persona', 'otros'));
+        $centroSeleccionado = $id;
+
+        $view = view("system.modules.personas.p_centro.show", compact('persona', 'otros', 'centroSeleccionado'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
