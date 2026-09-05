@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Nav;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Nav\DatosUsuario;
+use App\Http\Controllers\Sup\DatosUsuario;
 use Illuminate\Http\Request;
 use App\Models\PComunidad;
 
