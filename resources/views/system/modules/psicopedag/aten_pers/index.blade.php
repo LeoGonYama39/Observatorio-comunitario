@@ -56,7 +56,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr data-url="{{ route('aten_pers.info') }}">
+      <tr data-url="{{ route('aten_pers.show', 1) }}">
         <td>
           <div class="person-name">
             Rosa Elena Camposeco Vidal

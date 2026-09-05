@@ -46,7 +46,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr data-url="{{ route('colonias.info') }}">
+      <tr data-url="{{ route('colonias.show', 1) }}">
         <td>
           <div class="person-name">
             Colonia 1

@@ -56,7 +56,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr data-url="{{ route('educ_basica.info') }}">
+      <tr data-url="{{ route('educ_basica.show', 1) }}">
         <td>
           <div class="person-name">
             José Castillo Gaitan

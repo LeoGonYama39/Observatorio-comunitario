@@ -56,7 +56,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr data-url="{{ route('educ_sup.info') }}">
+      <tr data-url="{{ route('educ_sup.show', 1) }}">
         <td>
           <div class="person-name">
             Leonel Lora Vázquez

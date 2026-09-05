@@ -53,7 +53,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr data-url="{{ route('proc_grup.info') }}">
+      <tr data-url="{{ route('proc_grup.show', 1) }}">
         <td>
           <div class="person-name">
             Ciclo I

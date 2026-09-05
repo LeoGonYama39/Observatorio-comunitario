@@ -50,7 +50,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr data-url="{{ route('eventos.info') }}">
+      <tr data-url="{{ route('eventos.show', 1) }}">
         <td>
           <div class="person-name">
             Charla: concienciación sobre la diabetes
