@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sup\DatosUsuario;
 use Illuminate\Http\Request;
 use App\Models\PComunidad;
+use Illuminate\Support\Facades\DB;
 
 class PComunidadController extends Controller
 {
@@ -31,11 +32,6 @@ class PComunidadController extends Controller
                  'colonia.nombre AS colonia')
         ->orderBy('nombre')
         ->get();
-
-        //Adaptar de db a UI
-        foreach ($usuarias as $usuaria) {
-            $usuaria->genero = ucfirst($usuaria->genero);
-        }
 
         $view = view("system.modules.personas.p_comunidad.index", compact('persona', 'otros', 'usuarias'));
 

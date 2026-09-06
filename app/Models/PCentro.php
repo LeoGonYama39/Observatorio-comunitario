@@ -13,7 +13,12 @@ class PCentro extends Authenticatable
     protected $table = 'p_centro';
 
     protected $fillable = [
-        'nombre', 'ap_pat', 'ap_mat', 'cargo', 'usuario', 'password',
+        'nombre',
+        'ap_pat',
+        'ap_mat',
+        'cargo',
+        'usuario',
+        'password',
     ];
 
     protected $hidden = [

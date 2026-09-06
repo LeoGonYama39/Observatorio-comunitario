@@ -92,7 +92,7 @@
              {{ $centro->nombre }} {{ $centro->ap_pat }} {{ $centro->ap_mat }}
           </div>
           <div class="person-role">
-            {{ $centro->cargo }}
+            {{ ucfirst(str_replace('_', ' ', $centro->cargo)); }} 
           </div>
         </td>
         <td>

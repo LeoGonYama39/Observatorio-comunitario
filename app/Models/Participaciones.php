@@ -11,7 +11,8 @@ class Participaciones extends Model
 
     protected $fillable = [
         'externo_id',
-        'periodo',
+        'temporada',
+        'anio',
         'aport',
         'tipo',
     ];

@@ -18,11 +18,6 @@ class PCentroController extends Controller
 
         $centros = PCentro::select('id', 'nombre', 'ap_pat', 'ap_mat', 'cargo')->orderBy('nombre')->get();
 
-        //Adaptar de db a UI
-        foreach ($centros as $centro) {
-            $centro->cargo = ucfirst($centro->cargo);
-        }
-
         $view = view("system.modules.personas.p_centro.index", compact('persona', 'otros', 'centros'));
 
         if ($request->ajax()) {

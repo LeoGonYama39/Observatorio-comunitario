@@ -92,13 +92,13 @@
                 <div class="person-name">
                     {{ $externo->nombre }} {{ $externo->ap_pat }} {{ $externo->ap_mat }}
                 </div>
-                <div class="person-role">-</div>
+                <div class="person-role">{{ $externo->tipo_formateado }}</div>
                 </td>
-                @if(is_null($externo->universidad))
-                    <td><span class="area-tag empty">—</span></td>
-                @else   
-                    <td><span class="area-tag">{{ $externo->universidad }}</span></td>
-                @endif
+                <td>
+                    <span class="area-tag {{ $externo->universidad ? '' : 'empty' }}">
+                        {{ $externo->universidad ?? '—' }}
+                    </span>
+                </td>
             </tr>
             @endforeach
         </tbody>

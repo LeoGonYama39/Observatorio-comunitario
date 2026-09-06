@@ -14,7 +14,6 @@ class Colonia extends Model
         'viviendas',
         'adultos',
         'ninos',
-        'poblacion_total',
     ];
 
     //Crear una nueva columna fake
