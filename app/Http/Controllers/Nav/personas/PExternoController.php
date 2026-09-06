@@ -17,7 +17,9 @@ class PExternoController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.personas.p_externo.index", compact('persona', 'otros'));
+        $externos = PExterno::select('id', 'nombre', 'ap_pat', 'ap_mat', 'universidad')->orderBy('nombre')->get();
+
+        $view = view("system.modules.personas.p_externo.index", compact('persona', 'otros', 'externos'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();

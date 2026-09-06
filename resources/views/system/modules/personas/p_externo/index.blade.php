@@ -86,34 +86,21 @@
             </tr>
         </thead>
         <tbody>
+            @foreach ($externos as $externo)
             <tr data-url="{{ route('personas-externo.show', 1) }}">
                 <td>
-                <div class="person-name">Sofía Ramírez Duarte</div>
-                <div class="person-role">Servicio social</div>
+                <div class="person-name">
+                    {{ $externo->nombre }} {{ $externo->ap_pat }} {{ $externo->ap_mat }}
+                </div>
+                <div class="person-role">-</div>
                 </td>
-                <td><span class="area-tag">Universidad Iberoamericana</span></td>
+                @if(is_null($externo->universidad))
+                    <td><span class="area-tag empty">—</span></td>
+                @else   
+                    <td><span class="area-tag">{{ $externo->universidad }}</span></td>
+                @endif
             </tr>
-            <tr>
-                <td>
-                <div class="person-name">Diego Martínez Cobos</div>
-                <div class="person-role">Prácticas profesionales</div>
-                </td>
-                <td><span class="area-tag">Universidad Iberoamericana</span></td>
-            </tr>
-            <tr>
-                <td>
-                <div class="person-name">Karla Jiménez Ortega</div>
-                <div class="person-role">Voluntariado</div>
-                </td>
-                <td><span class="area-tag empty">—</span></td>
-            </tr>
-            <tr>
-                <td>
-                <div class="person-name">Andrés Villalobos Peña</div>
-                <div class="person-role">Proyecto de inversión</div>
-                </td>
-                <td><span class="area-tag">Tecnológico de Monterrey</span></td>
-            </tr>
+            @endforeach
         </tbody>
     </table>
     </div>

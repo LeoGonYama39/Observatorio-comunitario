@@ -13,7 +13,7 @@ class PExterno extends Authenticatable
     protected $table = 'p_externo';
 
     protected $fillable = [
-        'nombre', 'ap_pat', 'ap_mat', 'universidad', 'usuario', 'password',
+        'nombre', 'ap_pat', 'ap_mat', 'universidad', 'correo', 'matricula', 'carrera', 'usuario', 'password',
     ];
 
     protected $hidden = [
