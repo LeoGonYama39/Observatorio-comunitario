@@ -16,7 +16,7 @@ class PCentroController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $centros = PCentro::select('id', 'nombre', 'ap_pat', 'ap_mat', 'cargo')->orderBy('nombre')->get();
+        $centros = $this->getDatosIndex();
 
         $view = view("system.modules.personas.p_centro.index", compact('persona', 'otros', 'centros'));
 
@@ -70,9 +70,9 @@ class PCentroController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $centroSeleccionado = $id;
+        $centro = $this->getDatosShow($id);
 
-        $view = view("system.modules.personas.p_centro.show", compact('persona', 'otros', 'centroSeleccionado'));
+        $view = view("system.modules.personas.p_centro.show", compact('persona', 'otros', 'centro'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -107,5 +107,17 @@ class PCentroController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    //Obtiene los datos para la tabla index
+    private function getDatosIndex() {
+        return PCentro::select('id', 'nombre', 'ap_pat', 'ap_mat', 'cargo')->orderBy('nombre')->get();
+    }
+
+    //Obtiene los datos para ficha show
+    private function getDatosShow($id) {
+    return PCentro::select('id', 'nombre', 'ap_pat', 'ap_mat', 'cargo')
+        ->where('id', $id)
+        ->first();
     }
 }

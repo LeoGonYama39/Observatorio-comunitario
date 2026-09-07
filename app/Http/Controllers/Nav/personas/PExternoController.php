@@ -148,6 +148,7 @@ class PExternoController extends Controller
             'p_externo.id'                      //pk
         )
         ->select(
+            'p_externo.id',
             'p_externo.nombre',
             'p_externo.ap_pat',
             'p_externo.ap_mat',

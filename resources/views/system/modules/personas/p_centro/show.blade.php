@@ -1,6 +1,6 @@
 @extends('system.app')
 
-@section('title', 'María Torres Salinas (ficha)')
+@section('title', $centro->nombre . ' ' . $centro->ap_pat . ' ' .  $centro->ap_mat . ' (ficha)')
 
 @section('content')
 <div class="breadcrumb">
@@ -11,13 +11,13 @@
     <path d="M9 6l6 6-6 6"/>
   </svg>
   <span class="current">
-    María Torres Salinas
+    {{ $centro->nombre }} {{ $centro->ap_pat }} {{ $centro->ap_mat }}
   </span>
 </div>
 <div class="content-header">
   <div>
     <h1>
-      María Torres Salinas
+     {{ $centro->nombre }} {{ $centro->ap_pat }} {{ $centro->ap_mat }}
     </h1>
     <p>
       Ficha de persona del centro
@@ -53,7 +53,7 @@
         Cargo
       </label>
       <div class="value">
-        Coordinadora
+        {{ ucfirst(str_replace('_', ' ', $centro->cargo)); }} 
       </div>
     </div>
     <div class="info-field">
@@ -61,7 +61,7 @@
         Área a cargo
       </label>
       <div class="value">
-        Nutrición Comunitaria
+        -
       </div>
     </div>
   </div>
