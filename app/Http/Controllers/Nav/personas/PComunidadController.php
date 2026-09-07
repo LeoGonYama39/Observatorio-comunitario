@@ -55,7 +55,9 @@ class PComunidadController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.personas.p_comunidad.show", compact('persona', 'otros'));
+        $usuaria = $this->getDatosShow($id);
+
+        $view = view("system.modules.personas.p_comunidad.show", compact('persona', 'otros', 'usuaria'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -115,5 +117,25 @@ class PComunidadController extends Controller
         ->orderBy('nombre')
         ->get();
         return $usuarias;
+    }
+
+    private function getDatosShow($id) {
+        return PComunidad::join(
+            'colonia',                  // tabla que quiero unir
+            'p_comunidad.colonia_id',   // FK
+            '=',                        // operador
+            'colonia.id'                // PK
+        )
+        ->select('p_comunidad.id', 
+                 'p_comunidad.nombre', 
+                 'p_comunidad.ap_pat',
+                 'p_comunidad.ap_mat',
+                 'p_comunidad.birth_date',
+                 'p_comunidad.genero',
+                 'p_comunidad.lider',
+                 'p_comunidad.saberes',
+                 'colonia.nombre AS colonia')
+        ->where('p_comunidad.id', $id)
+        ->first();
     }
 }

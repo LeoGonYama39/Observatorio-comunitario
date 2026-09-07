@@ -35,7 +35,10 @@ class PComunidad extends Model
     ];
 
     //Función para obtener la edad, con la fecha de nacimiento guardada
-    public function getEdadAttribute() { return \Carbon\Carbon::parse($this->birth_date)->age; }
+    public function getEdadAttribute() { 
+        if(!$this->birth_date) return null;
+        return \Carbon\Carbon::parse($this->birth_date)->age; 
+    }
 
     public function getCategCategAttribute() {
         return match (true) {       //match es como muchos ifs juntos

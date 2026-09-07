@@ -60,13 +60,13 @@
                 </div>
               </td>
               <td>
-                <span class="area-tag">
-                  {{ $usuaria->edad }} años
+                <span class="area-tag {{ $usuaria->edad ? '' : 'empty'}}">
+                  {{ $usuaria->edad ? $usuaria->edad . ' años' : '—' }}
                 </span>
               </td>
               <td>
                 <span class="area-tag">
-                  {{ $usuaria->colonia }}
+                  {{ $usuaria->colonia}}
                 </span>
               </td>
               <td>

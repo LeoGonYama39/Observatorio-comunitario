@@ -1,6 +1,6 @@
 @extends('system.app')
 
-@section('title', 'David López Aldama · Centro Ibero Meneses')
+@section('title',  $usuaria->nombre . ' ' . $usuaria->ap_pat . ' ' . $usuaria->ap_mat . ' (ficha)')
 
 @section('content')
 <div class="breadcrumb">
@@ -19,13 +19,13 @@
     <path d="M9 6l6 6-6 6" />
   </svg>
   <span class="current">
-    David López Aldama
+    {{ $usuaria->nombre }} {{ $usuaria->ap_pat }} {{ $usuaria->ap_mat }}
   </span>
 </div>
 <div class="content-header">
   <div>
     <h1>
-      David López Aldama
+      {{ $usuaria->nombre }} {{ $usuaria->ap_pat }} {{ $usuaria->ap_mat }}
     </h1>
     <p>
       Ficha de persona de la persona usuaria
