@@ -49,7 +49,8 @@
           </thead>
           <tbody>
             @foreach ($usuarias as $usuaria)
-            <tr data-url="{{ route('personas-usuarias.show', $usuaria->id) }}">
+            <tr data-url="{{ route('personas-usuarias.show', $usuaria->id) }}" data-edad="{{ $usuaria->edad }}" data-colonia="{{ $usuaria->colonia }}"
+            data-categ="{{ $usuaria->categ_categ }}">
               <td>
                 <div class="person-name">
                   {{ $usuaria->nombre }} {{ $usuaria->ap_pat }} {{ $usuaria->ap_mat }}
