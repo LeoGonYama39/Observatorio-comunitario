@@ -29,12 +29,17 @@ class PExterno extends Authenticatable
         'password', 'remember_token',
     ];
 
-    protected $appends = ['tipo_formateado'];
+    protected $appends = [
+        'tipo_categ',
+        'tipo_formateado',
+        ];
 
-    public function getTipoFormateadoAttribute()
+
+    //Genera la etiqueta para el dato de la tabla, para filtrar con js
+    public function getTipoCategAttribute()
     {
         //Filtro para los que no tienen participaciones
-        if (!$this->tipo) return 'Sin participaciones';
+        if (!$this->tipo) return 'sin_participación';
 
         //Filtro para los de las participaciones pasadas
         $ahora = Carbon::now();
@@ -42,12 +47,19 @@ class PExterno extends Authenticatable
         $mesActual = $ahora->month;
 
         //Filtro anual
-        if($this->anio < $anioActual) return 'No activo';
+        if($this->anio < $anioActual) return 'no_activo';
         
         //Filtro de temporada
-        if ($this->temporada === 'primavera' && $mesActual > 5) return 'No activo mes';
+        if ($this->temporada === 'primavera' && $mesActual > 5) return 'no_activo';
 
+        //Si la participación es activa
+        return $this->tipo;
+    }
+
+    //Genera para la UI
+    public function getTipoFormateadoAttribute()
+    {
         //Reescribir para los que tienen una participación activa
-        return ucfirst(str_replace('_', ' ', $this->tipo));
+        return ucfirst(str_replace('_', ' ', $this->tipo_categ));
     }
 }

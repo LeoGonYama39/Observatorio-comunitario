@@ -17,21 +17,7 @@ class PComunidadController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $usuarias = PComunidad::join(
-            'colonia',                  // tabla que quiero unir
-            'p_comunidad.colonia_id',   // FK
-            '=',                        // operador
-            'colonia.id'                // PK
-        )
-        ->select('p_comunidad.id', 
-                 'p_comunidad.nombre', 
-                 'p_comunidad.ap_pat',
-                 'p_comunidad.ap_mat',
-                 'p_comunidad.birth_date',
-                 'p_comunidad.genero',
-                 'colonia.nombre AS colonia')
-        ->orderBy('nombre')
-        ->get();
+        $usuarias = $this->getDatosIndex();
 
         $view = view("system.modules.personas.p_comunidad.index", compact('persona', 'otros', 'usuarias'));
 
@@ -104,5 +90,30 @@ class PComunidadController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+
+    ///// Funciones de apoyo/////////////////
+
+    //Obtiene los datos para la tabla index.
+    private function getDatosIndex() {
+        $usuarias = PComunidad::join(
+            'colonia',                  // tabla que quiero unir
+            'p_comunidad.colonia_id',   // FK
+            '=',                        // operador
+            'colonia.id'                // PK
+        )
+        ->select('p_comunidad.id', 
+                 'p_comunidad.nombre', 
+                 'p_comunidad.ap_pat',
+                 'p_comunidad.ap_mat',
+                 'p_comunidad.birth_date',
+                 'p_comunidad.genero',
+                 'p_comunidad.lider',
+                 'p_comunidad.saberes',
+                 'colonia.nombre AS colonia')
+        ->orderBy('nombre')
+        ->get();
+        return $usuarias;
     }
 }

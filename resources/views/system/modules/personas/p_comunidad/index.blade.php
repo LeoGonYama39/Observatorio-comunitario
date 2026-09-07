@@ -44,6 +44,7 @@
               <th>Nombre</th>
               <th>Edad</th>
               <th>Colonia</th>
+              <th>Categoría</th>
             </tr>
           </thead>
           <tbody>
@@ -65,6 +66,11 @@
               <td>
                 <span class="area-tag">
                   {{ $usuaria->colonia }}
+                </span>
+              </td>
+              <td>
+                <span class="area-tag">
+                  {{ $usuaria->categoria }}
                 </span>
               </td>
             </tr>

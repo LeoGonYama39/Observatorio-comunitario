@@ -160,14 +160,4 @@ class PExternoController extends Controller
         return $externos;
     }
 
-    //Detectar los que su última participación ya no es activa
-    private function normalizarUI($externos)
-    {
-        foreach($externos as $externo) {
-            if(isset($externo->tipo)){
-                $externo->tipo =  ucfirst(str_replace('_', ' ', 'practica_psicología'));
-            }
-        }
-        return $externos;
-    }
 }

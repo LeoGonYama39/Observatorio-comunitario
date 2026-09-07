@@ -87,7 +87,7 @@
         </thead>
         <tbody>
             @foreach ($externos as $externo)
-            <tr data-url="{{ route('personas-externo.show', 1) }}">
+            <tr data-url="{{ route('personas-externo.show', 1) }}" data-tipo="{{ $externo->tipo_categ }}">
                 <td>
                 <div class="person-name">
                     {{ $externo->nombre }} {{ $externo->ap_pat }} {{ $externo->ap_mat }}
