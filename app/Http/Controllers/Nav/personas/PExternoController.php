@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sup\DatosUsuario;
 use Illuminate\Http\Request;
 use App\Models\PExterno;
+use App\Models\Participaciones;
 use Illuminate\Support\Facades\DB;
 
 class PExternoController extends Controller
@@ -62,8 +63,9 @@ class PExternoController extends Controller
         $datos = $this->getDatosShow($id);
 
         $externo = $datos[0];
+        $participaciones = $datos[1];
 
-        $view = view("system.modules.personas.p_externo.show", compact('persona', 'otros', 'externo'));
+        $view = view("system.modules.personas.p_externo.show", compact('persona', 'otros', 'externo', 'participaciones'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -168,6 +170,7 @@ class PExternoController extends Controller
     private function getDatosShow($id) {
         $datos = [];
 
+        //Búsqueda de datos del externo
         $externo =  PExterno::select(
                 'id',
                 'nombre',
@@ -180,7 +183,23 @@ class PExternoController extends Controller
             ->where('id', $id)
             ->first();
 
+
+        //Búsqueda de participaciones del externo
+
+        //Búsqueda de datos del externo
+        $participaciones =  Participaciones::select(
+                'id',
+                'temporada',
+                'anio',
+                'aport',
+                'tipo')
+            ->where('externo_id', $id)
+            ->orderBy('anio', 'desc')
+            ->orderBy('temporada', 'desc')
+            ->get();
+
         $datos[0] = $externo;
+        $datos[1] = $participaciones;
         return $datos;
     }
 

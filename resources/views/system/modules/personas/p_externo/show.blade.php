@@ -125,18 +125,25 @@
     Nueva participación
   </button>
 </div>
+
+@if($participaciones->isNotEmpty())
 <div class="participations-list">
-  <details class="participation-item" open>
+  @foreach($participaciones as $participacion)
+  <details class="participation-item" @if(($loop->iteration === 1) && ($participacion->activo)) open @endif>
     <summary class="participation-summary">
       <div>
         <span class="person-name">
-          Servicio social
+          {{ ucfirst(str_replace('_', ' ', $participacion->tipo)) }}
           <span class="current-badge">
-            Actual
+            @if(($loop->iteration === 1) && ($participacion->activo)) 
+            Activo
+            @else
+            Concluido
+            @endif
           </span>
         </span>
         <div class="person-role">
-          Otoño 2025
+          {{ ucfirst($participacion->temporada) }} {{ $participacion->anio }}
         </div>
       </div>
       <svg class="chevron-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -144,12 +151,14 @@
       </svg>
     </summary>
     <div class="participation-body">
+      @if($participacion->aport)
       <label class="mini-label">
         Aportaciones
       </label>
       <p class="participation-text">
-        Apoyo en la elaboración del censo de colonias y sistematización de información para el diagnóstico comunitario.
+        {{ $participacion->aport}}
       </p>
+      @endif
       <label class="mini-label">
         Proyectos
       </label>
@@ -165,42 +174,14 @@
       </div>
     </div>
   </details>
-  <details class="participation-item">
-    <summary class="participation-summary">
-      <div>
-        <span class="person-name">
-          Materia de inmersión
-        </span>
-        <div class="person-role">
-          Primavera 2025
-        </div>
-      </div>
-      <svg class="chevron-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M6 9l6 6 6-6"/>
-      </svg>
-    </summary>
-    <div class="participation-body">
-      <label class="mini-label">
-        Aportaciones
-      </label>
-      <p class="participation-text">
-        Apoyo logístico en la impartición del taller de alimentación saludable.
-      </p>
-      <label class="mini-label">
-        Talleres
-      </label>
-      <div class="related-list">
-        <div class="related-row">
-          <span class="name">
-            Alimentación Saludable
-          </span>
-        </div>
-      </div>
-    </div>
-  </details>
+  @endforeach
 </div>
 @else
-    <p>Sin resutlados.</p>
+<p>Sin participaciones.</p>
+@endif
+
+@else
+<p>Sin resutlados.</p>
 @endif
 
 @endsection
