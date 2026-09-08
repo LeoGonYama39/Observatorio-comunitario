@@ -1,8 +1,14 @@
 @extends('system.app')
 
-@section('title',  $usuaria->nombre . ' ' . $usuaria->ap_pat . ' ' . $usuaria->ap_mat . ' (ficha)')
+@section(
+    'title',
+    $usuaria
+        ? $usuaria->nombre . ' ' . $usuaria->ap_pat . ' ' . $usuaria->ap_mat . ' · Ficha'
+        : 'Sin resultados'
+)
 
 @section('content')
+@if ($usuaria)
 <div class="breadcrumb">
   <a href="{{ route('personas-usuarias.index') }}" data-url="{{ route('personas-usuarias.index') }}" class="return-index">
     Personas usuarias
@@ -147,4 +153,8 @@
     </div>
   </div>
 </div>
+@else
+    <p>Sin resultados</p>
+@endif
+
 @endsection

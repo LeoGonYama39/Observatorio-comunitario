@@ -1,8 +1,15 @@
 @extends('system.app')
 
-@section('title', 'Sofía Ramírez Duarte · Centro Ibero Meneses')
+@section(
+    'title',
+    $externo
+        ? $externo->nombre . ' ' . $externo->ap_pat . ' ' . $externo->ap_mat . ' · Ficha'
+        : 'Sin resultados'
+)
 
 @section('content')
+
+@if ($externo)
 <div class="breadcrumb">
   <a href="{{ route('personas-externo.index') }}" data-url="{{ route('personas-externo.index') }}" class="return-index">
     Personas Externas
@@ -11,13 +18,13 @@
     <path d="M9 6l6 6-6 6"/>
   </svg>
   <span class="current">
-    Sofía Ramírez Duarte
+    {{ $externo->nombre }} {{ $externo->ap_pat }} {{ $externo->ap_mat }}
   </span>
 </div>
 <div class="content-header">
   <div>
     <h1>
-      Sofía Ramírez Duarte
+      {{ $externo->nombre }} {{ $externo->ap_pat }} {{ $externo->ap_mat }}
     </h1>
     <p>
       Ficha de persona externa
@@ -48,14 +55,16 @@
     Información general
   </h3>
   <div class="info-grid">
+    @if($externo->correo)
     <div class="info-field">
       <label>
         Correo
       </label>
       <div class="value">
-        sofiaramduar@gmail.com
+        {{ $externo->correo }}
       </div>
     </div>
+    @endif
     <div class="info-field">
       <label>
         Tipo de participación
@@ -64,30 +73,36 @@
         Servicio social
       </div>
     </div>
+    @if($externo->universidad)
     <div class="info-field">
       <label>
         Universidad
       </label>
       <div class="value">
-        Universidad Iberoamericana
+        {{ $externo->universidad }}
       </div>
     </div>
+    @endif
+    @if($externo->matricula)
     <div class="info-field">
       <label>
         Matrícula
       </label>
       <div class="value">
-        182345-4
+        {{ $externo->matricula }}
       </div>
     </div>
+    @endif
+    @if($externo->carrera)
     <div class="info-field">
       <label>
         Carrera
       </label>
       <div class="value">
-        182345-4
+        {{ $externo->carrera }}
       </div>
     </div>
+    @endif
     <div class="info-field">
       <label>
         Área
@@ -184,4 +199,8 @@
     </div>
   </details>
 </div>
+@else
+    <p>Sin resutlados.</p>
+@endif
+
 @endsection

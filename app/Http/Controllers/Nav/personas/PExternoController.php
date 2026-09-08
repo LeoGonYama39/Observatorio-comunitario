@@ -59,7 +59,11 @@ class PExternoController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.personas.p_externo.show", compact('persona', 'otros'));
+        $datos = $this->getDatosShow($id);
+
+        $externo = $datos[0];
+
+        $view = view("system.modules.personas.p_externo.show", compact('persona', 'otros', 'externo'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -161,11 +165,23 @@ class PExternoController extends Controller
         return $externos;
     }
 
-    private function getDatosShow($id){
-        $resultados = [];
-    
-        //Búsqueda de los datos de la persona
+    private function getDatosShow($id) {
+        $datos = [];
 
+        $externo =  PExterno::select(
+                'id',
+                'nombre',
+                'ap_pat',
+                'ap_mat',
+                'universidad',
+                'correo',
+                'matricula',
+                'carrera')
+            ->where('id', $id)
+            ->first();
+
+        $datos[0] = $externo;
+        return $datos;
     }
 
 }
