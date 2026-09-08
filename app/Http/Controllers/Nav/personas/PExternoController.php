@@ -161,4 +161,11 @@ class PExternoController extends Controller
         return $externos;
     }
 
+    private function getDatosShow($id){
+        $resultados = [];
+    
+        //Búsqueda de los datos de la persona
+
+    }
+
 }

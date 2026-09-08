@@ -67,94 +67,66 @@
   </h3>
   <div class="info-grid">
     <div class="info-field">
-      <label>
-        Edad
-      </label>
-      <div class="value">
-        30 años
-      </div>
+        <label>
+            Categoría
+        </label>
+        <div class="value">
+            {{ $usuaria->categoria }}
+        </div>
     </div>
+    @if($usuaria->edad)
     <div class="info-field">
-      <label>
-        Género
-      </label>
-      <div class="value">
-        Masculino
-      </div>
+        <label>
+            Edad
+        </label>
+        <div class="value">
+            {{ $usuaria->edad }} años
+        </div>
     </div>
+    @endif
+    @if($usuaria->genero)
     <div class="info-field">
-      <label>
-        Nivel escolar
-      </label>
-      <div class="value">
-        Preparatoria
-      </div>
+        <label>
+            Genero
+        </label>
+        <div class="value">
+            {{ ucfirst($usuaria->genero) }}
+        </div>
     </div>
+    @endif
+    @if($usuaria->nv_escolar)
     <div class="info-field">
-      <label>
-        Teléfono
-      </label>
-      <div class="value">
-        55 5556 5543
-      </div>
+        <label>
+            Nivel escolar
+        </label>
+        <div class="value">
+            {{ ucfirst($usuaria->nv_escolar) }}
+        </div>
     </div>
+    @endif
+    @if($usuaria->telefono)
+    <div class="info-field">
+        <label>
+            Nivel escolar
+        </label>
+        <div class="value">
+            {{ $usuaria->telefono }}
+        </div>
+    </div>
+    @endif
   </div>
 </div>
-<div class="related-grid">
-  <div class="related-card">
-    <h3>
-      <svg
-                        width="15"
-                        height="15"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                     >
-        <path
-                           d="M3 7a2 2 0 0 1 2-2h4l2 2.5h7a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"
-                        />
-      </svg>
-      Casos
-    </h3>
-    <div class="simple-tag-list">
-      <span class="tag">
-        <svg
-                           width="13"
-                           height="13"
-                           viewBox="0 0 24 24"
-                           fill="none"
-                           stroke-width="2"
-                           stroke-linecap="round"
-                           stroke-linejoin="round"
-                        >
-          <path
-                              d="M12 3c-1 3-4 4-4 8a4 4 0 0 0 8 0c0-4-3-5-4-8Z"
-                           />
-          <path d="M12 13v8" />
-        </svg>
-        Asesoría jurídica
-      </span>
-      <span class="tag">
-        <svg
-                           width="13"
-                           height="13"
-                           viewBox="0 0 24 24"
-                           fill="none"
-                           stroke-width="2"
-                           stroke-linecap="round"
-                           stroke-linejoin="round"
-                        >
-          <path
-                              d="M12 3c-1 3-4 4-4 8a4 4 0 0 0 8 0c0-4-3-5-4-8Z"
-                           />
-          <path d="M12 13v8" />
-        </svg>
-        Consultas médicas
-      </span>
-    </div>
+
+@if($usuaria->saberes)
+<div class="doc-card" style="margin-top: 32px;">
+  <div class="doc-section">
+    <h3>Directoio de saberes</h3>
+    <p>{{ $usuaria->saberes }}</p>
   </div>
+</div>
+@endif
+
+<div class="related-grid">
   <div class="related-card">
     <h3>
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">

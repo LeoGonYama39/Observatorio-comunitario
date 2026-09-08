@@ -130,8 +130,10 @@ class PComunidadController extends Controller
                  'p_comunidad.nombre', 
                  'p_comunidad.ap_pat',
                  'p_comunidad.ap_mat',
+                 'p_comunidad.nv_escolar',
                  'p_comunidad.birth_date',
                  'p_comunidad.genero',
+                 'p_comunidad.telefono',
                  'p_comunidad.lider',
                  'p_comunidad.saberes',
                  'colonia.nombre AS colonia')
