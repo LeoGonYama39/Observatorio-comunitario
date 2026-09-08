@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Nav;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sup\DatosUsuario;
 use Illuminate\Http\Request;
-//use App\Models\Proyectos;
+use App\Models\Proyectos;
 
 class ProyectosController extends Controller
 {
@@ -87,5 +87,15 @@ class ProyectosController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    //Obtiene los datos para la tabla index
+    private function getDatosIndex() {
+        return Proyectos::select(
+            'id',
+            'nombre',
+            'ap_pat',
+            'ap_mat',
+            'cargo')->orderBy('nombre')->get();
     }
 }

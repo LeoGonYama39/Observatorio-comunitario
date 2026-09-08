@@ -92,51 +92,25 @@
         Proyectos
       </a>
       <button class="nav-item has-submenu">
-        <svg
-               width="18"
-               height="18"
-               viewBox="0 0 24 24"
-               fill="none"
-               stroke-width="1.8"
-               stroke-linecap="round"
-               stroke-linejoin="round"
-            >
-          <path
-                  d="M3 7a2 2 0 0 1 2-2h4l2 2.5h7a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"
-               />
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m14.5 8.5-9 9a2 2 0 0 1-2.8 0l-.2-.2a2 2 0 0 1 0-2.8l9-9"/>
+          <path d="m17.5 5.5 1 1"/>
+          <path d="m15 3 6 6"/>
+          <path d="M3 21h9"/>
         </svg>
-        Casos
-        <svg
-               class="chevron"
-               width="15"
-               height="15"
-               viewBox="0 0 24 24"
-               fill="none"
-               stroke-width="2"
-               stroke-linecap="round"
-               stroke-linejoin="round"
-            >
-          <path d="M9 6l6 6-6 6" />
+        Jurídica
+        <span class="active-dot">
+        </span>
+        <svg class="chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 6l6 6-6 6"/>
         </svg>
       </button>
       <div class="submenu">
-        <a href="#" class="sub-item icon-sub">
-          <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke-width="1.8"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-               >
-            <path d="M12 3v18" />
-            <path d="M5 7l-3 6a3 3 0 0 0 6 0Z" />
-            <path d="M19 7l-3 6a3 3 0 0 0 6 0Z" />
-            <path d="M5 7h14" />
-            <path d="M8 21h8" />
-          </svg>
-          Asesoría jurídica
+        <a href="#" data-url="" class="sub-item">
+          Asesorías jurídicas
+        </a>
+        <a href="#" data-url="" class="sub-item">
+          Asesorías familiares
         </a>
       </div>
       <button class="nav-item has-submenu {{ request()->
