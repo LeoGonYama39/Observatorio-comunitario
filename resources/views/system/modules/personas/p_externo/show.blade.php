@@ -65,14 +65,16 @@
       </div>
     </div>
     @endif
+    @if($participaciones->isNotEmpty())
     <div class="info-field">
       <label>
-        Tipo de participación
+        Rol actual
       </label>
       <div class="value">
-        Servicio social
+        {{ $participaciones[0]->activo ? ucfirst(str_replace('_', ' ', $participaciones[0]->tipo)) : 'No activo';}}
       </div>
     </div>
+    @endif
     @if($externo->universidad)
     <div class="info-field">
       <label>

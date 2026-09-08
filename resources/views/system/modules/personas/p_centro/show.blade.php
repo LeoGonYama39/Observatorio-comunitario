@@ -62,14 +62,16 @@
         {{ ucfirst(str_replace('_', ' ', $centro->cargo)); }} 
       </div>
     </div>
+    @if($centro->area)
     <div class="info-field">
       <label>
         Área a cargo
       </label>
       <div class="value">
-        -
+        {{ ucfirst(str_replace('_', ' ', $centro->area)); }}
       </div>
     </div>
+    @endif
   </div>
 </div>
 <div class="related-grid">
@@ -98,23 +100,6 @@
           Participante
         </span>
       </div>
-    </div>
-  </div>
-  <div class="related-card">
-    <h3>
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h7a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/>
-      </svg>
-      Casos
-    </h3>
-    <div class="simple-tag-list">
-      <span class="tag">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 3c-1 3-4 4-4 8a4 4 0 0 0 8 0c0-4-3-5-4-8Z"/>
-          <path d="M12 13v8"/>
-        </svg>
-        Da consultas nutricionales
-      </span>
     </div>
   </div>
   <div class="related-card">
@@ -152,7 +137,7 @@
       <path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/>
     </svg>
     Regresar
-</a>
+  </a>
 </div>
 @endif
 

@@ -96,8 +96,8 @@
           </div>
         </td>
         <td>
-          <span class="area-tag empty">
-            -
+          <span class="area-tag {{ $centro->area ? '' : 'empty' }}">
+            {{ $centro->area ? ucfirst(str_replace('_', ' ', $centro->area)) : '-'}}
           </span>
         </td>
       </tr>

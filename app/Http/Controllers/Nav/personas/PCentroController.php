@@ -111,13 +111,41 @@ class PCentroController extends Controller
 
     //Obtiene los datos para la tabla index
     private function getDatosIndex() {
-        return PCentro::select('id', 'nombre', 'ap_pat', 'ap_mat', 'cargo')->orderBy('nombre')->get();
+        return PCentro::leftJoin(
+            'area',             // Tabla a unir
+            'area.centro_id',   // FK
+            '=',                // Operador
+            'p_centro.id'       // PK
+        )
+        ->select(
+            'p_centro.id',
+            'p_centro.nombre',
+            'p_centro.ap_pat',
+            'p_centro.ap_mat',
+            'p_centro.cargo',
+            'area.nombre AS area'
+        )
+        ->orderBy('p_centro.nombre')
+        ->get();
     }
 
     //Obtiene los datos para ficha show
     private function getDatosShow($id) {
-    return PCentro::select('id', 'nombre', 'ap_pat', 'ap_mat', 'cargo')
-        ->where('id', $id)
+        return PCentro::leftJoin(
+            'area',             // Tabla a unir
+            'area.centro_id',   // FK
+            '=',                // Operador
+            'p_centro.id'       // PK
+        )
+        ->select(
+            'p_centro.id',
+            'p_centro.nombre',
+            'p_centro.ap_pat',
+            'p_centro.ap_mat',
+            'p_centro.cargo',
+            'area.nombre AS area'
+        )
+        ->where('p_centro.id', $id)
         ->first();
     }
 }
