@@ -1528,3 +1528,43 @@
 }
 .toggle-pass svg { stroke: var(--steel); }
 .toggle-pass:hover svg { stroke: var(--ink); }
+
+/*Para el mensaje de que no hubo resultados*/
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 80px 24px;
+  background: var(--white);
+  border: 1.5px solid var(--mist);
+  border-radius: var(--radius-lg);
+}
+
+.empty-state-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--pearl);
+  border: 1.5px solid var(--mist);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.empty-state-icon svg { stroke: var(--steel); }
+
+.empty-state h2 {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  margin-bottom: 6px;
+}
+
+.empty-state p {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--steel);
+  margin-bottom: 24px;
+}
