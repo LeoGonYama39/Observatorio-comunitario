@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Eje;
 
 class Area extends Model
 {
@@ -14,4 +15,8 @@ class Area extends Model
         'centro_id',
     ];
 
+    public function ejes()
+    {
+        return $this->belongsToMany(Eje::class, 'area_eje');
+    }
 }

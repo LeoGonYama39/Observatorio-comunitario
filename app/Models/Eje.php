@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Area;
 
 class Eje extends Model
 {
@@ -12,4 +13,9 @@ class Eje extends Model
     protected $fillable = [
         'nombre',
     ];
+
+    public function areas()
+    {
+        return $this->belongsToMany(Area::class, 'area_eje');
+    }
 }
