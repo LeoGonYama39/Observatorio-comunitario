@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Nav;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sup\DatosUsuario;
 use Illuminate\Http\Request;
-use App\Models\Proyectos;
+use App\Models\Proyecto;
 
 class ProyectosController extends Controller
 {
@@ -16,7 +16,9 @@ class ProyectosController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.proyectos.index",compact('persona', 'otros'));
+        $proyectos = $this->getDatosIndex();
+
+        $view = view("system.modules.proyectos.index",compact('persona', 'otros', 'proyectos'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -91,11 +93,11 @@ class ProyectosController extends Controller
 
     //Obtiene los datos para la tabla index
     private function getDatosIndex() {
-        return Proyectos::select(
+        return Proyecto::select(
             'id',
             'nombre',
-            'ap_pat',
-            'ap_mat',
-            'cargo')->orderBy('nombre')->get();
+            'estado',
+            'prioritario')
+            ->orderBy('nombre')->get();
     }
 }
