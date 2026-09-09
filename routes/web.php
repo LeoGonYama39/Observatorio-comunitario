@@ -6,6 +6,8 @@ use App\Http\Controllers\Nav\personas\PCentroController;
 use App\Http\Controllers\Nav\personas\PExternoController;
 use App\Http\Controllers\Nav\personas\PComunidadController;
 use App\Http\Controllers\Nav\ProyectosController;
+use App\Http\Controllers\Nav\juridica\AJuridicasController;
+use App\Http\Controllers\Nav\juridica\AFamiliaresController;
 use App\Http\Controllers\Nav\educacion\EducBasicController;
 use App\Http\Controllers\Nav\educacion\EducSupController;
 use App\Http\Controllers\Nav\psicopedag\AtenPersController;
@@ -36,6 +38,8 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::resource('/sistema/personas-externo', PExternoController::class)->only(['index', 'show', 'create', 'store']);
     Route::resource('/sistema/personas-usuarias', PComunidadController::class)->only(['index', 'show', 'create', 'store']);
     Route::resource('/sistema/proyectos', ProyectosController::class)->only(['index', 'show', 'create', 'store']);
+    Route::resource('/sistema/a-juridicas', AJuridicasController::class)->only(['index', 'show', 'create', 'store']);
+    Route::resource('/sistema/a-familiares', AFamiliaresController::class)->only(['index', 'show', 'create', 'store']);
     Route::resource('/sistema/educ_basica', EducBasicController::class)->only(['index', 'show', 'create', 'store']);
     Route::resource('/sistema/educ_sup', EducSupController::class)->only(['index', 'show', 'create', 'store']);
     Route::resource('/sistema/aten_pers', AtenPersController::class)->only(['index', 'show', 'create', 'store']);

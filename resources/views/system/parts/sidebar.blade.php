@@ -91,7 +91,10 @@
         </svg>
         Proyectos
       </a>
-      <button class="nav-item has-submenu">
+      <button class="nav-item has-submenu {{ request()->routeIs('a-juridicas.*') || 
+        request()->routeIs('a-familiares.*') 
+          ? 'section-active parent-active'
+          : '' }}">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="m14.5 8.5-9 9a2 2 0 0 1-2.8 0l-.2-.2a2 2 0 0 1 0-2.8l9-9"/>
           <path d="m17.5 5.5 1 1"/>
@@ -106,15 +109,19 @@
         </svg>
       </button>
       <div class="submenu">
-        <a href="#" data-url="" class="sub-item">
+        <a href="{{ route('a-juridicas.index') }}" data-url="{{ route('a-juridicas.index') }}" 
+        class="sub-item {{ request()->routeIs('a-juridicas.*') ? 'active' : '' }}">
           Asesorías jurídicas
         </a>
-        <a href="#" data-url="" class="sub-item">
+        <a href="{{ route('a-familiares.index') }}" data-url="{{ route('a-familiares.index') }}" 
+        class="sub-item {{ request()->routeIs('a-familiares.*') ? 'active' : '' }}">
           Asesorías familiares
         </a>
       </div>
-      <button class="nav-item has-submenu {{ request()->
-        routeIs('educ_basica.*') || request()->routeIs('educ_sup.*') ? 'section-active parent-active' : '' }}">
+      <button class="nav-item has-submenu {{ request()->routeIs('educ_basica.*') || 
+        request()->routeIs('educ_sup.*') 
+          ? 'section-active parent-active'
+          : '' }}">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
           <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
