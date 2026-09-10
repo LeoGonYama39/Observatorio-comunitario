@@ -16,7 +16,5 @@ class Area extends Model
     ];
 
     public function ejes()
-    {
-        return $this->belongsToMany(Eje::class, 'area_eje');
-    }
+    { return $this->belongsToMany(Eje::class, 'area_eje');}
 }

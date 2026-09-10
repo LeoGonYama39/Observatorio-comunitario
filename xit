@@ -1,0 +1,76 @@
+[90m= [39m[34;4mIlluminate\Database\Eloquent\Collection[39;24m {#8924
+    [34mall[39m: [
+      [34;4mApp\Models\Educacion\Materia[39;24m {#8387
+        [34mid[39m: [35m6[39m,
+        [34mnombre[39m: [32m"[39m[32mLyC III[39m[32m"[39m,
+        [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#8862
+          [34mcursos_id[39m: [35m5[39m,
+          [34mmaterias_id[39m: [35m6[39m,
+        },
+      },
+      [34;4mApp\Models\Educacion\Materia[39;24m {#8899
+        [34mid[39m: [35m7[39m,
+        [34mnombre[39m: [32m"[39m[32mLyC IV[39m[32m"[39m,
+        [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#8872
+          [34mcursos_id[39m: [35m5[39m,
+          [34mmaterias_id[39m: [35m7[39m,
+        },
+      },
+      [34;4mApp\Models\Educacion\Materia[39;24m {#8386
+        [34mid[39m: [35m10[39m,
+        [34mnombre[39m: [32m"[39m[32mPM III[39m[32m"[39m,
+        [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#8417
+          [34mcursos_id[39m: [35m5[39m,
+          [34mmaterias_id[39m: [35m10[39m,
+        },
+      },
+      [34;4mApp\Models\Educacion\Materia[39;24m {#8385
+        [34mid[39m: [35m11[39m,
+        [34mnombre[39m: [32m"[39m[32mPM IV[39m[32m"[39m,
+        [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#8418
+          [34mcursos_id[39m: [35m5[39m,
+          [34mmaterias_id[39m: [35m11[39m,
+        },
+      },
+      [34;4mApp\Models\Educacion\Materia[39;24m {#8981
+        [34mid[39m: [35m12[39m,
+        [34mnombre[39m: [32m"[39m[32mPM V[39m[32m"[39m,
+        [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#8891
+          [34mcursos_id[39m: [35m5[39m,
+          [34mmaterias_id[39m: [35m12[39m,
+        },
+      },
+      [34;4mApp\Models\Educacion\Materia[39;24m {#8973
+        [34mid[39m: [35m14[39m,
+        [34mnombre[39m: [32m"[39m[32mVC II[39m[32m"[39m,
+        [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#8419
+          [34mcursos_id[39m: [35m5[39m,
+          [34mmaterias_id[39m: [35m14[39m,
+        },
+      },
+      [34;4mApp\Models\Educacion\Materia[39;24m {#8972
+        [34mid[39m: [35m15[39m,
+        [34mnombre[39m: [32m"[39m[32mVC III[39m[32m"[39m,
+        [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#8923
+          [34mcursos_id[39m: [35m5[39m,
+          [34mmaterias_id[39m: [35m15[39m,
+        },
+      },
+      [34;4mApp\Models\Educacion\Materia[39;24m {#8971
+        [34mid[39m: [35m16[39m,
+        [34mnombre[39m: [32m"[39m[32mDIV I[39m[32m"[39m,
+        [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#8860
+          [34mcursos_id[39m: [35m5[39m,
+          [34mmaterias_id[39m: [35m16[39m,
+        },
+      },
+      [34;4mApp\Models\Educacion\Materia[39;24m {#8970
+        [34mid[39m: [35m17[39m,
+        [34mnombre[39m: [32m"[39m[32mDIV II[39m[32m"[39m,
+        [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#8920
+          [34mcursos_id[39m: [35m5[39m,
+          [34mmaterias_id[39m: [35m17[39m,
+        },
+      },
+    ],
+  }
