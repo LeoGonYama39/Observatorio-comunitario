@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sup\DatosUsuario;
 use Illuminate\Http\Request;
 use App\Models\Proyectos\Proyecto;
+use Illuminate\Support\Facades\DB;
 
 class ProyectosController extends Controller
 {
@@ -54,7 +55,11 @@ class ProyectosController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.proyectos.show",compact('persona', 'otros'));
+        $datos = $this->getDatosShow($id);
+
+        $proyecto = $datos['proyecto'];
+
+        $view = view("system.modules.proyectos.show",compact('persona', 'otros', 'proyecto'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -93,11 +98,60 @@ class ProyectosController extends Controller
 
     //Obtiene los datos para la tabla index
     private function getDatosIndex() {
-        return Proyecto::select(
-            'id',
-            'nombre',
-            'estado',
-            'prioritario')
-            ->orderBy('nombre')->get();
+        $proyectos = Proyecto::leftJoin(
+            'proyecto_eje',
+            'proyecto.id',
+            '=',
+            'proyecto_eje.proyecto_id'
+        )
+        ->join(
+            'eje',
+            'proyecto_eje.eje_id',
+            '=',
+            'eje.id'
+        )
+        ->join(
+            'area_eje',
+            'eje.id',
+            '=',
+            'area_eje.eje_id'
+        )
+        ->join(
+            'area',
+            'area_eje.area_id',
+            '=',
+            'area.id'
+        )
+        ->select(
+            'proyecto.id',
+            'proyecto.nombre',
+            'proyecto.estado',
+            'proyecto.prioritario',
+            DB::raw("
+                GROUP_CONCAT(
+                    DISTINCT area.nombre
+                    ORDER BY area.nombre
+                    SEPARATOR ', '
+                ) AS areas
+            ")
+        )
+        ->groupBy(
+            'proyecto.id',
+            'proyecto.nombre',
+            'proyecto.estado',
+            'proyecto.prioritario'
+        )
+        ->orderBy('proyecto.nombre')
+        ->get();
+
+        return $proyectos;
+    }
+
+    private function getDatosShow($id){
+        $proyecto = Proyecto::find($id);
+
+        return [
+            'proyecto' => $proyecto,
+        ];
     }
 }

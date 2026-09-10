@@ -48,7 +48,7 @@
           Nombre
         </th>
         <th>
-          Líder
+          Áreas
         </th>
       </tr>
     </thead>
@@ -71,8 +71,8 @@
           </div>
         </td>
         <td>
-          <span class="area-tag empty">
-            -
+          <span class="area-tag {{ $proyecto->areas ? '' : 'empty'}}">
+            {{ $proyecto->areas ?? '-'}}
           </span>
         </td>
       </tr>

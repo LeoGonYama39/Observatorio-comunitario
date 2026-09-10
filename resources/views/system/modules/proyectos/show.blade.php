@@ -1,8 +1,11 @@
 @extends('system.app')
 
-@section('title', 'Huertos Comunitarios · Centro Ibero Meneses')
+@section('title', $proyecto
+? $proyecto->nombre . ' · Ficha'
+: 'Sin resultados')
 
 @section('content')
+@if($proyecto)
 <div class="breadcrumb">
   <a href="{{ route('proyectos.index') }}" data-url="{{ route('proyectos.index') }}" class="return-index">
     Proyectos
@@ -11,7 +14,7 @@
     <path d="M9 6l6 6-6 6"/>
   </svg>
   <span class="current">
-    Huertos Comunitarios
+    {{ $proyecto->nombre }}
   </span>
 </div>
 <div class="content-header">
@@ -20,7 +23,7 @@
       <svg class="star-icon" width="18" height="18" viewBox="0 0 24 24" fill="#111111" stroke="#111111" stroke-width="1.5" stroke-linejoin="round">
         <path d="M12 2.5l2.9 6.3 6.8.7-5.1 4.6 1.5 6.7L12 17.6l-6.1 3.2 1.5-6.7-5.1-4.6 6.8-.7Z"/>
       </svg>
-      Huertos Comunitarios
+      {{ $proyecto->nombre }}
     </h1>
     <p>
       Ficha de proyecto
@@ -52,32 +55,32 @@
       <h3>
         Antecedentes
       </h3>
-      <p>
-        Varias colonias del Pueblo Santa Fe reportaron falta de acceso a alimentos frescos y espacios verdes comunitarios durante los diagnósticos realizados por el centro en 2024.
+      <p class="{{ $proyecto->antecedentes ? '' : 'empty'}}">
+        {{ $proyecto->antecedentes ?? '-'}}
       </p>
     </div>
     <div class="doc-section">
       <h3>
         Objetivos
       </h3>
-      <p>
-        Habilitar huertos comunitarios en al menos dos colonias, capacitar a familias en producción de alimentos a pequeña escala, y fomentar el uso de espacios públicos para actividades colectivas.
+      <p class="{{ $proyecto->objetivos ? '' : 'empty'}}">
+        {{ $proyecto->objetivos ?? '-'}}      
       </p>
     </div>
     <div class="doc-section">
       <h3>
         Alcance
       </h3>
-      <p>
-        El proyecto cubre inicialmente las colonias Loma Bonita y Vista Hermosa, con posibilidad de extenderse a colonias vecinas conforme se consolide el primer huerto piloto.
+      <p class="{{ $proyecto->alcance ? '' : 'empty'}}">
+        {{ $proyecto->alcance ?? '-'}}      
       </p>
     </div>
     <div class="doc-section">
       <h3>
         Evaluación
       </h3>
-      <p class="empty">
-        — aún sin evaluación registrada, el proyecto sigue en curso
+      <p class="{{ $proyecto->evaluacion ? '' : 'empty'}}">
+        {{ $proyecto->evaluacion ?? '-'}}      
       </p>
     </div>
   </div>
@@ -87,28 +90,30 @@
         Fecha de inicio
       </label>
       <div class="value">
-        15 de marzo, 2025
+        {{ $proyecto->fecha_form_inicio }}
       </div>
     </div>
+    @if($proyecto->fecha_fin)
     <div class="meta-row">
       <label>
         Fecha de fin
       </label>
       <div class="value">
-        En curso
+        {{ $proyecto->fecha_form_fin }}
       </div>
     </div>
+    @endif
     <div class="meta-row">
       <label>
         Estado
       </label>
       <span class="meta-badge on">
-        Activo
+        {{ ucfirst(str_replace('_', ' ', $proyecto->estado)); }}
       </span>
     </div>
     <div class="meta-row">
       <label>
-        Responsable(s)
+        Responsable(s) (no listo)
       </label>
       <div class="value">
         María Torres Salinas
@@ -117,17 +122,19 @@
         Sofía Ramírez Duarte
       </div>
     </div>
+    @if($proyecto->pobl_obj)
     <div class="meta-row">
       <label>
         Población objetivo
       </label>
       <div class="value">
-        3 - 65 años
+        {{ $proyecto->pobl_obj }}
       </div>
     </div>
+    @endif
     <div class="meta-row">
       <label>
-        Colonias
+        Colonias (no listo)
       </label>
       <div class="simple-tag-list">
         <span class="tag">
@@ -140,7 +147,7 @@
     </div>
     <div class="meta-row">
       <label>
-        Áreas
+        Áreas (no listo)
       </label>
       <div class="simple-tag-list">
         <span class="tag">
@@ -150,7 +157,7 @@
     </div>
     <div class="meta-row">
       <label>
-        Ejes de acción
+        Ejes de acción (no listo)
       </label>
       <div class="simple-tag-list">
         <span class="tag">
@@ -163,7 +170,7 @@
     </div>
     <div class="meta-row">
       <label>
-        Problemáticas
+        Problemáticas (no listo)
       </label>
       <div class="simple-tag-list">
         <span class="tag">
@@ -171,11 +178,12 @@
         </span>
       </div>
     </div>
+    @if($proyecto->repo)
     <div class="meta-row">
       <label>
         Repositorio
       </label>
-      <a href="#" class="repo-link">
+     <a href="{{ $proyecto->repo }}" class="repo-link" target="_blank">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.5 1.5"/>
           <path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.5-1.5"/>
@@ -183,22 +191,21 @@
         Ver repositorio
       </a>
     </div>
+    @endif
+    @if($proyecto->auditable)
     <div class="meta-row">
       <label>
         Auditable
       </label>
-      <div class="value">
-        Sí
-      </div>
-      <br>
-      <a href="#" class="repo-link">
+      <a href="{{ $proyecto->auditable }}" class="repo-link" target="_blank">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.5 1.5"/>
           <path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.5-1.5"/>
         </svg>
-        Ver repositorio
+        Ver archivos/evidencia
       </a>
     </div>
+    @endif
   </div>
 </div>
 <div class="section-header">
@@ -287,4 +294,24 @@
     </div>
   </div>
 </div>
+@else
+<div class="empty-state">
+  <div class="empty-state-icon">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="7"/>
+      <path d="m21 21-4.3-4.3"/>
+      <path d="M9 9l4 4"/>
+      <path d="M13 9l-4 4"/>
+    </svg>
+  </div>
+  <h2>No se encontró ningún resultado</h2>
+  <p>No hay información que coincida con lo que buscas.</p>
+  <a type="button" class="btn-outline" href="{{ route('proyectos.index') }}" data-url="{{ route('proyectos.index') }}">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/>
+    </svg>
+    Regresar
+</a>
+</div>
+@endif
 @endsection

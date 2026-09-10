@@ -135,8 +135,6 @@ class ColoniasController extends Controller
     }
 
     private function getDatosShow($id){
-        $datos = [];
-    
         $colonia = Colonia::select(
             'id', 
             'nombre', 
