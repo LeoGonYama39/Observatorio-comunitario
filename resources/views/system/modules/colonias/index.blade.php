@@ -53,12 +53,12 @@
              {{ $colonia->nombre }}
           </div>
           <div class="person-role">
-            {{ $colonia->pob_total }} personas
+            {{ $colonia->pob_total ?  $colonia->pob_total . ' personas' : 'Población no registrada'}} 
           </div>
         </td>
         <td>
-          <span class="area-tag empty">
-            -
+          <span class="area-tag">
+            {{ $colonia->c ?? '0'}} proyectos
           </span>
         </td>
       </tr>

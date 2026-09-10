@@ -1,8 +1,15 @@
 @extends('system.app')
 
-@section('title', 'Colonia 1 · Centro Ibero Meneses')
+@section(
+    'title',
+    $colonia
+        ? $colonia->nombre . ' · Ficha'
+        : 'Sin resultados'
+)
 
 @section('content')
+
+@if($colonia)
 <div class="breadcrumb">
   <a href="{{ route('colonias.index') }}" data-url="{{ route('colonias.index') }}" class="return-index">
     Colonias
@@ -11,13 +18,13 @@
     <path d="M9 6l6 6-6 6"/>
   </svg>
   <span class="current">
-    Colonia 1
+    {{ $colonia->nombre }}
   </span>
 </div>
 <div class="content-header">
   <div>
     <h1>
-      Colonia 1
+      {{ $colonia->nombre }}
     </h1>
     <p>
       Ficha de colonia
@@ -40,34 +47,26 @@
   <div class="info-grid">
     <div class="info-field">
       <label>
-        Nombre
-      </label>
-      <div class="value">
-        Colonia 1
-      </div>
-    </div>
-    <div class="info-field">
-      <label>
         Viviendas
       </label>
-      <div class="value">
-        168
+      <div class="value {{ $colonia->viviendas ? '' : 'empty'}}">
+        {{ $colonia->viviendas ?? '-'}}
       </div>
     </div>
     <div class="info-field">
       <label>
         Adultos
       </label>
-      <div class="value">
-        420
+      <div class="value {{ $colonia->adultos ? '' : 'empty'}}">
+        {{ $colonia->adultos ?? '-' }}
       </div>
     </div>
     <div class="info-field">
       <label>
         Niños
       </label>
-      <div class="value">
-        192
+      <div class="value {{ $colonia->ninos ? '' : 'empty'}}">
+        {{ $colonia->ninos ?? '-' }}
       </div>
     </div>
     <div class="info-field">
@@ -75,15 +74,15 @@
         Incidencia social
       </label>
       <div class="value">
-        3
+        {{ $proyectos->count() }}
       </div>
     </div>
     <div class="info-field">
       <label>
         Población total
       </label>
-      <div class="value">
-        612
+      <div class="value {{ $colonia->pob_total ? '' : 'empty'}}">
+        {{ $colonia->pob_total ?? '-' }}
       </div>
     </div>
   </div>
@@ -99,15 +98,17 @@
       Problemáticas
     </h3>
     <div class="simple-tag-list">
+      @if($problematicas->isNotEmpty())
+      @foreach($problematicas as $problematica)
       <span class="tag">
-        Inseguridad
+        {{ ucfirst($problematica) }}
       </span>
+      @endforeach
+      @else
       <span class="tag">
-        Falta de drenaje
+        Sin problemáticas registradas
       </span>
-      <span class="tag">
-        Desnutrición infantil
-      </span>
+      @endif
     </div>
   </div>
   <div class="related-card">
@@ -117,7 +118,7 @@
         <path d="M9 21v-7h6v7"/>
         <path d="M4 12h16"/>
       </svg>
-      Espacios históricos
+      Espacios históricos (no programado)
     </h3>
     <div class="related-list">
       <div class="related-row">
@@ -141,16 +142,21 @@
       Proyectos
     </h3>
     <div class="related-list">
+      @if($proyectos->isNotEmpty())
+      @foreach($proyectos as $proyecto)
       <div class="related-row">
         <span class="name">
-          Huertos comunitarios
+          {{ $proyecto }}
         </span>
       </div>
+      @endforeach
+      @else
       <div class="related-row">
         <span class="name">
-          Salud preventiva en coloniasr
+          Sin proyectos registrados
         </span>
       </div>
+      @endif
     </div>
   </div>
 </div>
@@ -163,41 +169,57 @@
       <path d="M12 5v14"/>
       <path d="M5 12h14"/>
     </svg>
-    Nuevo reporte
+    Nueva nota
   </button>
 </div>
 <div class="timeline-card">
   <div class="timeline">
+@if($historial->isNotEmpty())
+    @foreach($historial as $historia)
     <div class="timeline-item">
       <div class="timeline-dot">
       </div>
       <div class="timeline-date">
-        4 de agosto, 2026
+        {{ $historia->fecha_formateada }}
       </div>
       <p class="timeline-text">
-        Investigación para implemetnación de nuevo proyecto.
+        {{ $historia->comentario }}
       </p>
     </div>
+    @endforeach
+@else
     <div class="timeline-item">
       <div class="timeline-dot">
       </div>
       <div class="timeline-date">
-        2 de ener, 2026
+        ---
       </div>
       <p class="timeline-text">
-        Reporte de incidente en casas de la calle x.
+        Sin registro de historial
       </p>
     </div>
-    <div class="timeline-item">
-      <div class="timeline-dot">
-      </div>
-      <div class="timeline-date">
-        15 de marzo, 2025
-      </div>
-      <p class="timeline-text">
-        implemetnación de huertos comuntiarios en la colonia.
-      </p>
-    </div>
+@endif
   </div>
 </div>
+
+@else
+<div class="empty-state">
+  <div class="empty-state-icon">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="7"/>
+      <path d="m21 21-4.3-4.3"/>
+      <path d="M9 9l4 4"/>
+      <path d="M13 9l-4 4"/>
+    </svg>
+  </div>
+  <h2>No se encontró ningún resultado</h2>
+  <p>No hay información que coincida con lo que buscas.</p>
+  <a type="button" class="btn-outline" href="{{ route('colonias.index') }}" data-url="{{ route('colonias.index') }}">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/>
+    </svg>
+    Regresar
+</a>
+</div>
+@endif
 @endsection
