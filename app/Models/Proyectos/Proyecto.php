@@ -41,6 +41,7 @@ class Proyecto extends Model
 
     public function getFechaFormInicioAttribute()
     {
+        if(!$this->fecha_inicio) return null;
         return $this->fecha_inicio
             ->locale('es')
             ->translatedFormat('j \d\e F \d\e Y');
@@ -48,6 +49,7 @@ class Proyecto extends Model
 
     public function getFechaFormFinAttribute()
     {
+        if(!$this->fecha_fin) return null;
         return $this->fecha_fin
             ->locale('es')
             ->translatedFormat('j \d\e F \d\e Y');

@@ -179,7 +179,7 @@
   @endforeach
 </div>
 @else
-<p>Sin participaciones.</p>
+<p>Sin participaciones</p>
 @endif
 
 @else
