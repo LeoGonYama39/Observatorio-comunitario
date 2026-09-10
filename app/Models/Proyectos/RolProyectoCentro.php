@@ -3,6 +3,7 @@
 namespace App\Models\Proyectos;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\PCentro;
 
 class RolProyectoCentro extends Model
 {
@@ -15,4 +16,14 @@ class RolProyectoCentro extends Model
         'rol',              //[NN]
         'otros',
     ];
+
+    public function centros()
+    {
+        return $this->belongsToMany(
+            PCentro::class,
+            'rol_taller_centro',
+            'taller_id',
+            'centro_id'
+        )->withPivot('rol', 'otros');
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Area;
 use App\Models\Proyectos\Proyecto;
+use App\Models\Talleres\Taller;
 
 class Eje extends Model
 {
@@ -33,6 +34,16 @@ class Eje extends Model
             'proyecto_eje',     //Tabla a usar para la relación
             'eje_id',           //FK del modelo actual
             'proyecto_id'       //FK del otro modelo
+        );
+    }
+
+    public function talleres()
+    {
+        return $this->belongsToMany(
+            Taller::class,
+            'taller_eje',
+            'eje_id',
+            'taller_id'
         );
     }
 }

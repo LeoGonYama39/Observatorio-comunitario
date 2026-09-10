@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use App\Models\Talleres\TallerGen;
+use App\Models\Talleres\Taller;
 
 class Participaciones extends Model
 {
@@ -37,6 +39,26 @@ class Participaciones extends Model
 
         //Si la participación es activa
         return true;
+    }
+
+    public function talleresComoTallerista()
+    {
+        return $this->belongsToMany(
+            TallerGen::class,
+            'tallerista_externo',
+            'participacion_id',
+            'taller_gen_id'
+        );
+    }
+
+    public function talleres()
+    {
+        return $this->belongsToMany(
+            Taller::class,
+            'rol_taller_externo',
+            'participacion_id',
+            'taller_id'
+        )->withPivot('rol', 'otros');
     }
 
 }

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Talleres\TallerGen;
+use App\Models\Talleres\Taller;
 
 class PComunidad extends Model
 {
@@ -64,5 +66,35 @@ class PComunidad extends Model
                 return $this->genero === 'masculino' ? 'Usuario' : 'Usuaria';
                 break;
         }
+    }
+
+    public function talleresComoTallerista()
+    {
+        return $this->belongsToMany(
+            TallerGen::class,
+            'tallerista_comunidad',
+            'comunidad_id',
+            'taller_gen_id'
+        );
+    }
+
+    public function talleresComoApoyo()
+    {
+        return $this->belongsToMany(
+            Taller::class,
+            'rol_taller_comunidad',
+            'comunidad_id',
+            'taller_id'
+        )->withPivot('rol', 'otros');
+    }
+
+    public function talleresComoParticipante()
+    {
+        return $this->belongsToMany(
+            TallerGen::class,
+            'taller_grupos',
+            'comunidad_id',
+            'taller_gen_id'
+        )->withPivot('baja');
     }
 }
