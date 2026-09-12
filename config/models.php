@@ -25,7 +25,7 @@ return [
         |
         */
 
-        'path' => app_path('Models/Educacion'),
+        'path' => app_path('Models'),
 
         /*
         |--------------------------------------------------------------------------
@@ -38,8 +38,8 @@ return [
         |
         */
 
-        'namespace' => 'App\Models\Educacion',
-        
+        'namespace' => 'App\Models',
+
         /*
         |--------------------------------------------------------------------------
         | Parent Class
