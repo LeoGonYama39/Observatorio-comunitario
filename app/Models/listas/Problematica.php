@@ -1,20 +1,36 @@
 <?php
 
+/**
+ * Created by Reliese Model.
+ */
+
 namespace App\Models\listas;
 
-use Illuminate\Database\Eloquent\Model;
-use App\Models\Proyectos\Proyecto;
 use App\Models\Colonia;
+use App\Models\ProblemColonium;
+use App\Models\Proyectos\Proyecto;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
-class Problematicas extends Model
+/**
+ * Class Problematica
+ *
+ * @property int $id
+ * @property string $nombre
+ *
+ * @property Collection|ProblemColonia[] $problem_colonia
+ * @property Collection|Proyecto[] $proyectos
+ *
+ * @package App\Models
+ */
+class Problematica extends Model
 {
-    public $timestamps = false;
-    protected $table = 'problematicas';
+	protected $table = 'problematicas';
+	public $timestamps = false;
 
-    protected $fillable = [
-        'nombre',
-    ];
-
+	protected $fillable = [
+		'nombre'
+	];
 
     public function proyectos()
     {

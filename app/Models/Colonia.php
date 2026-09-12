@@ -6,7 +6,7 @@
 
 namespace App\Models;
 
-use App\Models\listas\Problematicas;
+use App\Models\listas\Problematica;
 use App\Models\Proyectos\Proyecto;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -75,7 +75,7 @@ class Colonia extends Model
     public function problematicas()
     {
         return $this->belongsToMany(
-            Problematicas::class,   //Modelo a relacionar
+            Problematica::class,   //Modelo a relacionar
             'problem_colonia',      //Tabla a usar para la relación
             'colonia_id',          //FK del modelo actual
             'problematica_id'       //FK del otro modelo

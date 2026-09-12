@@ -20,7 +20,8 @@ class Taller extends Model
         'objetivos',
         'auditable',
         'repo',
-        'pobl_obj',
+        'pobl_obj_low',
+        'pobl_obj_high',
     ];
 
     protected $casts = [

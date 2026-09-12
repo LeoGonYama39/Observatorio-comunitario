@@ -2,10 +2,10 @@
 
 namespace App\Models\Proyectos;
 
+use App\Models\Areas\Eje;
+use App\Models\listas\Problematica;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Eje;
 use App\Models\Colonia;
-use App\Models\listas\Problematicas;
 use Carbon\Carbon;
 
 class Proyecto extends Model
@@ -25,7 +25,8 @@ class Proyecto extends Model
         'evaluacion',
         'estado',           //[NN]
         'auditable',
-        'pobl_obj',
+        'pobl_obj_low',
+        'pobl_obj_high',
     ];
 
     protected $casts = [
@@ -78,7 +79,7 @@ class Proyecto extends Model
     public function problematicas()
     {
         return $this->belongsToMany(
-            Problematicas::class,   //Modelo a relacionar
+            Problematica::class,   //Modelo a relacionar
             'problematica_proyecto',//Tabla a usar para la relación
             'proyecto_id',          //FK del modelo actual
             'problematica_id'       //FK del otro modelo
