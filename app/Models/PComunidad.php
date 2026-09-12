@@ -1,45 +1,79 @@
 <?php
 
+/**
+ * Created by Reliese Model.
+ */
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use App\Models\Talleres\TallerGen;
+use App\Models\Educacion\InscripcionesEducativa;
+use App\Models\Talleres\RolTallerComunidad;
 use App\Models\Talleres\Taller;
+use App\Models\Talleres\TallerGen;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class PComunidad
+ *
+ * @property int $id
+ * @property int $colonia_id
+ * @property string $nombre
+ * @property string $ap_pat
+ * @property string|null $ap_mat
+ * @property Carbon|null $birth_date
+ * @property string|null $genero
+ * @property string|null $nv_escolar
+ * @property string|null $telefono
+ * @property bool $lider
+ * @property string|null $saberes
+ *
+ * @property Colonium $colonium
+ * @property Collection|AJuridica[] $a_juridicas
+ * @property Collection|Caso[] $casos
+ * @property Collection|CasoTutor[] $caso_tutors
+ * @property InscripcionesEducativa|null $inscripciones_educativa
+ * @property Collection|RolEventoComunidad[] $rol_evento_comunidads
+ * @property Collection|RolTallerComunidad[] $rol_taller_comunidads
+ * @property Collection|TallerGrupo[] $taller_grupos
+ * @property Collection|TalleresProcGrupGrupo[] $talleres_proc_grup_grupos
+ *
+ * @package App\Models
+ */
 class PComunidad extends Model
 {
-    public $timestamps = false;
-    protected $table = 'p_comunidad';
-    
-    protected $fillable = [
-        'colonia_id',
-        'nombre',
-        'ap_pat',
-        'ap_mat',
-        'birth_date',
-        'genero',
-        'nv_escolar',
-        'telefono',
-        'lider',
-        'saberes',
-    ];
+	protected $table = 'p_comunidad';
+	public $timestamps = false;
 
-    //Crear una nueva columna fake
+	protected $casts = [
+		'colonia_id' => 'int',
+		'lider' => 'bool'
+	];
+
+	protected $fillable = [
+		'colonia_id',
+		'nombre',
+		'ap_pat',
+		'ap_mat',
+		'birth_date',
+		'genero',
+		'nv_escolar',
+		'telefono',
+		'lider',
+		'saberes'
+	];
+
     protected $appends = [
         'edad',
         'categoria',
         'categ_categ',
-        ];
-
-    //Lider lo lee como 0 o 1, usar como booleano
-    protected $casts = [
-        'lider' => 'boolean',
     ];
 
     //Función para obtener la edad, con la fecha de nacimiento guardada
-    public function getEdadAttribute() { 
+    public function getEdadAttribute() {
         if(!$this->birth_date) return null;
-        return \Carbon\Carbon::parse($this->birth_date)->age; 
+        return \Carbon\Carbon::parse($this->birth_date)->age;
     }
 
     public function getCategCategAttribute() {
@@ -55,7 +89,7 @@ class PComunidad extends Model
         switch ($this->categ_categ) {
             case "lider_saberes":
                 return 'Líder y dir. de saberes';
-                break; 
+                break;
             case "lider":
                 return "Líder comunitario";
                 break;
@@ -67,6 +101,51 @@ class PComunidad extends Model
                 break;
         }
     }
+
+	public function colonia()
+	{
+		return $this->belongsTo(Colonia::class, 'colonia_id');
+	}
+
+	/*public function a_juridicas()
+	{
+		return $this->hasMany(AJuridica::class, 'comunidad_id');
+	}*/
+
+	/*public function casos()
+	{
+		return $this->hasMany(Caso::class, 'comunidad_id');
+	}*/
+
+	/*public function caso_tutors()
+	{
+		return $this->hasMany(CasoTutor::class, 'comunidad_id');
+	}*/
+
+	public function inscripciones_educativas()
+	{
+		return $this->hasOne(InscripcionesEducativa::class, 'comunidad_id');
+	}
+
+	/*public function rol_evento_comunidads()
+	{
+		return $this->hasMany(RolEventoComunidad::class, 'comunidad_id');
+	}*/
+
+	/*public function rol_taller_comunidad()
+	{
+		return $this->hasMany(RolTallerComunidad::class, 'comunidad_id');
+	}*/
+
+	/*public function taller_grupos()
+	{
+		return $this->hasMany(TallerGrupo::class, 'comunidad_id');
+	}*/
+
+	/*public function talleres_proc_grup_grupos()
+	{
+		return $this->hasMany(TalleresProcGrupGrupo::class, 'comunidad_id');
+	}*/
 
     public function talleresComoTallerista()
     {
