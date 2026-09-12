@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property PCentro $p_centro
  * @property Area $area
- * @property Collection|PExterno[] $p_externos
+ * @property Collection|PExternoBackup[] $p_externos
  * @property Collection|Eje[] $ejes
  *
  * @package App\Models\Areas

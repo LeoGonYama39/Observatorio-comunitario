@@ -1,38 +1,68 @@
 <?php
 
+/**
+ * Created by Reliese Model.
+ */
+
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Areas\Responsabilidad;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
-class PExterno extends Authenticatable
+/**
+ * Class PExterno
+ *
+ * @property int $id
+ * @property string $nombre
+ * @property string $ap_pat
+ * @property string|null $ap_mat
+ * @property int|null $responsabilidad_id
+ * @property string|null $universidad
+ * @property string|null $correo
+ * @property string|null $matricula
+ * @property string|null $carrera
+ * @property string|null $usuario
+ * @property string|null $password
+ * @property string|null $remember_token
+ *
+ * @property Responsabilidad|null $responsabilidad
+ * @property Collection|Participacione[] $participaciones
+ *
+ * @package App\Models
+ */
+class PExterno extends Model
 {
-    use HasFactory;
+	protected $table = 'p_externo';
+	public $timestamps = false;
 
-    public $timestamps = false;
-    protected $table = 'p_externo';
+	protected $casts = [
+		'responsabilidad_id' => 'int'
+	];
 
-    protected $fillable = [
-        'nombre',
-        'ap_pat',
-        'ap_mat',
-        'universidad',
-        'correo',
-        'matricula',
-        'carrera',
-        'usuario',
-        'password',
-    ];
+	protected $hidden = [
+		'password',
+		'remember_token'
+	];
 
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
+	protected $fillable = [
+		'nombre',
+		'ap_pat',
+		'ap_mat',
+		'responsabilidad_id',
+		'universidad',
+		'correo',
+		'matricula',
+		'carrera',
+		'usuario',
+		'password',
+	];
 
     protected $appends = [
         'tipo_categ',
         'tipo_formateado',
-        ];
+    ];
 
 
     //Genera la etiqueta para el dato de la tabla, para filtrar con js
@@ -48,7 +78,7 @@ class PExterno extends Authenticatable
 
         //Filtro anual
         if($this->anio < $anioActual) return 'no_activo';
-        
+
         //Filtro de temporada
         if ($this->temporada === 'primavera' && $mesActual > 5) return 'no_activo';
 
@@ -62,4 +92,14 @@ class PExterno extends Authenticatable
         //Reescribir para los que tienen una participación activa
         return ucfirst(str_replace('_', ' ', $this->tipo_categ));
     }
+
+	public function responsabilidad()
+	{
+		return $this->belongsTo(Responsabilidad::class);
+	}
+
+	public function participaciones()
+	{
+		return $this->hasMany(Participaciones::class, 'externo_id');
+	}
 }

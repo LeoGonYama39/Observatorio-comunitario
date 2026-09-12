@@ -111,7 +111,7 @@ class PExternoController extends Controller
         ->fromSub(                          //->fromSub($consulta, 'p'), o sea, agarra $consulta, la llama como p, y hace el where
             DB::table('participaciones')    //Indica a Laravel que se trabajará directo con la tabla, como el FROM participaciones del query
             ->select('participaciones.*',   //el SELECT, entiende participaciones.*
-                DB::raw('                   
+                DB::raw('
                     ROW_NUMBER() OVER (
                     PARTITION BY externo_id
                     ORDER BY anio DESC, temporada DESC
@@ -128,8 +128,8 @@ class PExternoController extends Controller
 
     //Como referencia: el query en sql
     /**
-     * 
-     * 
+     *
+     *
      * SELECT *
      * FROM (
      *     SELECT
@@ -141,7 +141,7 @@ class PExternoController extends Controller
      *     FROM participaciones
      * ) AS p
      * WHERE rn = 1;
-     * 
+     *
      */
 
     //Obtiene los datos para la tabla index, con ayuda de queryUltimasParticipaciones
