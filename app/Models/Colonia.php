@@ -46,6 +46,13 @@ class Colonia extends Model
         'ninos'
     ];
 
+    protected $appends = ['pob_total'];
+
+    public function getPobTotalAttribute() {
+        if((!$this->adultos) && (!$this->ninos)) return null;
+        return $this->adultos + $this->ninos;
+    }
+
     /*public function evento_colonia()
     {
         return $this->hasMany(EventoColonia::class, 'colonia_id');
