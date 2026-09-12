@@ -1,27 +1,44 @@
 <?php
 
+/**
+ * Created by Reliese Model.
+ */
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class HistorialColonium
+ *
+ * @property int $id
+ * @property int $colonia_id
+ * @property Carbon $fecha
+ * @property string $comentario
+ *
+ * @property Colonium $colonium
+ *
+ * @package App\Models
+ */
 class HistorialColonia extends Model
 {
-    public $timestamps = false;
     protected $table = 'historial_colonia';
+    public $timestamps = false;
+
+    protected $casts = [
+        'colonia_id' => 'int',
+        'fecha' => 'datetime'
+    ];
 
     protected $fillable = [
         'colonia_id',
         'fecha',
-        'comentario',
-    ];
-
-    protected $casts = [
-        'fecha' => 'datetime',
+        'comentario'
     ];
 
     protected $appends = [
-    'fecha_formateada',
+        'fecha_formateada',
     ];
 
     public function getFechaFormateadaAttribute()
@@ -29,5 +46,10 @@ class HistorialColonia extends Model
         return $this->fecha
             ->locale('es')
             ->translatedFormat('j \d\e F \d\e Y');
+    }
+
+    public function Colonia()
+    {
+        return $this->belongsTo(Colonia::class, 'colonia_id');
     }
 }
