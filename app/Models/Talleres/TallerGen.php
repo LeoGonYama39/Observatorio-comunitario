@@ -15,14 +15,9 @@ class TallerGen extends Model
 
     protected $fillable = [
         'taller_id',
-        'fecha_inicio',
-        'fecha_fin',
+        'anio',
+        'temporada',
         'evaluacion',
-    ];
-
-    protected $casts = [
-        'fecha_inicio' => 'date',
-        'fecha_fin' => 'date',
     ];
 
     public function taller()

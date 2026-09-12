@@ -12,6 +12,7 @@ use App\Models\Proyectos\RolProyectoCentro;
 use App\Models\Talleres\RolTallerCentro;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * Class PCentro
@@ -36,7 +37,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Models
  */
-class PCentro extends Model
+class PCentro extends Authenticatable
 {
 	protected $table = 'p_centro';
 	public $timestamps = false;

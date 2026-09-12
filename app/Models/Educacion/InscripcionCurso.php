@@ -15,13 +15,13 @@ use App\Models\Educacion\InscripcionMateria;
 
 /**
  * Class InscripcionCurso
- * 
+ *
  * @property int $id
  * @property int $insc_edu_id
  * @property int $cursos_id
  * @property Carbon $fecha_ingreso
  * @property string $estado
- * 
+ *
  * @property InscripcionesEducativa $inscripciones_educativa
  * @property Curso $curso
  * @property Collection|InscripcionMaterium[] $inscripcion_materia
@@ -43,7 +43,9 @@ class InscripcionCurso extends Model
 		'insc_edu_id',
 		'cursos_id',
 		'fecha_ingreso',
-		'estado'
+		'estado',
+        'anio',
+        'temporada',
 	];
 
 	public function inscripciones_educativa()

@@ -2,8 +2,12 @@
 
 namespace App\Models\Talleres;
 
+use App\Models\Areas\Eje;
+use App\Models\listas\Instituciones;
+use App\Models\Participacion;
+use App\Models\PCentro;
+use App\Models\PComunidad;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Eje;
 
 class Taller extends Model
 {
@@ -44,5 +48,45 @@ class Taller extends Model
             TallerGen::class,
             'taller_id'
         );
+    }
+
+    public function instituciones()
+    {
+        return $this->belongsToMany(
+            Instituciones::class,
+            'taller_institucion',
+            'taller_id',
+            'institucion_id'
+        )->withPivot('rol', 'otros');
+    }
+
+    public function rolesExternos()
+    {
+        return $this->belongsToMany(
+            Participacion::class,
+            'rol_taller_externo',
+            'taller_id',
+            'participacion_id'
+        )->withPivot('rol', 'otros');
+    }
+
+    public function rolesComunidad()
+    {
+        return $this->belongsToMany(
+            PComunidad::class,
+            'rol_taller_comunidad',
+            'taller_id',
+            'comunidad_id'
+        )->withPivot('rol', 'otros');
+    }
+
+    public function rolesCentro()
+    {
+        return $this->belongsToMany(
+            PCentro::class,
+            'rol_taller_centro',
+            'taller_id',
+            'centro_id'
+        )->withPivot('rol', 'otros');
     }
 }

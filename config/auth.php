@@ -72,7 +72,7 @@ return [
         ],
         'externo' => [
             'driver' => 'eloquent',
-            'model' => App\Models\PExternoBackup::class,
+            'model' => App\Models\PExterno::class,
         ],
     ],
 

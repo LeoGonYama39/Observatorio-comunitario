@@ -10,6 +10,7 @@ use App\Models\Areas\Responsabilidad;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * Class PExterno
@@ -32,7 +33,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Models
  */
-class PExterno extends Model
+class PExterno extends Authenticatable
 {
 	protected $table = 'p_externo';
 	public $timestamps = false;
