@@ -1,34 +1,67 @@
 <?php
 
+/**
+ * Created by Reliese Model.
+ */
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use App\Models\Proyectos\Proyecto;
 use App\Models\listas\Problematicas;
+use App\Models\Proyectos\Proyecto;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Colonia
+ *
+ * @property int $id
+ * @property string $nombre
+ * @property int|null $viviendas
+ * @property int|null $adultos
+ * @property int|null $ninos
+ *
+ * @property Collection|EventoColonium[] $evento_colonia
+ * @property Collection|HistorialColonium[] $historial_colonia
+ * @property Collection|PComunidad[] $p_comunidads
+ * @property Collection|ProblemColonium[] $problem_colonia
+ * @property Collection|ProyectoColonium[] $proyecto_colonia
+ *
+ * @package App\Models
+ */
 class Colonia extends Model
 {
-    public $timestamps = false;
     protected $table = 'colonia';
+    public $timestamps = false;
+
+    protected $casts = [
+        'viviendas' => 'int',
+        'adultos' => 'int',
+        'ninos' => 'int'
+    ];
 
     protected $fillable = [
         'nombre',
         'viviendas',
         'adultos',
-        'ninos',
+        'ninos'
     ];
 
-    //Crear una nueva columna fake
-    protected $appends = ['pob_total'];
+    /*public function evento_colonia()
+    {
+        return $this->hasMany(EventoColonia::class, 'colonia_id');
+    }*/
 
-    //Función para obtener la población total con la población de adultos y niños
-    public function getPobTotalAttribute() { 
-        if((!$this->adultos) && (!$this->ninos)) return null;
-        return $this->adultos + $this->ninos; 
+    public function historial_colonia()
+    {
+        return $this->hasMany(HistorialColonia::class, 'colonia_id');
     }
 
+    public function p_comunidad()
+    {
+        return $this->hasMany(PComunidad::class, 'colonia_id');
+    }
 
-    //Para tablas intermedias 
+    //Para tablas intermedias
     public function proyectos()
     {
         return $this->belongsToMany(
