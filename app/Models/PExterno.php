@@ -28,7 +28,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $remember_token
  *
  * @property Responsabilidad|null $responsabilidad
- * @property Collection|Participacione[] $participaciones
+ * @property Collection|Participacion[] $participaciones
  *
  * @package App\Models
  */
@@ -100,6 +100,6 @@ class PExterno extends Model
 
 	public function participaciones()
 	{
-		return $this->hasMany(Participaciones::class, 'externo_id');
+		return $this->hasMany(Participacion::class, 'externo_id');
 	}
 }

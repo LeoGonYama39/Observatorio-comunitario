@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sup\DatosUsuario;
 use Illuminate\Http\Request;
 use App\Models\PExterno;
-use App\Models\Participaciones;
+use App\Models\Participacion;
 use Illuminate\Support\Facades\DB;
 
 class PExternoController extends Controller
@@ -187,7 +187,7 @@ class PExternoController extends Controller
         //Búsqueda de participaciones del externo
 
         //Búsqueda de datos del externo
-        $participaciones =  Participaciones::select(
+        $participaciones =  Participacion::select(
                 'id',
                 'temporada',
                 'anio',
