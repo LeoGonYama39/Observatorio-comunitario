@@ -59,16 +59,16 @@
         Cargo
       </label>
       <div class="value">
-        {{ ucfirst(str_replace('_', ' ', $centro->cargo)); }} 
+        {{ ucfirst(str_replace('_', ' ', $centro->cargo)) }}
       </div>
     </div>
-    @if($centro->area)
+    @if($centro->a_cargo_de)
     <div class="info-field">
       <label>
-        Área a cargo
+        A cargo de
       </label>
       <div class="value">
-        {{ ucfirst(str_replace('_', ' ', $centro->area)); }}
+        {{ $centro->a_cargo_de }}
       </div>
     </div>
     @endif

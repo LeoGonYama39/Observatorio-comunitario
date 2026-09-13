@@ -128,22 +128,19 @@ class PCentroController extends Controller
     }
 
     //Obtiene los datos para ficha show
-    private function getDatosShow($id) {
-        return PCentro::leftJoin(
-            'area',             // Tabla a unir
-            'area.centro_id',   // FK
-            '=',                // Operador
-            'p_centro.id'       // PK
-        )
-        ->select(
-            'p_centro.id',
-            'p_centro.nombre',
-            'p_centro.ap_pat',
-            'p_centro.ap_mat',
-            'p_centro.cargo',
-            'area.nombre AS area'
-        )
-        ->where('p_centro.id', $id)
-        ->first();
+    private function getDatosShow($id)
+    {
+        return PCentro::with([
+            'areas:id,nombre,centro_id',
+            'responsabilidades:id,nombre,area_id,centro_id'
+        ])
+            ->select(
+                'id',
+                'nombre',
+                'ap_pat',
+                'ap_mat',
+                'cargo'
+            )
+            ->find($id);
     }
 }
