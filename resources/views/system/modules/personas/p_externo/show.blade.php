@@ -105,14 +105,16 @@
       </div>
     </div>
     @endif
+    @if($respons)
     <div class="info-field">
-      <label>
-        Área
-      </label>
-      <div class="value">
-        Vinculación
-      </div>
+        <label>
+            Área (Actividad)
+        </label>
+        <div class="value">
+            {{ $area->nombre }} ({{ $respons->nombre }})
+        </div>
     </div>
+    @endif
   </div>
 </div>
 <div class="section-header">
@@ -137,7 +139,7 @@
         <span class="person-name">
           {{ ucfirst(str_replace('_', ' ', $participacion->tipo)) }}
           <span class="current-badge">
-            @if(($loop->iteration === 1) && ($participacion->activo)) 
+            @if(($loop->iteration === 1) && ($participacion->activo))
             Activo
             @else
             Concluido

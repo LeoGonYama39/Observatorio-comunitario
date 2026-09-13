@@ -62,10 +62,12 @@ class PExternoController extends Controller
 
         $datos = $this->getDatosShow($id);
 
-        $externo = $datos[0];
-        $participaciones = $datos[1];
+        $externo = $datos['externo'];
+        $participaciones = $datos['participaciones'];
+        $respons = $datos['respons'];
+        $area = $datos['area'];
 
-        $view = view("system.modules.personas.p_externo.show", compact('persona', 'otros', 'externo', 'participaciones'));
+        $view = view("system.modules.personas.p_externo.show", compact('persona', 'otros', 'externo', 'participaciones', 'area', 'respons'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -168,39 +170,45 @@ class PExternoController extends Controller
     }
 
     private function getDatosShow($id) {
-        $datos = [];
-
         //Búsqueda de datos del externo
-        $externo =  PExterno::select(
-                'id',
-                'nombre',
-                'ap_pat',
-                'ap_mat',
-                'universidad',
-                'correo',
-                'matricula',
-                'carrera')
-            ->where('id', $id)
-            ->first();
+        $externo = PExterno::select(
+            'id',
+            'nombre',
+            'ap_pat',
+            'ap_mat',
+            'universidad',
+            'responsabilidad_id',   //Necesario para posteriormente hacer la búsqueda de resposabilidad
+            'correo',
+            'matricula',
+            'carrera'
+        )->find($id);
 
 
         //Búsqueda de participaciones del externo
 
         //Búsqueda de datos del externo
-        $participaciones =  Participacion::select(
+        $participaciones = $externo->participaciones()
+            ->select(
                 'id',
+                'externo_id',   //Necesario hacer select a la FK porque la ocupa eloquent, aunque no la ocupe yo
                 'temporada',
                 'anio',
                 'aport',
-                'tipo')
-            ->where('externo_id', $id)
+                'tipo'
+            )
             ->orderBy('anio', 'desc')
             ->orderBy('temporada', 'desc')
             ->get();
 
-        $datos[0] = $externo;
-        $datos[1] = $participaciones;
-        return $datos;
+        $respons = $externo->responsabilidad;
+        $area = $respons ? $respons->area : null;
+
+        return [
+            'externo' => $externo,
+            'participaciones' => $participaciones,
+            'respons' => $respons,
+            'area' => $area,
+        ];
     }
 
 }
