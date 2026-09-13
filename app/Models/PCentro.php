@@ -57,12 +57,42 @@ class PCentro extends Authenticatable
 		'remember_token'
 	];
 
+    protected $appends = ['a_cargo_de'];
+
+    //----------------------------
+    //      Getters de appends
+    //----------------------------
+
+    public function getACargoDeAttribute()
+    {
+        //Con isEmpty y no !, porque siempre resgresa una Collection, puede estar vacía, pero no es null
+        if ($this->areas->isEmpty() && $this->responsabilidades->isEmpty()) {
+            return null;
+        }
+
+        $areas = $this->areas
+            ->pluck('nombre')
+            ->join(' · ');
+
+        $responsabilidades = $this->responsabilidades
+            ->pluck('nombre')
+            ->join(' · ');
+
+        return collect([
+            $areas,
+            $responsabilidades,
+        ])->filter()->join(' · ');
+    }
+
+    //----------------------------
+    //      Relaciones
+    //----------------------------
 	public function areas()
 	{
 		return $this->hasMany(Area::class, 'centro_id');
 	}
 
-	public function responsabilidads()
+	public function responsabilidades()
 	{
 		return $this->hasMany(Responsabilidad::class, 'centro_id');
 	}
@@ -77,10 +107,10 @@ class PCentro extends Authenticatable
 		return $this->hasMany(RolProyectoCentro::class, 'centro_id');
 	}
 
-	public function rol_taller_centros()
+	/*public function rol_taller_centros()
 	{
 		return $this->hasMany(RolTallerCentro::class, 'centro_id');
-	}
+	}*/
 
 	/*public function seguimiento_centros()
 	{
