@@ -54,7 +54,7 @@
     </thead>
     <tbody>
       @foreach($proyectos as $proyecto)
-      <tr data-url="{{ route('proyectos.show', $proyecto->id) }}" 
+      <tr data-url="{{ route('proyectos.show', $proyecto->id) }}"
           data-prior="{{ $proyecto->prioritario ? 1 : 0}}"
           data-estado="{{ $proyecto->estado }}">
         <td>
@@ -67,13 +67,13 @@
             {{ ucfirst($proyecto->nombre) }}
           </div>
           <div class="person-role">
-            {{ ucfirst(str_replace('_', ' ', $proyecto->estado)); }}
+            {{ ucfirst(str_replace('_', ' ', $proyecto->estado)) }}
           </div>
         </td>
         <td>
-          <span class="area-tag {{ $proyecto->areas ? '' : 'empty'}}">
-            {{ $proyecto->areas ?? '-'}}
-          </span>
+            <span class="area-tag {{ $proyecto->areas->isEmpty() ? 'empty' : '' }}">
+                {{ $proyecto->areas->pluck('nombre')->join(' · ') ?: '-' }}
+            </span>
         </td>
       </tr>
       @endforeach

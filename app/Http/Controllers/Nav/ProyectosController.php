@@ -97,54 +97,19 @@ class ProyectosController extends Controller
     }
 
     //Obtiene los datos para la tabla index
-    private function getDatosIndex() {
-        $proyectos = Proyecto::leftJoin(
-            'proyecto_eje',
-            'proyecto.id',
-            '=',
-            'proyecto_eje.proyecto_id'
-        )
-        ->join(
-            'eje',
-            'proyecto_eje.eje_id',
-            '=',
-            'eje.id'
-        )
-        ->join(
-            'area_eje',
-            'eje.id',
-            '=',
-            'area_eje.eje_id'
-        )
-        ->join(
-            'area',
-            'area_eje.area_id',
-            '=',
-            'area.id'
-        )
-        ->select(
-            'proyecto.id',
-            'proyecto.nombre',
-            'proyecto.estado',
-            'proyecto.prioritario',
-            DB::raw("
-                GROUP_CONCAT(
-                    DISTINCT area.nombre
-                    ORDER BY area.nombre
-                    SEPARATOR ', '
-                ) AS areas
-            ")
-        )
-        ->groupBy(
-            'proyecto.id',
-            'proyecto.nombre',
-            'proyecto.estado',
-            'proyecto.prioritario'
-        )
-        ->orderBy('proyecto.nombre')
-        ->get();
-
-        return $proyectos;
+    private function getDatosIndex()
+    {
+        return Proyecto::with([
+            'ejes.responsabilidades.area'
+        ])
+            ->select(
+                'id',
+                'nombre',
+                'estado',
+                'prioritario'
+            )
+            ->orderBy('nombre')
+            ->get();
     }
 
     private function getDatosShow($id){

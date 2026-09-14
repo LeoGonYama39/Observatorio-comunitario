@@ -45,10 +45,11 @@ class Eje extends Model
     public function responsabilidades()
     {
         return $this->belongsToMany(
-            Eje::class,
+            Responsabilidad::class,
             'responsabilidad_eje',
             'eje_id',
-            'responsabilidad_id');
+            'responsabilidad_id'
+        );
     }
 
 	public function tallers()

@@ -36,9 +36,22 @@ class Proyecto extends Model
     ];
 
     protected $appends = [
-    'fecha_form_inicio',
-    'fecha_form_fin',
+        'fecha_form_inicio',
+        'fecha_form_fin',
+        'areas',
     ];
+
+    public function getAreasAttribute()
+    {
+        if(!$this->ejes()) return null;
+        return $this->ejes
+            ->flatMap->responsabilidades
+            ->map->area
+            ->filter()
+            ->unique('id')
+            ->sortBy('nombre')
+            ->values();
+    }
 
     public function getFechaFormInicioAttribute()
     {

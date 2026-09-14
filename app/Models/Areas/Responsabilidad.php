@@ -47,10 +47,13 @@ class Responsabilidad extends Model
 		return $this->belongsTo(PCentro::class, 'centro_id');
 	}
 
-	public function area()
-	{
-		return $this->belongsTo(Area::class);
-	}
+    public function area()
+    {
+        return $this->belongsTo(
+            Area::class,
+            'area_id'
+        );
+    }
 
 	public function p_externos()
 	{
