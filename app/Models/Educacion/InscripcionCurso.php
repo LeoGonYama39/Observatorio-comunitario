@@ -62,4 +62,14 @@ class InscripcionCurso extends Model
 	{
 		return $this->hasMany(InscripcionMateria::class, 'insc_curso_id');
 	}
+
+    public function materias()
+    {
+        return $this->belongsToMany(
+            Materia::class,
+            'inscripcion_materia',
+            'insc_curso_id',
+            'materia_id'
+        )->withPivot('cursado');
+    }
 }
