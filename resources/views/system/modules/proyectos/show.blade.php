@@ -64,7 +64,7 @@
         Objetivos
       </h3>
       <p class="{{ $proyecto->objetivos ? '' : 'empty'}}">
-        {{ $proyecto->objetivos ?? '-'}}      
+        {{ $proyecto->objetivos ?? '-'}}
       </p>
     </div>
     <div class="doc-section">
@@ -72,7 +72,7 @@
         Alcance
       </h3>
       <p class="{{ $proyecto->alcance ? '' : 'empty'}}">
-        {{ $proyecto->alcance ?? '-'}}      
+        {{ $proyecto->alcance ?? '-'}}
       </p>
     </div>
     <div class="doc-section">
@@ -80,7 +80,7 @@
         Evaluación
       </h3>
       <p class="{{ $proyecto->evaluacion ? '' : 'empty'}}">
-        {{ $proyecto->evaluacion ?? '-'}}      
+        {{ $proyecto->evaluacion ?? '-'}}
       </p>
     </div>
   </div>
@@ -108,19 +108,8 @@
         Estado
       </label>
       <span class="meta-badge on">
-        {{ ucfirst(str_replace('_', ' ', $proyecto->estado)); }}
+        {{ ucfirst(str_replace('_', ' ', $proyecto->estado)) }}
       </span>
-    </div>
-    <div class="meta-row">
-      <label>
-        Responsable(s) (no listo)
-      </label>
-      <div class="value">
-        María Torres Salinas
-      </div>
-      <div class="value">
-        Sofía Ramírez Duarte
-      </div>
     </div>
     @if($proyecto->pobl_obj)
     <div class="meta-row">
@@ -134,49 +123,93 @@
     @endif
     <div class="meta-row">
       <label>
-        Colonias (no listo)
+        Colonias
       </label>
-      <div class="simple-tag-list">
-        <span class="tag">
-          Colonia 1
-        </span>
-        <span class="tag">
-          Colonia 2
-        </span>
-      </div>
+        @if($colonias->isNotEmpty())
+            <div class="simple-tag-list">
+                @foreach($colonias as $colonia)
+                    <span class="tag">
+                        {{ $colonia->nombre }}
+                    </span>
+                @endforeach
+            </div>
+        @else
+            <div class="value">
+                Colonias no registradas
+            </div>
+        @endif
     </div>
     <div class="meta-row">
       <label>
-        Áreas (no listo)
+        Áreas
       </label>
-      <div class="simple-tag-list">
-        <span class="tag">
-          Nutrición Comunitaria
-        </span>
-      </div>
+        @if($areas->isNotEmpty())
+            <div class="simple-tag-list">
+                @foreach($areas as $area)
+                    <span class="tag">
+                        {{ $area->nombre }}
+                    </span>
+                @endforeach
+            </div>
+        @else
+            <div class="value">
+                Áreas no registradas
+            </div>
+        @endif
     </div>
     <div class="meta-row">
       <label>
-        Ejes de acción (no listo)
+        Actividades
       </label>
-      <div class="simple-tag-list">
-        <span class="tag">
-          Eje 1
-        </span>
-        <span class="tag">
-          Eje 2
-        </span>
-      </div>
+        @if($responsabilidades->isNotEmpty())
+            <div class="simple-tag-list">
+                @foreach($responsabilidades as $responsabilidad)
+                    <span class="tag">
+                        {{ $responsabilidad->nombre }}
+                    </span>
+                @endforeach
+            </div>
+        @else
+            <div class="value">
+                Ejes no registrados
+            </div>
+        @endif
     </div>
     <div class="meta-row">
-      <label>
-        Problemáticas (no listo)
-      </label>
-      <div class="simple-tag-list">
-        <span class="tag">
-          Desnutrición
-        </span>
+          <label>
+              Ejes
+          </label>
+          @if($ejes->isNotEmpty())
+              <div class="simple-tag-list">
+                  @foreach($ejes as $eje)
+                      <span class="tag">
+                        {{ $eje->nombre }}
+                    </span>
+                  @endforeach
+              </div>
+          @else
+              <div class="value">
+                  Ejes no registrados
+              </div>
+          @endif
       </div>
+    <div class="meta-row">
+      <label>
+        Problemáticas
+      </label>
+        @if($problematicas->isNotEmpty())
+            <div class="simple-tag-list">
+                @foreach($problematicas as $problematica)
+                    <span class="tag">
+                        {{ $problematica->nombre }}
+                    </span>
+                @endforeach
+            </div>
+        @else
+            <div class="value">
+                Problemáticas no registradas
+            </div>
+        @endif
     </div>
     @if($proyecto->repo)
     <div class="meta-row">
@@ -220,34 +253,28 @@
     Agregar involucrado
   </button>
 </div>
-<div class="table-card" style="margin-bottom: 32px;">
-  <div style="padding: 6px 24px;">
-    <div class="related-row">
-      <span class="name">
-        María Torres Salinas
-      </span>
-      <span class="role-badge lider">
-        Resp. Meneses
-      </span>
+@if($involucrados->isNotEmpty())
+    <div class="table-card" style="margin-bottom: 32px;">
+        <div style="padding: 6px 24px;">
+            @foreach($involucrados as $involucrado)
+                <div class="related-row">
+            <span class="name">
+                {{ $involucrado['nombre'] }}
+                {{ $involucrado['ap_pat'] }}
+                {{ $involucrado['ap_mat'] }}
+            </span>
+                    <span class="role-badge {{ in_array($involucrado['rol'], ['responsable_en_meneses', 'docente']) ? 'lider' : '' }}">
+                {{ $involucrado['rol'] === 'otro'
+                    ? $involucrado['otros']
+                    : ucfirst(str_replace('_', ' ', $involucrado['rol'])) }}
+            </span>
+                </div>
+            @endforeach
+        </div>
     </div>
-    <div class="related-row">
-      <span class="name">
-        Sofía Ramírez Duarte
-      </span>
-      <span class="role-badge lider">
-        Docente
-      </span>
-    </div>
-    <div class="related-row">
-      <span class="name">
-        Diego Martínez Cobos
-      </span>
-      <span class="role-badge participante">
-        Logística
-      </span>
-    </div>
-  </div>
-</div>
+@else
+    <p>Sin involucrados registrados</p>
+@endif
 <div class="section-header">
   <h3>
     Historial
@@ -262,36 +289,29 @@
 </div>
 <div class="timeline-card">
   <div class="timeline">
-    <div class="timeline-item">
-      <div class="timeline-dot">
-      </div>
-      <div class="timeline-date">
-        20 de julio, 2026
-      </div>
-      <p class="timeline-text">
-        Se sembraron los primeros almácigos de jitomate y calabaza en el terreno de la colonia Loma Bonita.
-      </p>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-dot">
-      </div>
-      <div class="timeline-date">
-        2 de junio, 2026
-      </div>
-      <p class="timeline-text">
-        Reunión con vecinos de Loma Bonita para definir el terreno disponible y acordar horarios de riego compartido.
-      </p>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-dot">
-      </div>
-      <div class="timeline-date">
-        15 de marzo, 2025
-      </div>
-      <p class="timeline-text">
-        Arranque oficial del proyecto con recorrido por las colonias participantes.
-      </p>
-    </div>
+    @if($historial->isNotEmpty())
+        @foreach($historial as $historia)
+              <div class="timeline-item">
+                  <div class="timeline-dot"></div>
+                  <div class="timeline-date">
+                      {{ $historia->fecha_formateada ?? '-' }}
+                  </div>
+                  <p class="timeline-text">
+                      {{ $historia->comentario ?? '-' }}
+                  </p>
+              </div>
+        @endforeach
+    @else
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-date">
+                --------
+            </div>
+                <p class="timeline-text">
+                    Sin registros
+                </p>
+        </div>
+    @endif
   </div>
 </div>
 @else

@@ -70,7 +70,7 @@ class Participacion extends Model
     }
 
 
-    public function p_externo()
+    public function externo()
 	{
 		return $this->belongsTo(PExterno::class, 'externo_id');
 	}

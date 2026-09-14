@@ -57,9 +57,35 @@ class ProyectosController extends Controller
 
         $datos = $this->getDatosShow($id);
 
-        $proyecto = $datos['proyecto'];
+        if($datos) {
+            $proyecto = $datos['proyecto'];
+            $colonias = $datos['colonias'];
+            $problematicas = $datos['problematicas'];
+            $areas = $datos['areas'];
+            $responsabilidades = $datos['responsabilidades'];
+            $ejes = $datos['ejes'];
+            $involucrados = $datos['involucrados'];
+            $historial  = $datos['historial'];
 
-        $view = view("system.modules.proyectos.show",compact('persona', 'otros', 'proyecto'));
+            $view = view("system.modules.proyectos.show",compact(
+                'persona',
+                'otros',
+                'proyecto',
+                'colonias',
+                'problematicas',
+                'areas',
+                'responsabilidades',
+                'ejes',
+                'involucrados',
+                'historial'));
+        } else {
+            $proyecto = null;
+
+            $view = view("system.modules.proyectos.show",compact(
+                'persona',
+                'otros',
+                'proyecto'));
+        }
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -114,9 +140,54 @@ class ProyectosController extends Controller
 
     private function getDatosShow($id){
         $proyecto = Proyecto::find($id);
+        if(!$proyecto) return null;
+        $colonias = $proyecto->colonias()
+            ->select('colonia.id', 'colonia.nombre')
+            ->get();
+        $problematicas = $proyecto->problematicas()
+            ->select('problematicas.id', 'problematicas.nombre')
+            ->get();
+        $ejes = $proyecto->ejes;
+
+        $areas = collect();
+        $responsabilidades = collect();
+
+        foreach ($ejes as $eje) {
+            $areas = $areas->merge(
+                $eje->responsabilidades->pluck('area')
+            );
+
+            $responsabilidades = $responsabilidades->merge(
+                $eje->responsabilidades
+            );
+        }
+
+        $areas = $areas
+            ->filter()
+            ->unique('id')
+            ->sortBy('nombre')
+            ->values();
+
+        $responsabilidades = $responsabilidades
+            ->unique('id')
+            ->sortBy('nombre')
+            ->values();
+
+        $involucrados = $proyecto->involucrados;
+
+        $historial = $proyecto->historial()
+            ->orderBy('fecha', 'desc')
+            ->get();
 
         return [
             'proyecto' => $proyecto,
+            'colonias' => $colonias,
+            'problematicas' => $problematicas,
+            'areas' => $areas,
+            'responsabilidades' => $responsabilidades,
+            'ejes' => $ejes,
+            'involucrados' => $involucrados,
+            'historial' => $historial,
         ];
     }
 }

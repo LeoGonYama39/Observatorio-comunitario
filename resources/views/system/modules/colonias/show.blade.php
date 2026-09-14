@@ -195,7 +195,7 @@
         ---
       </div>
       <p class="timeline-text">
-        Sin registro de historial
+        Sin registros
       </p>
     </div>
 @endif

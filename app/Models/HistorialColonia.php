@@ -43,6 +43,7 @@ class HistorialColonia extends Model
 
     public function getFechaFormateadaAttribute()
     {
+        if(!$this->fecha) return null;
         return $this->fecha
             ->locale('es')
             ->translatedFormat('j \d\e F \d\e Y');
