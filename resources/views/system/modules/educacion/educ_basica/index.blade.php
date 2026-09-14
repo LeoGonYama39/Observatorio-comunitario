@@ -56,70 +56,28 @@
       </tr>
     </thead>
     <tbody>
-      <tr data-url="{{ route('educ_basica.show', 1) }}">
-        <td>
-          <div class="person-name">
-            José Castillo Gaitan
-          </div>
-          <div class="person-role">
-            Activo
-          </div>
-        </td>
-        <td class="area-tag">
-          Secundaria
-        </td>
-        <td class="area-tag">
-          4/9 acreditadas
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <div class="person-name">
-            María Gamboa Mayorga
-          </div>
-          <div class="person-role">
-            Baja
-          </div>
-        </td>
-        <td class="area-tag">
-          Alfabetización
-        </td>
-        <td class="area-tag">
-          1/3 acreditadas
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <div class="person-name">
-            Paulo Gómez Herrera
-          </div>
-          <div class="person-role">
-            Completo
-          </div>
-        </td>
-        <td class="area-tag">
-          Regularización primaria
-        </td>
-        <td class="area-tag">
-          6/6 acreditadas
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <div class="person-name">
-            Emiliano Siénega Ortiz
-          </div>
-          <div class="person-role">
-            Activo
-          </div>
-        </td>
-        <td class="area-tag">
-          Primaria (12-14)
-        </td>
-        <td class="area-tag">
-          7/9 acreditadas
-        </td>
-      </tr>
+    @foreach($inscripciones as $inscripcion)
+        <tr data-url="{{ route('educ_basica.show', $inscripcion['id']) }}"
+            data-curso="{{ $inscripcion['curso'] }}"
+            data-estado="{{ $inscripcion['estado'] }}">
+            <td>
+                <div class="person-name">
+                    {{ $inscripcion['nombre'] }}
+                    {{ $inscripcion['ap_pat'] }}
+                    {{ $inscripcion['ap_mat'] }}
+                </div>
+                <div class="person-role">
+                    {{ $inscripcion['estado'] }}
+                </div>
+            </td>
+            <td class="area-tag">
+                {{ $inscripcion['curso'] }}
+            </td>
+            <td class="area-tag">
+                {{ $inscripcion['avance'] }} acreditadas
+            </td>
+        </tr>
+    @endforeach
     </tbody>
   </table>
 </div>

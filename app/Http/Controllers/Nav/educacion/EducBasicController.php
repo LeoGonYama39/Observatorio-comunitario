@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Nav\educacion;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sup\DatosUsuario;
+use App\Models\Educacion\InscripcionCurso;
+use App\Models\Educacion\InscripcionesEducativa;
 use Illuminate\Http\Request;
 //use App\Models\;
 
@@ -16,7 +18,12 @@ class EducBasicController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.educacion.educ_basica.index", compact('persona', 'otros'));
+        $inscripciones = $this->getDatosIndex();
+
+        $view = view("system.modules.educacion.educ_basica.index", compact(
+            'persona',
+            'otros',
+            'inscripciones'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -87,5 +94,56 @@ class EducBasicController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    //-------------------
+    //  Funciones
+    //------------------
+    private function getDatosIndex()
+    {
+        $inscripciones = InscripcionesEducativa::with([
+            'comunidad',
+            'inscripcionCurso' => function ($query) {
+                $query->whereHas('curso', function ($query) {
+                    $query->where('tipo', 'básica');
+                })
+                    ->with([
+                        'curso',
+                        'curso.materias',
+                        'materias',
+                    ])
+                    ->orderBy('fecha_ingreso', 'desc');
+            },
+        ])
+            ->whereHas('inscripcionCurso.curso', function ($query) {
+                $query->where('tipo', 'básica');
+            })
+            ->get();
+
+        return $inscripciones
+            ->sortBy(function ($inscripcion) {
+                return $inscripcion->comunidad->nombre;
+            })
+            ->map(function ($inscripcion) {
+
+                $curso = $inscripcion->inscripcionCurso->first();
+
+                $acreditadas = $curso->materias
+                    ->filter(fn ($materia) => $materia->pivot->cursado)
+                    ->count();
+
+                $total = $curso->curso->materias->count();
+
+                return [
+                    'id' => $inscripcion->id,
+                    'nombre' => $inscripcion->comunidad->nombre,
+                    'ap_pat' => $inscripcion->comunidad->ap_pat,
+                    'ap_mat' => $inscripcion->comunidad->ap_mat,
+                    'estado' => $curso->estado,
+                    'curso' => $curso->curso->nombre,
+                    'avance' => "$acreditadas de $total",
+                ];
+            })
+            ->values();
     }
 }
