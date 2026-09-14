@@ -57,35 +57,13 @@ class ProyectosController extends Controller
 
         $datos = $this->getDatosShow($id);
 
-        if($datos) {
-            $proyecto = $datos['proyecto'];
-            $colonias = $datos['colonias'];
-            $problematicas = $datos['problematicas'];
-            $areas = $datos['areas'];
-            $responsabilidades = $datos['responsabilidades'];
-            $ejes = $datos['ejes'];
-            $involucrados = $datos['involucrados'];
-            $historial  = $datos['historial'];
-
-            $view = view("system.modules.proyectos.show",compact(
-                'persona',
-                'otros',
-                'proyecto',
-                'colonias',
-                'problematicas',
-                'areas',
-                'responsabilidades',
-                'ejes',
-                'involucrados',
-                'historial'));
-        } else {
-            $proyecto = null;
-
-            $view = view("system.modules.proyectos.show",compact(
-                'persona',
-                'otros',
-                'proyecto'));
-        }
+        $view = view(
+            "system.modules.proyectos.show",
+            array_merge(
+                compact('persona', 'otros'),
+                $datos ?? ['proyecto' => null]
+            )
+        );
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -179,15 +157,15 @@ class ProyectosController extends Controller
             ->orderBy('fecha', 'desc')
             ->get();
 
-        return [
-            'proyecto' => $proyecto,
-            'colonias' => $colonias,
-            'problematicas' => $problematicas,
-            'areas' => $areas,
-            'responsabilidades' => $responsabilidades,
-            'ejes' => $ejes,
-            'involucrados' => $involucrados,
-            'historial' => $historial,
-        ];
+        return compact(
+            'proyecto',
+            'colonias',
+            'problematicas',
+            'areas',
+            'responsabilidades',
+            'ejes',
+            'involucrados',
+            'historial'
+        );
     }
 }

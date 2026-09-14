@@ -184,6 +184,7 @@ class PExternoController extends Controller
         )->find($id);
 
 
+
         //Búsqueda de participaciones del externo
 
         //Búsqueda de datos del externo
