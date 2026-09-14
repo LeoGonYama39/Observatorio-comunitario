@@ -3,7 +3,11 @@
 namespace App\Models\Proyectos;
 
 use App\Models\Areas\Eje;
+use App\Models\listas\Instituciones;
 use App\Models\listas\Problematica;
+use App\Models\Participacion;
+use App\Models\PCentro;
+use App\Models\PComunidad;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Colonia;
 use Carbon\Carbon;
@@ -97,5 +101,45 @@ class Proyecto extends Model
             'proyecto_id',          //FK del modelo actual
             'problematica_id'       //FK del otro modelo
         );
+    }
+
+    public function instituciones()
+    {
+        return $this->belongsToMany(
+            Instituciones::class,
+            'proyecto_institucion',
+            'proyecto_id',
+            'institucion_id'
+        )->withPivot('rol', 'otros');
+    }
+
+    public function rolesCentro()
+    {
+        return $this->belongsToMany(
+            PCentro::class,
+            'rol_proyecto_centro',
+            'proyecto_id',
+            'centro_id'
+        )->withPivot('rol', 'otros');
+    }
+
+    public function rolesComunidad()
+    {
+        return $this->belongsToMany(
+            PComunidad::class,
+            'rol_proyecto_comunidad',
+            'proyecto_id',
+            'comunidad_id'
+        )->withPivot('rol', 'otros');
+    }
+
+    public function rolesExternos()
+    {
+        return $this->belongsToMany(
+            Participacion::class,
+            'rol_proyecto_externo',
+            'proyecto_id',
+            'participacion_id'
+        )->withPivot('rol', 'otros');
     }
 }
