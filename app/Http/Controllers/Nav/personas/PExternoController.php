@@ -62,12 +62,13 @@ class PExternoController extends Controller
 
         $datos = $this->getDatosShow($id);
 
-        $externo = $datos['externo'];
-        $participaciones = $datos['participaciones'];
-        $respons = $datos['respons'];
-        $area = $datos['area'];
-
-        $view = view("system.modules.personas.p_externo.show", compact('persona', 'otros', 'externo', 'participaciones', 'area', 'respons'));
+        $view = view(
+            "system.modules.personas.p_externo.show",
+            array_merge(
+                compact('persona', 'otros'),
+                $datos ?? ['externo' => null]
+            )
+        );
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -183,7 +184,7 @@ class PExternoController extends Controller
             'carrera'
         )->find($id);
 
-
+        if(!$externo) return null;
 
         //Búsqueda de participaciones del externo
 
@@ -204,12 +205,12 @@ class PExternoController extends Controller
         $respons = $externo->responsabilidad;
         $area = $respons ? $respons->area : null;
 
-        return [
-            'externo' => $externo,
-            'participaciones' => $participaciones,
-            'respons' => $respons,
-            'area' => $area,
-        ];
+        return compact(
+            'externo',
+            'participaciones',
+            'respons',
+            'area',
+        );
     }
 
 }
