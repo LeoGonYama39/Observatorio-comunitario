@@ -105,8 +105,8 @@ class EducBasicController extends Controller
             'comunidad',
             'inscripcionCurso' => function ($query) {
                 $query->whereHas('curso', function ($query) {
-                    $query->where('tipo', 'básica');
-                })
+                    $query->where('tipo', 'básica');                            //A pesar de haber a las personas con cursos de básica, estos pueden tener
+                })                                                              //cursos de media-sup, entonces me quedo con los cursos solo de básica
                     ->with([
                         'curso',
                         'curso.materias',
@@ -116,8 +116,8 @@ class EducBasicController extends Controller
             },
         ])
             ->whereHas('inscripcionCurso.curso', function ($query) {
-                $query->where('tipo', 'básica');
-            })
+                $query->where('tipo', 'básica');                //Filtro a las personas de InscripcionesEducativa, para que solo me de los que
+            })                                                                 //tienen al menos un curso de básica en su .curso
             ->get();
 
         return $inscripciones

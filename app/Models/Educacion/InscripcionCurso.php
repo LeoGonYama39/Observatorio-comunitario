@@ -58,11 +58,6 @@ class InscripcionCurso extends Model
 		return $this->belongsTo(Curso::class, 'cursos_id');
 	}
 
-	public function inscripcion_materia()
-	{
-		return $this->hasMany(InscripcionMateria::class, 'insc_curso_id');
-	}
-
     public function materias()
     {
         return $this->belongsToMany(

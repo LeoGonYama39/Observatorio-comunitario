@@ -27,6 +27,11 @@ function toggleAccesoFields(checkbox) {
     fields.hidden = !checkbox.checked;
 }
 
+//Toggle del checkbox para toggle de crear participación en create p_externo
+function toggleParticipacionFields(checkbox) {
+    const fields = document.getElementById('participacionFields');
+    fields.hidden = !checkbox.checked;
+}
 
 //Toggle para mostrar o no contraseña
 function togglePasswordField() {

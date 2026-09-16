@@ -39,9 +39,7 @@ class PCentroController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $centros = PCentro::select('id', 'nombre', 'ap_pat', 'ap_mat', 'cargo')->get();
-
-        $view = view("system.modules.personas.p_centro.create", compact('persona', 'otros', 'centros'));
+        $view = view("system.modules.personas.p_centro.create", compact('persona', 'otros'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
