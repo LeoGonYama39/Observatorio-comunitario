@@ -11,7 +11,7 @@
             <path d="M9 6l6 6-6 6"/>
         </svg>
         <span class="current">
-    Registro nuevo
+    Nuevo registro
   </span>
     </div>
 
