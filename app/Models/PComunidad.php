@@ -6,7 +6,7 @@
 
 namespace App\Models;
 
-use App\Models\Educacion\InscripcionesEducativa;
+use App\Models\Educacion\InscripcionEducativa;
 use App\Models\Talleres\RolTallerComunidad;
 use App\Models\Talleres\Taller;
 use App\Models\Talleres\TallerGen;
@@ -33,7 +33,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Collection|AJuridica[] $a_juridicas
  * @property Collection|Caso[] $casos
  * @property Collection|CasoTutor[] $caso_tutors
- * @property InscripcionesEducativa|null $inscripciones_educativa
+ * @property InscripcionEducativa|null $inscripciones_educativa
  * @property Collection|RolEventoComunidad[] $rol_evento_comunidads
  * @property Collection|RolTallerComunidad[] $rol_taller_comunidads
  * @property Collection|TallerGrupo[] $taller_grupos
@@ -124,7 +124,7 @@ class PComunidad extends Model
 
 	public function inscripciones_educativas()
 	{
-		return $this->hasOne(InscripcionesEducativa::class, 'comunidad_id');
+		return $this->hasOne(InscripcionEducativa::class, 'comunidad_id');
 	}
 
 	/*public function rol_evento_comunidads()

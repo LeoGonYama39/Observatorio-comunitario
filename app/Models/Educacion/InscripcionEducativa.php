@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class InscripcionesEducativa
+ * Class InscripcionEducativa
  *
  * @property int $id
  * @property int $comunidad_id
@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Models\Educacion
  */
-class InscripcionesEducativa extends Model
+class InscripcionEducativa extends Model
 {
 	protected $table = 'inscripciones_educativas';
 	public $timestamps = false;
@@ -46,7 +46,7 @@ class InscripcionesEducativa extends Model
 		return $this->belongsTo(PComunidad::class, 'comunidad_id');
 	}
 
-	public function inscripcionCurso()
+	public function inscripcionesCurso()
 	{
 		return $this->hasMany(InscripcionCurso::class, 'insc_edu_id');
 	}

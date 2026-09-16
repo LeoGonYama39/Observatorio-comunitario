@@ -9,7 +9,7 @@ namespace App\Models\Educacion;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Educacion\InscripcionesEducativa;
+use App\Models\Educacion\InscripcionEducativa;
 use App\Models\Educacion\Curso;
 use App\Models\Educacion\InscripcionMateria;
 
@@ -22,7 +22,7 @@ use App\Models\Educacion\InscripcionMateria;
  * @property Carbon $fecha_ingreso
  * @property string $estado
  *
- * @property InscripcionesEducativa $inscripciones_educativa
+ * @property InscripcionEducativa $inscripciones_educativa
  * @property Curso $curso
  * @property Collection|InscripcionMaterium[] $inscripcion_materia
  *
@@ -48,9 +48,21 @@ class InscripcionCurso extends Model
         'temporada',
 	];
 
+    protected $appends = [
+        'fecha_formateada',
+    ];
+
+    public function getFechaFormateadaAttribute()
+    {
+        if(!$this->fecha_ingreso) return null;
+        return $this->fecha_ingreso
+            ->locale('es')
+            ->translatedFormat('j \d\e F \d\e Y');
+    }
+
 	public function inscripciones_educativa()
 	{
-		return $this->belongsTo(InscripcionesEducativa::class, 'insc_edu_id');
+		return $this->belongsTo(InscripcionEducativa::class, 'insc_edu_id');
 	}
 
 	public function curso()

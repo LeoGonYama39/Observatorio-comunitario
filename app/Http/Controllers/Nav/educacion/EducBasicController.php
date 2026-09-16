@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Nav\educacion;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sup\DatosUsuario;
 use App\Models\Educacion\InscripcionCurso;
-use App\Models\Educacion\InscripcionesEducativa;
+use App\Models\Educacion\InscripcionEducativa;
 use Illuminate\Http\Request;
 //use App\Models\;
 
@@ -59,7 +59,15 @@ class EducBasicController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.educacion.educ_basica.show", compact('persona', 'otros'));
+        $datos = $this->getDatosShow($id);
+
+        $view = view(
+            'system.modules.educacion.educ_basica.show',
+            array_merge(
+                compact('persona', 'otros'),
+                $datos ?? ['inscripcion' => null]
+            )
+        );
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -101,9 +109,9 @@ class EducBasicController extends Controller
     //------------------
     private function getDatosIndex()
     {
-        $inscripciones = InscripcionesEducativa::with([
-            'comunidad',
-            'inscripcionCurso' => function ($query) {
+        $inscripciones = InscripcionEducativa::with([
+            'comunidad:id,nombre,ap_pat,ap_mat',
+            'inscripcionesCurso' => function ($query) {
                 $query->whereHas('curso', function ($query) {
                     $query->where('tipo', 'básica');                            //A pesar de haber a las personas con cursos de básica, estos pueden tener
                 })                                                              //cursos de media-sup, entonces me quedo con los cursos solo de básica
@@ -115,8 +123,8 @@ class EducBasicController extends Controller
                     ->orderBy('fecha_ingreso', 'desc');
             },
         ])
-            ->whereHas('inscripcionCurso.curso', function ($query) {
-                $query->where('tipo', 'básica');                //Filtro a las personas de InscripcionesEducativa, para que solo me de los que
+            ->whereHas('inscripcionesCurso.curso', function ($query) {
+                $query->where('tipo', 'básica');                //Filtro a las personas de InscripcionEducativa, para que solo me de los que
             })                                                                 //tienen al menos un curso de básica en su .curso
             ->get();
 
@@ -126,7 +134,7 @@ class EducBasicController extends Controller
             })
             ->map(function ($inscripcion) {
 
-                $curso = $inscripcion->inscripcionCurso->first();
+                $curso = $inscripcion->inscripcionesCurso->first();
 
                 $acreditadas = $curso->materias
                     ->filter(fn ($materia) => $materia->pivot->cursado)
@@ -146,4 +154,78 @@ class EducBasicController extends Controller
             })
             ->values();
     }
+
+    private function getDatosShow($id)
+    {
+        $inscripcion = InscripcionEducativa::with([
+            'comunidad:id,nombre,ap_pat,ap_mat,birth_date,genero,colonia_id',
+            'comunidad.colonia:id,nombre',
+            'inscripcionesCurso' => function ($query) {
+                $query->select(
+                    'id',
+                    'insc_edu_id',
+                    'cursos_id',
+                    'fecha_ingreso',
+                    'anio',
+                    'temporada',
+                    'estado'
+                )
+                    ->whereHas('curso', function ($query) {
+                        $query->where('tipo', 'básica');
+                    })
+                    ->with([
+                        'curso:id,nombre',
+                        'materias:id,nombre',
+                    ])
+                    ->orderBy('fecha_ingreso', 'desc');
+            },
+        ])
+            ->select(
+                'id',
+                'comunidad_id',
+                'rfe',
+                'curp')
+            ->find($id);
+
+        if (!$inscripcion) {
+            return null;
+        }
+
+        $comunidad = $inscripcion->comunidad;
+
+        $cursos = $inscripcion->inscripcionesCurso->map(function ($inscripcionCurso) {
+
+            $materias = $inscripcionCurso->materias->map(function ($materia) {
+                return [
+                    'nombre' => $materia->nombre,
+                    'acreditada' => (bool)$materia->pivot->cursado,
+                ];
+            });
+
+            $acreditadas = $inscripcionCurso->materias
+                ->filter(fn ($materia) => $materia->pivot->cursado)
+                ->count();
+
+            $total = $inscripcionCurso->curso->materias->count();
+
+            return [
+                'id' => $inscripcionCurso->id,
+                'nombre' => $inscripcionCurso->curso->nombre,
+                'estado' => $inscripcionCurso->estado,
+                'anio' => $inscripcionCurso->anio,
+                'temporada' => $inscripcionCurso->temporada,
+                'fecha_ingreso' => $inscripcionCurso->fecha_formateada,
+                'materias' => $materias,
+                'acreditadas' => $acreditadas,
+                'total' => $total,
+            ];
+        });
+
+        return compact(
+            'inscripcion',
+            'comunidad',
+            'cursos',
+        );
+    }
+
 }
