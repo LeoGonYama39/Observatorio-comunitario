@@ -1,6 +1,6 @@
 @extends('system.app')
 
-@section('title', 'Eventos · Centro Ibero Meneses')
+@section('title', 'Eventos')
 
 @section('content')
 <div class="content-header">

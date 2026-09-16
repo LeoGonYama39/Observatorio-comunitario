@@ -1,6 +1,6 @@
 @extends('system.app')
 
-@section('title', 'Personas usuarias · Centro Ibero Meneses')
+@section('title', 'Personas usuarias')
 
 @section('content')
 

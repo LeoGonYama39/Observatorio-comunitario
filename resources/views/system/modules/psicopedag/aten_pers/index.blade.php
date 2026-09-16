@@ -1,6 +1,6 @@
 @extends('system.app')
 
-@section('title', 'Atención individual · Centro Ibero Meneses')
+@section('title', 'Atención individual')
 
 @section('content')
 <div class="content-header">
@@ -72,7 +72,7 @@
         </td>
         <td>
           <span class="area-tag">
-            Psicoeducativa 
+            Psicoeducativa
           </span>
         </td>
       </tr>

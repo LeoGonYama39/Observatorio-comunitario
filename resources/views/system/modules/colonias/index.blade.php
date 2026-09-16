@@ -1,6 +1,6 @@
 @extends('system.app')
 
-@section('title', 'Colonias · Centro Ibero Meneses')
+@section('title', 'Colonias')
 
 @section('content')
 <div class="content-header">
@@ -53,7 +53,7 @@
              {{ $colonia->nombre }}
           </div>
           <div class="person-role">
-            {{ $colonia->pob_total ?  $colonia->pob_total . ' personas' : 'Población no registrada'}} 
+            {{ $colonia->pob_total ?  $colonia->pob_total . ' personas' : 'Población no registrada'}}
           </div>
         </td>
         <td>

@@ -1,6 +1,6 @@
 @extends('system.app')
 
-@section('title', 'Ciclio I · Centro Ibero Meneses')
+@section('title', 'Ciclio I')
 
 @section('content')
 <div class="breadcrumb">
@@ -367,7 +367,7 @@
   <div class="generation-card">
     <div class="generation-top">
       <span class="generation-period">
-        Nombre-taller · Primavera 2028  
+        Nombre-taller · Primavera 2028
       </span>
       <span class="meta-badge">
         A impartir

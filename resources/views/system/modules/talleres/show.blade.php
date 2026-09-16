@@ -1,6 +1,6 @@
 @extends('system.app')
 
-@section('title', 'Alimentación Saludable · Centro Ibero Meneses')
+@section('title', 'Alimentación Saludable')
 
 @section('content')
 <div class="breadcrumb">

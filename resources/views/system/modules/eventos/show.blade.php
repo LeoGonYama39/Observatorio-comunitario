@@ -1,6 +1,6 @@
 @extends('system.app')
 
-@section('title', 'Charla: concienciación sobre la diabetes · Centro Ibero Meneses')
+@section('title', 'Charla: concienciación sobre la diabetes')
 
 @section('content')
 <div class="breadcrumb">
