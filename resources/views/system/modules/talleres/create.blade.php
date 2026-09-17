@@ -1,11 +1,11 @@
 @extends('system.app')
 
-@section('title', 'Nuevo proyecto')
+@section('title', 'Nuevo Taller')
 
 @section('content')
 <div class="breadcrumb">
-  <a href="{{ route('proyectos.index') }}" data-url="{{ route('proyectos.index') }}" class="return-index">
-    Proyectos
+  <a href="{{ route('talleres.index') }}" data-url="{{ route('talleres.index') }}" class="return-index">
+    Talleres
   </a>
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M9 6l6 6-6 6"/>
@@ -17,12 +17,12 @@
 
 <div class="content-header">
   <div>
-    <h1>Nuevo proyecto</h1>
-    <p>Proyectos</p>
+    <h1>Nuevo taller</h1>
+    <p>Talleres</p>
   </div>
 </div>
 
-<form method="POST" action="{{ route('proyectos.store') }}">
+<form method="POST" action="{{ route('talleres.store') }}">
   @csrf
   <div class="form-card">
     <div class="form-grid">
@@ -37,8 +37,7 @@
         <div class="select-shell">
           <select name="estado" class="form-select">
             <option value="">Sin especificar</option>
-            <option value="en_proceso" {{ old('estado') == 'en_proceso' ? 'selected' : '' }}>En proceso</option>
-            <option value="concluido" {{ old('estado') == 'concluido' ? 'selected' : '' }}>Concluido</option>
+            <option value="en_proceso" {{ old('estado') == 'activo' ? 'selected' : '' }}>Activo</option>
             <option value="cancelado" {{ old('estado') == 'cancelado' ? 'selected' : '' }}>Cancelado</option>
             <option value="pausado" {{ old('estado') == 'pausado' ? 'selected' : '' }}>Pausado</option>
           </select>
@@ -47,18 +46,6 @@
           </svg>
         </div>
         @error('estado') <span class="field-error">{{ $message }}</span> @enderror
-      </div>
-
-      <div class="form-field">
-        <label>Fecha de inicio <span class="required">*</span></label>
-        <input type="date" name="fecha_inicio" class="form-input" value="{{ old('fecha_inicio') }}" required>
-        @error('fecha_inicio') <span class="field-error">{{ $message }}</span> @enderror
-      </div>
-
-      <div class="form-field">
-        <label>Fecha de fin</label>
-        <input type="date" name="fecha_fin" class="form-input" value="{{ old('fecha_fin') }}">
-        @error('fecha_fin') <span class="field-error">{{ $message }}</span> @enderror
       </div>
 
       <div class="form-field">
@@ -76,12 +63,6 @@
     </div>
     <hr class="form-separator">
     <div class="form-grid form-grid-2col" >
-      <div class="form-field">
-        <label>Antecedentes</label>
-        <textarea name="antecedentes" class="form-textarea textarea-large" rows="5">{{ old('antecedentes') }}</textarea>
-        @error('antecedentes') <span class="field-error">{{ $message }}</span> @enderror
-      </div>
-
       <div class="form-field">
         <label>Objetivos</label>
         <textarea name="objetivos" class="form-textarea textarea-large" rows="5">{{ old('objetivos') }}</textarea>
@@ -117,31 +98,8 @@
       <input type="hidden" name="pobl_obj_high" id="poblObjHigh" value="60">
     </div>
 
-    <div class="form-checkbox-row">
-      <input type="checkbox" id="prioritario" name="prioritario" value="1" {{ old('prioritario') ? 'checked' : '' }}>
-      <label for="prioritario">Destacado</label>
-    </div>
-
     <hr class="form-separator">
 
-    <div class="form-field full-width">
-      <label>Colonias</label>
-      <div class="tag-picker">
-        <div class="select-shell">
-          <select class="form-select" onchange="addTag(this, 'colonias')">
-            <option value="">Seleccionar colonia…</option>
-            <option value="la_mexicana">La Mexicana</option>
-            <option value="cuevitas">Cuevitas</option>
-            <option value="pueblo_nuevo">Pueblo Nuevo</option>
-          </select>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 9l6 6 6-6"/>
-          </svg>
-        </div>
-        <div class="tag-chip-list" id="colonias-list"></div>
-      </div>
-    </div>
-    <hr class="form-separator">
     <div class="form-field full-width">
       <label>Ejes</label>
       <div class="tag-picker">
@@ -187,7 +145,7 @@
   </div>
 
   <div class="form-actions">
-    <a href="{{ route('proyectos.index') }}" data-url="{{ route('proyectos.index') }}" class="btn-outline">Cancelar</a>
+    <a href="{{ route('talleres.index') }}" data-url="{{ route('talleres.index') }}" class="btn-outline">Cancelar</a>
     <button type="submit" class="btn-new">Registrar</button>
   </div>
 </form>
