@@ -12,13 +12,13 @@
       Proyectos comunitarios activos y finalizados
     </p>
   </div>
-  <button class="btn-new">
+  <a href="{{ route('proyectos.create') }}" data-url="{{ route('proyectos.create') }}" class="btn-new">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M12 5v14"/>
       <path d="M5 12h14"/>
     </svg>
     Nuevo registro
-  </button>
+</a>
 </div>
 <div class="table-toolbar">
   <div class="table-search">

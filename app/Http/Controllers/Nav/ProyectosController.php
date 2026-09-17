@@ -35,9 +35,30 @@ class ProyectosController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $datosUsuario = new DatosUsuario();
+        $aux = $datosUsuario->getDatosUsuario();
+        $persona = $aux[0];
+        $otros = $aux[1];
+
+        $view = view(
+            "system.modules.proyectos.create",
+            array_merge(
+                compact('persona', 'otros'),
+                $datos ?? ['proyecto' => null]
+            )
+        );
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
     }
 
     /**
