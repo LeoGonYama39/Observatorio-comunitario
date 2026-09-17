@@ -113,28 +113,6 @@
   </div>
   <div class="related-card">
     <h3>
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M4 21V8l8-5 8 5v13"/>
-        <path d="M9 21v-7h6v7"/>
-        <path d="M4 12h16"/>
-      </svg>
-      Espacios históricos (no programado)
-    </h3>
-    <div class="related-list">
-      <div class="related-row">
-        <span class="name">
-          Capilla de Santa Fe
-        </span>
-      </div>
-      <div class="related-row">
-        <span class="name">
-          Plaza del Fundador
-        </span>
-      </div>
-    </div>
-  </div>
-  <div class="related-card">
-    <h3>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <path d="M9 11l3 3L22 4"/>
         <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
