@@ -32,6 +32,22 @@ class Taller extends Model
         'init' => 'date',
     ];
 
+    protected $appends = [
+        'areas',
+    ];
+
+    public function getAreasAttribute()
+    {
+        if(!$this->ejes()) return null;
+        return $this->ejes
+            ->flatMap->responsabilidades
+            ->map->area
+            ->filter()
+            ->unique('id')
+            ->sortBy('nombre')
+            ->values();
+    }
+
     public function ejes()
     {
         return $this->belongsToMany(

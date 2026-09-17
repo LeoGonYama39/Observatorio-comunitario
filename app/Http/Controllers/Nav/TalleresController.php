@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Nav;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sup\DatosUsuario;
 use Illuminate\Http\Request;
-//use App\Models\;
+use App\Models\Talleres\Taller;
 
 class TalleresController extends Controller
 {
@@ -16,7 +16,12 @@ class TalleresController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.talleres.index", compact('persona', 'otros'));
+        $talleres = $this->getDatosIndex();
+
+        $view = view("system.modules.talleres.index", compact(
+            'persona',
+            'otros',
+            'talleres'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -102,5 +107,25 @@ class TalleresController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+
+    //---------------------------
+    //      Funciones
+    //---------------------------
+
+    //Obtiene los datos para la tabla index
+    private function getDatosIndex()
+    {
+        return Taller::with([
+            'ejes.responsabilidades.area'
+        ])
+            ->select(
+                'id',
+                'nombre',
+                'estado',
+            )
+            ->orderBy('nombre')
+            ->get();
     }
 }

@@ -9,7 +9,7 @@
       Proyectos
     </h1>
     <p>
-      Proyectos comunitarios activos y finalizados
+      Proyectos comunitarios
     </p>
   </div>
   <a href="{{ route('proyectos.create') }}" data-url="{{ route('proyectos.create') }}" class="btn-new">

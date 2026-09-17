@@ -47,49 +47,30 @@
         <th>
           Nombre
         </th>
+        <th>
+          Áreas
+        </th>
       </tr>
     </thead>
     <tbody>
-      <tr data-url="{{ route('talleres.show', 1) }}">
+      @foreach($talleres as $taller)
+        <tr data-url="{{ route('talleres.show', $taller->id) }}"
+          data-estado="{{ $taller->estado }}">
         <td>
           <div class="person-name">
-            Alimentación Saludable
+            {{ ucfirst($taller->nombre) }}
           </div>
           <div class="person-role">
-            Activo
+            {{ ucfirst(str_replace('_', ' ', $taller->estado)) }}
           </div>
         </td>
-      </tr>
-      <tr>
         <td>
-          <div class="person-name">
-            Costura y Bordado
-          </div>
-          <div class="person-role">
-            Pausado
-          </div>
+            <span class="area-tag {{ $taller->areas->isEmpty() ? 'empty' : '' }}">
+                {{ $taller->areas->pluck('nombre')->join(' · ') ?: '-' }}
+            </span>
         </td>
       </tr>
-      <tr>
-        <td>
-          <div class="person-name">
-            Guitarra para Principiantes
-          </div>
-          <div class="person-role">
-            Activo
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <div class="person-name">
-            Huertos en Casa
-          </div>
-          <div class="person-role">
-            Cancelado
-          </div>
-        </td>
-      </tr>
+      @endforeach
     </tbody>
   </table>
 </div>
