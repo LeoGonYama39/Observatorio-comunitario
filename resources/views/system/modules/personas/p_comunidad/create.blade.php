@@ -101,7 +101,7 @@
 
       <div class="form-field">
         <label>Teléfono</label>
-        <input type="text" name="telefono" class="form-input" value="{{ old('telefono') }}">
+        <input type="tel" name="telefono" class="form-input" value="{{ old('telefono') }}">
         @error('telefono') <span class="field-error">{{ $message }}</span> @enderror
       </div>
 

@@ -113,7 +113,7 @@
     @if($usuaria->telefono)
     <div class="info-field">
         <label>
-            Nivel escolar
+            Teléfono
         </label>
         <div class="value">
             {{ $usuaria->telefono }}
