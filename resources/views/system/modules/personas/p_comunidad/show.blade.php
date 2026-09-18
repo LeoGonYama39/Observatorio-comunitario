@@ -120,6 +120,14 @@
         </div>
     </div>
     @endif
+    <div class="info-field">
+        <label>
+            Colonia
+        </label>
+        <div class="value {{ $usuaria->colonia ? '' : 'empty' }}">
+            {{ $usuaria->colonia ?? '-' }}
+        </div>
+    </div>
   </div>
 </div>
 

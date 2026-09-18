@@ -132,7 +132,7 @@ class PComunidadController extends Controller
     }
 
     private function getDatosShow($id) {
-        return PComunidad::join(
+        $usuaria = PComunidad::join(
             'colonia',                  // tabla que quiero unir
             'p_comunidad.colonia_id',   // FK
             '=',                        // operador
@@ -151,5 +151,9 @@ class PComunidadController extends Controller
                  'colonia.nombre AS colonia')
         ->where('p_comunidad.id', $id)
         ->first();
+
+        
+
+        return $usuaria;
     }
 }
