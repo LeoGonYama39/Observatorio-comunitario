@@ -103,8 +103,13 @@
                         <div class="select-shell">
                             <select name="tipo" class="form-select">
                                 <option value="">Seleccionar</option>
-                                <option value="servicio_social" {{ old('tipo') == 'servicio_social' ? 'selected' : '' }}>Servicio social</option>
-                                <option value="voluntariado" {{ old('tipo') == 'voluntariado' ? 'selected' : '' }}>Voluntariado</option>
+                                @if(empty($opTipo))
+                                    <option value="">Error al buscar las opciones</option>
+                                @else
+                                    @foreach($opTipo as $tipo)
+                                        <option value="{{ $tipo }}" {{ old('tipo') == $tipo ? 'selected' : '' }}>{{ ucfirst(str_replace('_', ' ', $tipo)) }}</option>
+                                    @endforeach
+                                @endif
                             </select>
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M6 9l6 6 6-6"/>

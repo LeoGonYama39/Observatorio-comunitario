@@ -41,7 +41,9 @@ class PExternoController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.personas.p_externo.create", compact('persona', 'otros'));
+        $opTipo = $this->getDropDownOptions($datosUsuario);
+
+        $view = view("system.modules.personas.p_externo.create", compact('persona', 'otros', 'opTipo'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -225,4 +227,7 @@ class PExternoController extends Controller
         );
     }
 
+    private function getDropDownOptions($datosUsuario) {
+        return $datosUsuario->getEnumValues('participaciones', 'tipo');
+    }
 }
