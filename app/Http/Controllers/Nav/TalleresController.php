@@ -72,7 +72,15 @@ class TalleresController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.talleres.show", compact('persona', 'otros'));
+        $datos = $this->getDatosShow($id);
+
+        $view = view(
+            "system.modules.talleres.show",
+            array_merge(
+                compact('persona', 'otros'),
+                $datos ?? ['taller' => null]
+            )
+        );
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -127,5 +135,60 @@ class TalleresController extends Controller
             )
             ->orderBy('nombre')
             ->get();
+    }
+
+    //Obtiene los datos para la ficha show
+    private function getDatosShow($id)
+    {
+        $taller = Taller::with([
+            'ejes.responsabilidades.area',
+            'generaciones',
+            'instituciones',
+            'rolesCentro',
+            'rolesComunidad',
+            'rolesExternos.externo',
+        ])->find($id);
+
+        if (!$taller) {
+            return null;
+        }
+
+        $ejes = $taller->ejes;
+
+        $areas = collect();
+        $responsabilidades = collect();
+
+        foreach ($ejes as $eje) {
+            $areas = $areas->merge(
+                $eje->responsabilidades->pluck('area')
+            );
+
+            $responsabilidades = $responsabilidades->merge(
+                $eje->responsabilidades
+            );
+        }
+
+        $areas = $areas
+            ->filter()
+            ->unique('id')
+            ->sortBy('nombre')
+            ->values();
+
+        $responsabilidades = $responsabilidades
+            ->unique('id')
+            ->sortBy('nombre')
+            ->values();
+
+        $involucrados = $taller->involucrados;
+        $generaciones = $taller->generaciones;
+
+        return compact(
+            'taller',
+            'areas',
+            'responsabilidades',
+            'ejes',
+            'involucrados',
+            'generaciones'
+        );
     }
 }

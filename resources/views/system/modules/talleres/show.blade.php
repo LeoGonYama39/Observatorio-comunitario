@@ -1,8 +1,11 @@
 @extends('system.app')
 
-@section('title', 'Alimentación Saludable')
+@section('title', $taller
+  ? $taller->nombre . ' · Ficha'
+  : 'Sin resultados')
 
 @section('content')
+@if($taller)
 <div class="breadcrumb">
   <a href="{{ route('talleres.index') }}" data-url="{{ route('talleres.index') }}" class="return-index">
     Talleres
@@ -11,13 +14,16 @@
     <path d="M9 6l6 6-6 6"/>
   </svg>
   <span class="current">
-    Alimentación Saludable
+    {{ $taller->nombre }}
   </span>
 </div>
+
+@include('system.parts.alerts')
+
 <div class="content-header">
   <div>
     <h1>
-      Alimentación Saludable
+      {{ $taller->nombre }}
     </h1>
     <p>
       Ficha de taller
@@ -49,42 +55,34 @@
       <h3>
         Objetivos
       </h3>
-      <p>
-        Brindar a las familias herramientas prácticas para mejorar su alimentación diaria con recursos accesibles, promoviendo hábitos saludables sostenibles en el tiempo.
+      <p class="{{ $taller->objetivos ? '' : 'empty'}}">
+        {{ $taller->objetivos ?? '-'}}
       </p>
     </div>
     <div class="doc-section">
       <h3>
         Alcance
       </h3>
-      <p>
-        Dirigido a personas adultas de las colonias cercanas al centro, con sesiones prácticas de cocina y pláticas sobre nutrición básica.
+      <p class="{{ $taller->alcance ? '' : 'empty'}}">
+        {{ $taller->alcance ?? '-'}}
       </p>
     </div>
     <div class="doc-section">
       <h3>
         Evaluación
       </h3>
-      <p>
-        Buena respuesta general de los asistentes; se identificó interés en ampliar el taller con un módulo sobre conservación de alimentos.
+      <p class="{{ $taller->evaluacion ? '' : 'empty'}}">
+        {{ $taller->evaluacion ?? '-'}}
       </p>
     </div>
   </div>
   <div class="meta-card">
     <div class="meta-row">
       <label>
-        Fecha de inicio
-      </label>
-      <div class="value">
-        15 de marzo, 2025
-      </div>
-    </div>
-    <div class="meta-row">
-      <label>
         Estado
       </label>
-      <span class="meta-badge on">
-        Activo
+      <span class="meta-badge {{ $taller->estado === 'activo' ? 'on' : '' }}">
+        {{ ucfirst(str_replace('_', ' ', $taller->estado)) }}
       </span>
     </div>
     <div class="meta-row">
@@ -92,53 +90,61 @@
         Generaciones
       </label>
       <div class="value">
-        3
+        {{ $generaciones->count() }}
       </div>
     </div>
-    <div class="meta-row">
-      <label>
-        Responsable
-      </label>
-      <div class="value">
-        María Torres Salinas
-      </div>
-    </div>
+    @if($taller->pobl_obj)
     <div class="meta-row">
       <label>
         Población objetivo
       </label>
       <div class="value">
-        3 - 65 años
+        {{ $taller->pobl_obj }}
       </div>
     </div>
+    @endif
     <div class="meta-row">
       <label>
         Áreas
       </label>
-      <div class="simple-tag-list">
-        <span class="tag">
-          Nutrición Comunitaria
-        </span>
-      </div>
+      @if($areas->isNotEmpty())
+        <div class="simple-tag-list">
+          @foreach($areas as $area)
+            <span class="tag">
+              {{ $area->nombre }}
+            </span>
+          @endforeach
+        </div>
+      @else
+        <div class="value">
+          Áreas no registradas
+        </div>
+      @endif
     </div>
     <div class="meta-row">
       <label>
         Ejes de acción
       </label>
-      <div class="simple-tag-list">
-        <span class="tag">
-          Eje 1
-        </span>
-        <span class="tag">
-          Eje 2
-        </span>
-      </div>
+      @if($ejes->isNotEmpty())
+        <div class="simple-tag-list">
+          @foreach($ejes as $eje)
+            <span class="tag">
+              {{ $eje->nombre }}
+            </span>
+          @endforeach
+        </div>
+      @else
+        <div class="value">
+          Ejes no registrados
+        </div>
+      @endif
     </div>
+    @if($taller->repo)
     <div class="meta-row">
       <label>
         Repositorio
       </label>
-      <a href="#" class="repo-link">
+      <a href="{{ $taller->repo }}" class="repo-link" target="_blank">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.5 1.5"/>
           <path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.5-1.5"/>
@@ -146,22 +152,21 @@
         Ver repositorio
       </a>
     </div>
+    @endif
+    @if($taller->auditable)
     <div class="meta-row">
       <label>
         Auditable
       </label>
-      <div class="value">
-        Sí
-      </div>
-      <br>
-      <a href="#" class="repo-link">
+      <a href="{{ $taller->auditable }}" class="repo-link" target="_blank">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.5 1.5"/>
           <path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.5-1.5"/>
         </svg>
-        Ver repositorio
+        Ver archivos/evidencia
       </a>
     </div>
+    @endif
   </div>
 </div>
 <div class="section-header">
@@ -176,26 +181,28 @@
     Agregar involucrado
   </button>
 </div>
-<div class="table-card" style="margin-bottom: 32px;">
-  <div style="padding: 6px 24px;">
-    <div class="related-row">
-      <span class="name">
-        María Torres Salinas
-      </span>
-      <span class="role-badge lider">
-        Resp. Meneses
-      </span>
+@if($involucrados->isNotEmpty())
+    <div class="table-card" style="margin-bottom: 32px;">
+        <div style="padding: 6px 24px;">
+            @foreach($involucrados as $involucrado)
+                <div class="related-row">
+                    <span class="name">
+                        {{ $involucrado['nombre'] }}
+                        {{ $involucrado['ap_pat'] }}
+                        {{ $involucrado['ap_mat'] }}
+                    </span>
+                    <span class="role-badge {{ in_array($involucrado['rol'], ['responsable_en_meneses', 'docente']) ? 'lider' : '' }}">
+                        {{ $involucrado['rol'] === 'otro'
+                            ? $involucrado['otros']
+                            : ucfirst(str_replace('_', ' ', $involucrado['rol'])) }}
+                    </span>
+                </div>
+            @endforeach
+        </div>
     </div>
-    <div class="related-row">
-      <span class="name">
-        Hospital ABC
-      </span>
-      <span class="role-badge participante">
-        Planeación de temas
-      </span>
-    </div>
-  </div>
-</div>
+@else
+    <p style="margin-bottom: 32px; color: var(--steel); font-size: 14px;">Sin involucrados registrados</p>
+@endif
 <div class="section-header">
   <h3>
     Grupos
@@ -510,4 +517,24 @@
     </div>
   </div>
 </div>
+@else
+<div class="empty-state">
+  <div class="empty-state-icon">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="7"/>
+      <path d="m21 21-4.3-4.3"/>
+      <path d="M9 9l4 4"/>
+      <path d="M13 9l-4 4"/>
+    </svg>
+  </div>
+  <h2>No se encontró ningún resultado</h2>
+  <p>No hay información que coincida con lo que buscas.</p>
+  <a type="button" class="btn-outline" href="{{ route('talleres.index') }}" data-url="{{ route('talleres.index') }}">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/>
+    </svg>
+    Regresar
+  </a>
+</div>
+@endif
 @endsection
