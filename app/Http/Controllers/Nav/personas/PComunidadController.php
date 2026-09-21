@@ -108,7 +108,24 @@ class PComunidadController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        {
+            try {
+                $usuaria = PComunidad::findOrFail($id);
+                $nombreCompleto = trim($usuaria->nombre . ' ' . $usuaria->ap_pat . ' ' . ($usuaria->ap_mat ?? ''));
+                $usuaria->delete();
+
+                return redirect()
+                    ->route('personas-usuarias.index')
+                    ->with('success', "Persona del usuaria ({$nombreCompleto}) eliminada con éxito.");
+            } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+                return redirect()
+                    ->route('personas-usuarias.index')
+                    ->with('error', 'El registro que intentas eliminar no existe.');
+            } catch (\Throwable $e) {
+                return back()
+                    ->with('error', 'Ocurrió un error al intentar eliminar el registro: ' . $e->getMessage());
+            }
+        }
     }
 
 

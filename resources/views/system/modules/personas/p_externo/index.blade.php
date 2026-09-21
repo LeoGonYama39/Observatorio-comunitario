@@ -3,8 +3,7 @@
 @section('title', 'Personas de externas')
 
 @section('content')
-
-
+    @include('system.parts.alerts')
     <div class="content-header">
     <div>
         <h1>Personas Externas</h1>
