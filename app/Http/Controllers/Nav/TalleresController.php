@@ -183,7 +183,19 @@ class TalleresController extends Controller
             ->values();
 
         $involucrados = $taller->involucrados;
-        $generaciones = $taller->generaciones;
+
+        $generaciones = $taller->generaciones()
+            ->select(
+                'id',
+                'taller_id',
+                'anio',
+                'anio',
+                'temporada',
+                'evaluacion'
+            )
+            ->orderByDesc('anio')
+            ->orderByDesc('temporada')
+            ->get();
 
         return compact(
             'taller',
