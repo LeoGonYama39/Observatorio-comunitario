@@ -142,7 +142,10 @@ class TalleresController extends Controller
     {
         $taller = Taller::with([
             'ejes.responsabilidades.area',
-            'generaciones',
+            'generaciones.talleristasCentro',
+            'generaciones.talleristasComunidad',
+            'generaciones.talleristasExternos.externo',
+            'generaciones.grupos.colonia',
             'instituciones',
             'rolesCentro',
             'rolesComunidad',
