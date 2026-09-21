@@ -174,7 +174,22 @@ class PCentroController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $centro = PCentro::findOrFail($id);
+            $nombreCompleto = trim($centro->nombre . ' ' . $centro->ap_pat . ' ' . ($centro->ap_mat ?? ''));
+            $centro->delete();
+
+            return redirect()
+                ->route('personas-centro.index')
+                ->with('success', "Persona del centro ({$nombreCompleto}) eliminada con éxito.");
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return redirect()
+                ->route('personas-centro.index')
+                ->with('error', 'El registro que intentas eliminar no existe.');
+        } catch (\Throwable $e) {
+            return back()
+                ->with('error', 'Ocurrió un error al intentar eliminar el registro: ' . $e->getMessage());
+        }
     }
 
     //Obtiene los datos para la tabla index

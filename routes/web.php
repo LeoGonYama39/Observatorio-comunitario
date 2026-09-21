@@ -34,7 +34,7 @@ Route::middleware('auth:centro,externo')->group(function () {
     //Vistas del sistema con get para info
 
     //Con las generadas por Laravel
-    Route::resource('/sistema/personas-centro', PCentroController::class)->only(['index', 'show', 'create', 'store']);
+    Route::resource('/sistema/personas-centro', PCentroController::class)->only(['index', 'show', 'create', 'store', 'destroy']);
     Route::resource('/sistema/personas-externo', PExternoController::class)->only(['index', 'show', 'create', 'store']);
     Route::resource('/sistema/personas-usuarias', PComunidadController::class)->only(['index', 'show', 'create', 'store']);
     Route::resource('/sistema/proyectos', ProyectosController::class)->only(['index', 'show', 'create', 'store']);

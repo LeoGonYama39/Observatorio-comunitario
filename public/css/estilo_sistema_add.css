@@ -197,3 +197,69 @@
     color: #9b1c1c;
 }
 
+/* ============ MODAL DE CONFIRMACIÓN ============ */
+dialog.confirm-modal {
+    border: none;
+    border-radius: var(--radius-md);
+    background: var(--white);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
+    padding: 0;
+    max-width: 480px;
+    width: 90%;
+    margin: auto;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+dialog.confirm-modal::backdrop {
+    background: rgba(17, 17, 17, 0.45);
+    backdrop-filter: blur(3px);
+}
+
+.confirm-modal-content {
+    padding: 24px;
+}
+
+.confirm-modal-header {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.confirm-modal-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #fdf2f2;
+    color: #b3261e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.confirm-modal-header h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 6px;
+}
+
+.confirm-modal-header p {
+    font-size: 13.5px;
+    color: var(--graphite);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.confirm-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+}
+
+
