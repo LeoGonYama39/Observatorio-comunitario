@@ -96,6 +96,6 @@ function addTag(select, group) {
 }
 
 function toggleOtroField(select, targetId, triggerValue) {
-    const trigger = triggerValue || 'otro';
+    const trigger = triggerValue || 'otros';
     document.getElementById(targetId).hidden = select.value !== trigger;
 }

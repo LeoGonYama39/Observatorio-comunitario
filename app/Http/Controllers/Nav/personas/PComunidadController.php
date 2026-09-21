@@ -4,6 +4,12 @@ namespace App\Http\Controllers\Nav\personas;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sup\DatosUsuario;
+use App\Models\Colonia;
+use App\Models\listas\Difucion;
+use App\Models\listas\NoTrabaja;
+use App\Models\listas\PersonasDependen;
+use App\Models\listas\ServicioMedico;
+use App\Models\listas\Sustento;
 use Illuminate\Http\Request;
 use App\Models\PComunidad;
 use Illuminate\Support\Facades\DB;
@@ -39,16 +45,15 @@ class PComunidadController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.personas.p_comunidad.create", compact('persona', 'otros'));
+        $datos = $this->getDropDownOptions($datosUsuario);
 
-        if ($request->ajax()) {
-            $sections = $view->renderSections();
-            return response()->json([
-                'content' => $sections['content'],
-                'title' => $sections['title'],
-            ]);
-        }
-
+        $view = view(
+            "system.modules.personas.p_comunidad.create",
+            array_merge(
+                compact('persona', 'otros'),
+                $datos
+            )
+        );
         return $view;
     }
 
@@ -151,9 +156,38 @@ class PComunidadController extends Controller
                  'colonia.nombre AS colonia')
         ->where('p_comunidad.id', $id)
         ->first();
-
-
-
         return $usuaria;
+    }
+
+    private function getDropDownOptions($datosUsuario) {
+        $generos = $datosUsuario->getEnumValues('p_comunidad', 'genero');
+        $estadoCivil = $datosUsuario->getEnumValues('p_comunidad', 'estado_civil');
+        $nvEscolar = $datosUsuario->getEnumValues('p_comunidad', 'nv_escolar');
+        $alcaldia = $datosUsuario->getEnumValues('p_comunidad', 'alcaldia');
+        $ingresoMensual = $datosUsuario->getEnumValues('p_comunidad', 'ingreso_mensual');
+        $tipoHogar = $datosUsuario->getEnumValues('p_comunidad', 'tipo_hogar');
+        $tipoVivienda = $datosUsuario->getEnumValues('p_comunidad', 'tipo_vivienda');
+        $difuciones = Difucion::select('id', 'nombre')->get();
+        $sustentos = Sustento::select('id', 'nombre')->get();
+        $noTrabaja = NoTrabaja::select('id', 'nombre')->get();
+        $serviciosMedicos = ServicioMedico::select('id', 'nombre')->get();
+        $personasDependen = PersonasDependen::select('id', 'nombre')->get();
+        $colonias = Colonia::select('id', 'nombre')->get();
+
+        return compact(
+            'generos',
+            'estadoCivil',
+            'nvEscolar',
+            'alcaldia',
+            'ingresoMensual',
+            'tipoHogar',
+            'tipoVivienda',
+            'difuciones',
+            'sustentos',
+            'noTrabaja',
+            'serviciosMedicos',
+            'personasDependen',
+            'colonias'
+        );
     }
 }

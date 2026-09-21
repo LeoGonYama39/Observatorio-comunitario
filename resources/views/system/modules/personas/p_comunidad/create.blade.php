@@ -58,9 +58,13 @@
                     <div class="select-shell">
                         <select name="genero" class="form-select">
                             <option value="">Sin especificar</option>
-                            <option value="masculino" {{ old('genero') == 'masculino' ? 'selected' : '' }}>Masculino</option>
-                            <option value="femenino" {{ old('genero') == 'femenino' ? 'selected' : '' }}>Femenino</option>
-                            <option value="no_binario" {{ old('genero') == 'no_binario' ? 'selected' : '' }}>No binario</option>
+                            @if(empty($generos))
+                                <option value="">Error al encontrar las opciones</option>
+                            @else
+                                @foreach($generos as $genero)
+                                    <option value="{{ $genero }}" {{ old('genero') == $genero ? 'selected' : '' }}>{{ ucfirst(str_replace('_', ' ', $genero)) }}</option>
+                                @endforeach
+                            @endif
                         </select>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M6 9l6 6 6-6"/>
@@ -74,11 +78,13 @@
                     <div class="select-shell">
                         <select name="estado_civil" class="form-select">
                             <option value="">Sin especificar</option>
-                            <option value="soltero" {{ old('estado_civil') == 'soltero' ? 'selected' : '' }}>Soltero</option>
-                            <option value="casado" {{ old('estado_civil') == 'casado' ? 'selected' : '' }}>Casado</option>
-                            <option value="divorciado" {{ old('estado_civil') == 'divorciado' ? 'selected' : '' }}>Divorciado</option>
-                            <option value="viudo" {{ old('estado_civil') == 'viudo' ? 'selected' : '' }}>Viudo</option>
-                            <option value="union_libre" {{ old('estado_civil') == 'union_libre' ? 'selected' : '' }}>Unión libre</option>
+                            @if(empty($estadoCivil))
+                                <option value="">Error al encontrar las opciones</option>
+                            @else
+                                @foreach($estadoCivil as $estado)
+                                    <option value="{{ $estado }}" {{ old('genero') == $estado ? 'selected' : '' }}>{{ ucfirst(str_replace('_', ' ', $estado)) }}</option>
+                                @endforeach
+                            @endif
                         </select>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M6 9l6 6 6-6"/>
@@ -98,15 +104,13 @@
                     <div class="select-shell">
                         <select name="nv_escolar" class="form-select">
                             <option value="">Sin especificar</option>
-                            <option value="ninguna" {{ old('nv_escolar') == 'ninguna' ? 'selected' : '' }}>Ninguna</option>
-                            <option value="primaria" {{ old('nv_escolar') == 'primaria' ? 'selected' : '' }}>Primaria</option>
-                            <option value="secundaria" {{ old('nv_escolar') == 'secundaria' ? 'selected' : '' }}>Secundaria</option>
-                            <option value="carrera_tecnica" {{ old('nv_escolar') == 'carrera_tecnica' ? 'selected' : '' }}>Carrera técnica</option>
-                            <option value="preparatoria" {{ old('nv_escolar') == 'preparatoria' ? 'selected' : '' }}>Preparatoria</option>
-                            <option value="tsu" {{ old('nv_escolar') == 'tsu' ? 'selected' : '' }}>TSU</option>
-                            <option value="licenciatura" {{ old('nv_escolar') == 'licenciatura' ? 'selected' : '' }}>Licenciatura</option>
-                            <option value="maestria" {{ old('nv_escolar') == 'maestria' ? 'selected' : '' }}>Maestría</option>
-                            <option value="doctorado" {{ old('nv_escolar') == 'doctorado' ? 'selected' : '' }}>Doctorado</option>
+                            @if(empty($nvEscolar))
+                                <option value="">Error al encontrar las opciones</option>
+                            @else
+                                @foreach($nvEscolar as $estado)
+                                    <option value="{{ $estado }}" {{ old('nv_escolar') == $estado ? 'selected' : '' }}>{{ ucfirst(str_replace('_', ' ', $estado)) }}</option>
+                                @endforeach
+                            @endif
                         </select>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M6 9l6 6 6-6"/>
@@ -137,10 +141,14 @@
                     <div class="select-shell">
                         <select name="colonia_id" class="form-select" onchange="toggleOtroField(this, 'colonia_otro_field')">
                             <option value="">Sin especificar</option>
-                            <option value="1" {{ old('colonia_id') == '1' ? 'selected' : '' }}>La Mexicana</option>
-                            <option value="2" {{ old('colonia_id') == '2' ? 'selected' : '' }}>Cuevitas</option>
-                            <option value="3" {{ old('colonia_id') == '3' ? 'selected' : '' }}>Pueblo Nuevo</option>
-                            <option value="otro" {{ old('colonia_id') == 'otro' ? 'selected' : '' }}>Otro</option>
+                            @if($colonias->isEmpty())
+                                <option value="">Error al encontrar las opciones</option>
+                            @else
+                                @foreach($colonias as $colonia)
+                                    <option value="{{ $colonia->id }}" {{ old('colonia_id') == $colonia->nombre ? 'selected' : '' }}>{{ $colonia->nombre }}</option>
+                                @endforeach
+                            @endif
+                            <option value="otros" {{ old('colonia_id') == 'otros' ? 'selected' : '' }}>Otros</option>
                         </select>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M6 9l6 6 6-6"/>
@@ -160,23 +168,13 @@
                     <div class="select-shell">
                         <select name="alcaldia" class="form-select" onchange="toggleOtroField(this, 'alcaldia_otro_field', 'otros')">
                             <option value="">Sin especificar</option>
-                            <option value="alvaro_obregon" {{ old('alcaldia') == 'alvaro_obregon' ? 'selected' : '' }}>Álvaro Obregón</option>
-                            <option value="azcapotzalco" {{ old('alcaldia') == 'azcapotzalco' ? 'selected' : '' }}>Azcapotzalco</option>
-                            <option value="benito_juarez" {{ old('alcaldia') == 'benito_juarez' ? 'selected' : '' }}>Benito Juárez</option>
-                            <option value="coyoacan" {{ old('alcaldia') == 'coyoacan' ? 'selected' : '' }}>Coyoacán</option>
-                            <option value="cuajimalpa_de_morelos" {{ old('alcaldia') == 'cuajimalpa_de_morelos' ? 'selected' : '' }}>Cuajimalpa de Morelos</option>
-                            <option value="cuauhtemoc" {{ old('alcaldia') == 'cuauhtemoc' ? 'selected' : '' }}>Cuauhtémoc</option>
-                            <option value="gustavo_a_madero" {{ old('alcaldia') == 'gustavo_a_madero' ? 'selected' : '' }}>Gustavo A. Madero</option>
-                            <option value="iztacalco" {{ old('alcaldia') == 'iztacalco' ? 'selected' : '' }}>Iztacalco</option>
-                            <option value="iztapalapa" {{ old('alcaldia') == 'iztapalapa' ? 'selected' : '' }}>Iztapalapa</option>
-                            <option value="la_magdalena_contreras" {{ old('alcaldia') == 'la_magdalena_contreras' ? 'selected' : '' }}>La Magdalena Contreras</option>
-                            <option value="miguel_hidalgo" {{ old('alcaldia') == 'miguel_hidalgo' ? 'selected' : '' }}>Miguel Hidalgo</option>
-                            <option value="milpa_alta" {{ old('alcaldia') == 'milpa_alta' ? 'selected' : '' }}>Milpa Alta</option>
-                            <option value="tlahuac" {{ old('alcaldia') == 'tlahuac' ? 'selected' : '' }}>Tláhuac</option>
-                            <option value="tlalpan" {{ old('alcaldia') == 'tlalpan' ? 'selected' : '' }}>Tlalpan</option>
-                            <option value="venustiano_carranza" {{ old('alcaldia') == 'venustiano_carranza' ? 'selected' : '' }}>Venustiano Carranza</option>
-                            <option value="xochimilco" {{ old('alcaldia') == 'xochimilco' ? 'selected' : '' }}>Xochimilco</option>
-                            <option value="otros" {{ old('alcaldia') == 'otros' ? 'selected' : '' }}>Otros</option>
+                            @if(empty($alcaldia))
+                                <option value="">Error al encontrar las opciones</option>
+                            @else
+                                @foreach($alcaldia as $estado)
+                                    <option value="{{ $estado }}" {{ old('alcaldia') == $estado ? 'selected' : '' }}>{{ ucfirst(str_replace('_', ' ', $estado)) }}</option>
+                                @endforeach
+                            @endif
                         </select>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M6 9l6 6 6-6"/>
@@ -219,15 +217,13 @@
                     <div class="select-shell">
                         <select name="ingreso_mensual" class="form-select">
                             <option value="">Sin especificar</option>
-                            <option value="1000_2000" {{ old('ingreso_mensual') == '1000_2000' ? 'selected' : '' }}>$1,000 – $2,000</option>
-                            <option value="2500_4000" {{ old('ingreso_mensual') == '2500_4000' ? 'selected' : '' }}>$2,500 – $4,000</option>
-                            <option value="4000_5500" {{ old('ingreso_mensual') == '4000_5500' ? 'selected' : '' }}>$4,000 – $5,500</option>
-                            <option value="5500_7000" {{ old('ingreso_mensual') == '5500_7000' ? 'selected' : '' }}>$5,500 – $7,000</option>
-                            <option value="7000_8500" {{ old('ingreso_mensual') == '7000_8500' ? 'selected' : '' }}>$7,000 – $8,500</option>
-                            <option value="8500_10000" {{ old('ingreso_mensual') == '8500_10000' ? 'selected' : '' }}>$8,500 – $10,000</option>
-                            <option value="10000_20000" {{ old('ingreso_mensual') == '10000_20000' ? 'selected' : '' }}>$10,000 – $20,000</option>
-                            <option value="mas_de_20000" {{ old('ingreso_mensual') == 'mas_de_20000' ? 'selected' : '' }}>Más de $20,000</option>
-                            <option value="no_aplica" {{ old('ingreso_mensual') == 'no_aplica' ? 'selected' : '' }}>No aplica</option>
+                            @if(empty($ingresoMensual))
+                                <option value="">Error al encontrar las opciones</option>
+                            @else
+                                @foreach($ingresoMensual as $estado)
+                                    <option value="{{ $estado }}" {{ old('ingreso_mensual') == $estado ? 'selected' : '' }}>{{ ucfirst(str_replace('_', ' ', $estado)) }}</option>
+                                @endforeach
+                            @endif
                         </select>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M6 9l6 6 6-6"/>
@@ -241,10 +237,13 @@
                     <div class="select-shell">
                         <select name="tipo_hogar" class="form-select">
                             <option value="">Sin especificar</option>
-                            <option value="familiar" {{ old('tipo_hogar') == 'familiar' ? 'selected' : '' }}>Familiar</option>
-                            <option value="prestada" {{ old('tipo_hogar') == 'prestada' ? 'selected' : '' }}>Prestada</option>
-                            <option value="propia" {{ old('tipo_hogar') == 'propia' ? 'selected' : '' }}>Propia</option>
-                            <option value="rentada" {{ old('tipo_hogar') == 'rentada' ? 'selected' : '' }}>Rentada</option>
+                            @if(empty($tipoHogar))
+                                <option value="">Error al encontrar las opciones</option>
+                            @else
+                                @foreach($tipoHogar as $estado)
+                                    <option value="{{ $estado }}" {{ old('tipo_hogar') == $estado ? 'selected' : '' }}>{{ ucfirst(str_replace('_', ' ', $estado)) }}</option>
+                                @endforeach
+                            @endif
                         </select>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M6 9l6 6 6-6"/>
@@ -258,9 +257,13 @@
                     <div class="select-shell">
                         <select name="tipo_vivienda" class="form-select">
                             <option value="">Sin especificar</option>
-                            <option value="casa" {{ old('tipo_vivienda') == 'casa' ? 'selected' : '' }}>Casa</option>
-                            <option value="departamento" {{ old('tipo_vivienda') == 'departamento' ? 'selected' : '' }}>Departamento</option>
-                            <option value="cuarto" {{ old('tipo_vivienda') == 'cuarto' ? 'selected' : '' }}>Cuarto</option>
+                            @if(empty($tipoVivienda))
+                                <option value="">Error al encontrar las opciones</option>
+                            @else
+                                @foreach($tipoVivienda as $estado)
+                                    <option value="{{ $estado }}" {{ old('tipo_vivienda') == $estado ? 'selected' : '' }}>{{ ucfirst(str_replace('_', ' ', $estado)) }}</option>
+                                @endforeach
+                            @endif
                         </select>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M6 9l6 6 6-6"/>
@@ -298,13 +301,13 @@
                     <div class="select-shell">
                         <select class="form-select" onchange="addTag(this, 'difusion')">
                             <option value="">Seleccionar…</option>
-                            <option value="anuncios_impresos">Anuncios impresos en comunidad</option>
-                            <option value="centro_meneses">Centro Meneses</option>
-                            <option value="conocidos">Conocidos</option>
-                            <option value="redes_sociales">Redes sociales (Facebook e Instagram)</option>
-                            <option value="familia">Familia</option>
-                            <option value="recomendacion_secundarias">Recomendación de secundarias cercanas</option>
-                            <option value="whatsapp">WhatsApp</option>
+                            @if($difuciones->isEmpty())
+                                <option value="">Error al encontrar las opciones</option>
+                            @else
+                                @foreach($difuciones as $difucion)
+                                    <option value="{{ $difucion->nombre }}">{{ $difucion->nombre }}</option>
+                                @endforeach
+                            @endif
                         </select>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M6 9l6 6 6-6"/>
@@ -320,16 +323,13 @@
                     <div class="select-shell">
                         <select class="form-select" onchange="addTag(this, 'sustento')">
                             <option value="">Seleccionar…</option>
-                            <option value="abuela">Abuela</option>
-                            <option value="abuelo">Abuelo</option>
-                            <option value="esposo_a">Esposo/a</option>
-                            <option value="hermano_a">Hermano/a</option>
-                            <option value="hijo_a">Hijo/a</option>
-                            <option value="madre">Madre</option>
-                            <option value="padre">Padre</option>
-                            <option value="tia">Tía</option>
-                            <option value="tio">Tío</option>
-                            <option value="soy_proveedor">Soy proveedor económico</option>
+                            @if($sustentos->isEmpty())
+                                <option value="">Error al encontrar las opciones</option>
+                            @else
+                                @foreach($sustentos as $sustento)
+                                    <option value="{{ $sustento->nombre }}">{{ $sustento->nombre }}</option>
+                                @endforeach
+                            @endif
                         </select>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M6 9l6 6 6-6"/>
@@ -345,11 +345,13 @@
                     <div class="select-shell">
                         <select class="form-select" onchange="addTag(this, 'no_trabaja')">
                             <option value="">Seleccionar…</option>
-                            <option value="becas_apoyos">Becas y/o apoyos</option>
-                            <option value="conyugue">Cónyuge</option>
-                            <option value="familiares">Familiares</option>
-                            <option value="pension">Pensión</option>
-                            <option value="no_aplica">No aplica</option>
+                            @if($noTrabaja->isEmpty())
+                                <option value="">Error al encontrar las opciones</option>
+                            @else
+                                @foreach($noTrabaja as $opciones)
+                                    <option value="{{ $opciones->nombre }}">{{ $opciones->nombre }}</option>
+                                @endforeach
+                            @endif
                         </select>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M6 9l6 6 6-6"/>
@@ -365,12 +367,13 @@
                     <div class="select-shell">
                         <select class="form-select" onchange="addTag(this, 'servicio_medico')">
                             <option value="">Seleccionar…</option>
-                            <option value="imss">IMSS</option>
-                            <option value="issste">ISSSTE</option>
-                            <option value="centro_salud">Centro de salud</option>
-                            <option value="medico_farmacia">Servicio médico de farmacia</option>
-                            <option value="medico_privado">Médico privado</option>
-                            <option value="medico_militar">Médico militar</option>
+                            @if($serviciosMedicos->isEmpty())
+                                <option value="">Error al encontrar las opciones</option>
+                            @else
+                                @foreach($serviciosMedicos as $serviciosMedico)
+                                    <option value="{{ $serviciosMedico->nombre }}">{{ $serviciosMedico->nombre }}</option>
+                                @endforeach
+                            @endif
                         </select>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M6 9l6 6 6-6"/>
@@ -386,16 +389,13 @@
                     <div class="select-shell">
                         <select class="form-select" onchange="addTag(this, 'personas_dependen')">
                             <option value="">Seleccionar…</option>
-                            <option value="abuela">Abuela</option>
-                            <option value="abuelo">Abuelo</option>
-                            <option value="conyugue">Cónyuge</option>
-                            <option value="hermanos_as">Hermanos/as</option>
-                            <option value="hijos_as">Hijos/as</option>
-                            <option value="madre">Madre</option>
-                            <option value="padre">Padre</option>
-                            <option value="nietos_as">Nietos/as</option>
-                            <option value="sobrinos_as">Sobrinos/as</option>
-                            <option value="no_aplica">No aplica</option>
+                            @if($personasDependen->isEmpty())
+                                <option value="">Error al encontrar las opciones</option>
+                            @else
+                                @foreach($personasDependen as $personas)
+                                    <option value="{{ $personas->nombre }}">{{ $personas->nombre }}</option>
+                                @endforeach
+                            @endif
                         </select>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M6 9l6 6 6-6"/>
