@@ -116,7 +116,7 @@ class PComunidadController extends Controller
 
     //Obtiene los datos para la tabla index.
     private function getDatosIndex() {
-        $usuarias = PComunidad::join(
+        $usuarias = PComunidad::leftJoin(
             'colonia',                  // tabla que quiero unir
             'p_comunidad.colonia_id',   // FK
             '=',                        // operador
@@ -136,26 +136,52 @@ class PComunidadController extends Controller
         return $usuarias;
     }
 
-    private function getDatosShow($id) {
-        $usuaria = PComunidad::join(
-            'colonia',                  // tabla que quiero unir
-            'p_comunidad.colonia_id',   // FK
-            '=',                        // operador
-            'colonia.id'                // PK
-        )
-        ->select('p_comunidad.id',
-                 'p_comunidad.nombre',
-                 'p_comunidad.ap_pat',
-                 'p_comunidad.ap_mat',
-                 'p_comunidad.nv_escolar',
-                 'p_comunidad.birth_date',
-                 'p_comunidad.genero',
-                 'p_comunidad.telefono_celular',
-                 'p_comunidad.lider',
-                 'p_comunidad.saberes',
-                 'colonia.nombre AS colonia')
-        ->where('p_comunidad.id', $id)
-        ->first();
+    private function getDatosShow($id)
+    {
+        $usuaria = PComunidad::with([
+            'difuciones',
+            'sustentos',
+            'noTrabajos',
+            'serviciosMedicos',
+            'personasDependen',
+        ])
+            ->leftJoin(
+                'colonia',
+                'p_comunidad.colonia_id',
+                '=',
+                'colonia.id'
+            )
+            ->select(
+                'p_comunidad.id',
+                'p_comunidad.nombre',
+                'p_comunidad.ap_pat',
+                'p_comunidad.ap_mat',
+                'p_comunidad.nv_escolar',
+                'p_comunidad.estado_civil',
+                'p_comunidad.num_hijos',
+                'p_comunidad.ocupacion',
+                'p_comunidad.direccion',
+                'p_comunidad.colonia_otro',
+                'p_comunidad.alcaldia',
+                'p_comunidad.alcaldia_otro',
+                'p_comunidad.correo',
+                'p_comunidad.ingreso_mensual',
+                'p_comunidad.tipo_hogar',
+                'p_comunidad.tipo_vivienda',
+                'p_comunidad.habitantes_menos_18',
+                'p_comunidad.habitantes_mas_18',
+                'p_comunidad.habitantes_mas_60',
+                'p_comunidad.birth_date',
+                'p_comunidad.genero',
+                'p_comunidad.telefono_celular',
+                'p_comunidad.telefono_casa',
+                'p_comunidad.lider',
+                'p_comunidad.saberes',
+                'colonia.nombre AS colonia'
+            )
+            ->where('p_comunidad.id', $id)
+            ->first();
+
         return $usuaria;
     }
 

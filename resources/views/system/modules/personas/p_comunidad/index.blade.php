@@ -56,7 +56,7 @@
                   {{ $usuaria->nombre }} {{ $usuaria->ap_pat }} {{ $usuaria->ap_mat }}
                 </div>
                 <div class="person-role">
-                  {{ ucfirst(str_replace('_', ' ', $usuaria->genero)); }}
+                  {{ ucfirst(str_replace('_', ' ', $usuaria->genero)) }}
                 </div>
               </td>
               <td>
@@ -66,7 +66,7 @@
               </td>
               <td>
                 <span class="area-tag">
-                  {{ $usuaria->colonia}}
+                  {{ $usuaria->colonia ?? 'Otro' }}
                 </span>
               </td>
               <td>

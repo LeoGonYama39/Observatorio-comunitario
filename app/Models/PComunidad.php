@@ -110,12 +110,31 @@ class PComunidad extends Model
         'edad',
         'categoria',
         'categ_categ',
+        'colonia_mostrar',
+        'alcaldia_mostrar',
     ];
 
     //Función para obtener la edad, con la fecha de nacimiento guardada
     public function getEdadAttribute() {
         if(!$this->birth_date) return null;
         return \Carbon\Carbon::parse($this->birth_date)->age;
+    }
+
+    public function getColoniaMostrarAttribute()
+    {
+        if ($this->colonia !== null) {
+            return $this->colonia;
+        }
+        return $this->colonia_otro;
+    }
+
+    public function getAlcaldiaMostrarAttribute()
+    {
+        if ($this->alcaldia === 'otros') {
+            return $this->alcaldia_otro;
+        }
+
+        return ucfirst(str_replace('_', ' ', $this->alcaldia));
     }
 
     public function getCategCategAttribute() {
