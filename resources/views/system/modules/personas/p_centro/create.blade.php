@@ -52,12 +52,13 @@
         <div class="select-shell">
           <select name="cargo" class="form-select">
             <option value="">Sin especificar</option>
-            <option value="coordinador_general" {{ old('cargo') == 'coordinador_general' ? 'selected' : '' }}>Coordinador general</option>
-            <option value="asistente_de_coordinación" {{ old('cargo') == 'asistente_de_coordinación' ? 'selected' : '' }}>Asistente de coordinación</option>
-            <option value="administración" {{ old('cargo') == 'administración' ? 'selected' : '' }}>Administración</option>
-            <option value="recepción" {{ old('cargo') == 'recepción' ? 'selected' : '' }}>Recepción</option>
-            <option value="coordinador" {{ old('cargo') == 'coordinador' ? 'selected' : '' }}>Coordinador</option>
-            <option value="responsable" {{ old('cargo') == 'responsable' ? 'selected' : '' }}>Responsable</option>
+              @if(empty($opCargo))
+                  <option value="">Error al buscar las opciones</option>
+              @else
+                  @foreach($opCargo as $cargo)
+                      <option value="{{ $cargo }}" {{ old('cargo') == $cargo ? 'selected' : '' }}>{{ ucfirst(str_replace('_', ' ', $cargo)) }}</option>
+                  @endforeach
+              @endif
           </select>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M6 9l6 6 6-6"/>

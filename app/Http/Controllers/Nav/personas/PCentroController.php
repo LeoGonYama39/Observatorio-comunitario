@@ -41,7 +41,9 @@ class PCentroController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.personas.p_centro.create", compact('persona', 'otros'));
+        $opCargo = $datosUsuario->getEnumValues('p_centro', 'cargo');
+
+        $view = view("system.modules.personas.p_centro.create", compact('persona', 'otros', 'opCargo'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
