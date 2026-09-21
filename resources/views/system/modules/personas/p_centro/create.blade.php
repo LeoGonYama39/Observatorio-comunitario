@@ -15,6 +15,8 @@
   </span>
 </div>
 
+@include('system.parts.alerts')
+
 <div class="content-header">
   <div>
     <h1>Nuevo registro</h1>
@@ -42,6 +44,7 @@
       <div class="form-field">
         <label>Apellido materno</label>
         <input type="text" name="ap_mat" class="form-input" value="{{ old('ap_mat') }}">
+        @error('ap_mat') <span class="field-error">{{ $message }}</span> @enderror
       </div>
 
       <div class="form-field">
@@ -49,32 +52,36 @@
         <div class="select-shell">
           <select name="cargo" class="form-select">
             <option value="">Sin especificar</option>
-            <option value="coordinador">Coordinador</option>
-            <option value="seguridad">Seguridad</option>
-            <option value="administrativo">Administrativo</option>
+            <option value="coordinador_general" {{ old('cargo') == 'coordinador_general' ? 'selected' : '' }}>Coordinador general</option>
+            <option value="asistente_de_coordinación" {{ old('cargo') == 'asistente_de_coordinación' ? 'selected' : '' }}>Asistente de coordinación</option>
+            <option value="administración" {{ old('cargo') == 'administración' ? 'selected' : '' }}>Administración</option>
+            <option value="recepción" {{ old('cargo') == 'recepción' ? 'selected' : '' }}>Recepción</option>
+            <option value="coordinador" {{ old('cargo') == 'coordinador' ? 'selected' : '' }}>Coordinador</option>
+            <option value="responsable" {{ old('cargo') == 'responsable' ? 'selected' : '' }}>Responsable</option>
           </select>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M6 9l6 6 6-6"/>
           </svg>
         </div>
+        @error('cargo') <span class="field-error">{{ $message }}</span> @enderror
       </div>
     </div>
 
     <div class="form-checkbox-row">
-      <input type="checkbox" id="crear_acceso" onchange="toggleAccesoFields(this)">
+      <input type="checkbox" name="crear_acceso" id="crear_acceso" value="1" {{ old('crear_acceso') ? 'checked' : '' }} onchange="toggleAccesoFields(this)">
       <label for="crear_acceso">Crear acceso al sistema</label>
     </div>
 
-        <div class="acceso-fields" id="accesoFields" hidden>
+    <div class="acceso-fields" id="accesoFields" {{ old('crear_acceso') ? '' : 'hidden' }}>
       <div class="form-grid">
         <div class="form-field">
-          <label>Usuario</label>
+          <label>Usuario <span class="required">*</span></label>
           <input type="text" name="usuario" class="form-input" value="{{ old('usuario') }}">
           @error('usuario') <span class="field-error">{{ $message }}</span> @enderror
         </div>
 
         <div class="form-field">
-          <label>Contraseña</label>
+          <label>Contraseña <span class="required">*</span></label>
           <div class="input-shell">
             <input type="password" name="password" id="password_field">
             <button type="button" class="toggle-pass" onclick="togglePasswordField()" aria-label="Mostrar contraseña">
@@ -84,6 +91,7 @@
               </svg>
             </button>
           </div>
+          @error('password') <span class="field-error">{{ $message }}</span> @enderror
         </div>
       </div>
     </div>

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Nav\personas;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sup\DatosUsuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use App\Models\PCentro;
 
 class PCentroController extends Controller
@@ -57,7 +59,75 @@ class PCentroController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $messages = [
+                'nombre.required'   => 'El nombre es obligatorio.',
+                'nombre.max'        => 'El nombre no puede tener más de 40 caracteres.',
+                'ap_pat.required'   => 'El apellido paterno es obligatorio.',
+                'ap_pat.max'        => 'El apellido paterno no puede tener más de 40 caracteres.',
+                'ap_mat.max'        => 'El apellido materno no puede tener más de 40 caracteres.',
+                'cargo.in'          => 'El cargo seleccionado no es válido.',
+                'usuario.required'  => 'El nombre de usuario es obligatorio al crear acceso.',
+                'usuario.max'       => 'El usuario no puede superar los 20 caracteres.',
+                'usuario.unique'    => 'Este nombre de usuario ya está registrado en el sistema.',
+                'password.required' => 'La contraseña es obligatoria al crear acceso.',
+                'password.min'      => 'La contraseña debe tener al menos 6 caracteres.',
+            ];
+
+            $validated = $request->validate([
+                'nombre' => ['required', 'string', 'max:40'],
+                'ap_pat' => ['required', 'string', 'max:40'],
+                'ap_mat' => ['nullable', 'string', 'max:40'],
+                'cargo'  => [
+                    'nullable',
+                    'string',
+                    Rule::in([
+                        'coordinador_general',
+                        'asistente_de_coordinación',
+                        'administración',
+                        'recepción',
+                        'coordinador',
+                        'responsable',
+                    ]),
+                ],
+                'crear_acceso' => ['nullable', 'boolean'],
+                'usuario' => [
+                    Rule::requiredIf($request->boolean('crear_acceso')),
+                    'nullable',
+                    'string',
+                    'max:20',
+                    Rule::unique('p_centro', 'usuario'),
+                ],
+                'password' => [
+                    Rule::requiredIf($request->boolean('crear_acceso')),
+                    'nullable',
+                    'string',
+                    'min:6',
+                    'max:255',
+                ],
+            ], $messages);
+
+            $crearAcceso = $request->boolean('crear_acceso');
+
+            PCentro::create([
+                'nombre'   => trim($validated['nombre']),
+                'ap_pat'   => trim($validated['ap_pat']),
+                'ap_mat'   => !empty($validated['ap_mat']) ? trim($validated['ap_mat']) : null,
+                'cargo'    => !empty($validated['cargo']) ? $validated['cargo'] : null,
+                'usuario'  => $crearAcceso ? trim($validated['usuario']) : null,
+                'password' => $crearAcceso ? Hash::make($validated['password']) : null,
+            ]);
+
+            return redirect()
+                ->route('personas-centro.index')
+                ->with('success', 'Persona del centro registrada con éxito.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
+        }
     }
 
 
