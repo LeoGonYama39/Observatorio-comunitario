@@ -94,3 +94,8 @@ function addTag(select, group) {
   list.appendChild(chip);
   select.value = '';
 }
+
+function toggleOtroField(select, targetId, triggerValue) {
+    const trigger = triggerValue || 'otro';
+    document.getElementById(targetId).hidden = select.value !== trigger;
+}

@@ -129,3 +129,19 @@
     color: var(--ink);
     background: var(--mist-soft);
 }
+
+[hidden] {
+    display: none !important;
+}
+
+.form-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--steel);
+    margin: 0 0 14px;
+}
+.form-section-title:not(:first-child) {
+    margin-top: 4px;
+}
