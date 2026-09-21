@@ -110,13 +110,13 @@
         </div>
     </div>
     @endif
-    @if($usuaria->telefono)
+    @if($usuaria->telefono_celular)
     <div class="info-field">
         <label>
-            Teléfono
+            Teléfono celular
         </label>
         <div class="value">
-            {{ $usuaria->telefono }}
+            {{ $usuaria->telefono_celular }}
         </div>
     </div>
     @endif

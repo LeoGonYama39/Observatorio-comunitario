@@ -145,14 +145,14 @@ class PComunidadController extends Controller
                  'p_comunidad.nv_escolar',
                  'p_comunidad.birth_date',
                  'p_comunidad.genero',
-                 'p_comunidad.telefono',
+                 'p_comunidad.telefono_celular',
                  'p_comunidad.lider',
                  'p_comunidad.saberes',
                  'colonia.nombre AS colonia')
         ->where('p_comunidad.id', $id)
         ->first();
 
-        
+
 
         return $usuaria;
     }
