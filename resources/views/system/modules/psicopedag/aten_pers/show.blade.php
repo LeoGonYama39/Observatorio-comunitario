@@ -24,6 +24,13 @@
     </p>
   </div>
   <div class="header-actions">
+    <button class="btn-outline" onclick="location.href='#'">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 5v14"/>
+        <path d="M5 12h14"/>
+      </svg>
+      Nuevo caso
+    </button>
     <button class="btn-outline">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 20h9"/>
@@ -43,181 +50,344 @@
     </button>
   </div>
 </div>
-<div class="info-card" style="margin-bottom: 32px;">
-  <h3>
-    Información general
-  </h3>
-  <div class="info-grid">
-    <div class="info-field">
-      <label>
-        Fecha de apertura
-      </label>
-      <div class="value">
-        15 de marzo, 2026
+
+<div class="case-switcher">
+  <button type="button" class="case-nav-btn" id="casePrevBtn" onclick="changeCase(-1)" aria-label="Caso anterior" disabled>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 18l-6-6 6-6"/>
+    </svg>
+  </button>
+  <div class="case-switcher-label">
+    <span class="case-switcher-title">Caso <span id="caseCurrentNum">1</span> de <span id="caseTotalNum">2</span></span>
+    <span class="case-switcher-sub" id="caseSubLabel">Psicoeducativa · Activo</span>
+  </div>
+  <button type="button" class="case-nav-btn" id="caseNextBtn" onclick="changeCase(1)" aria-label="Caso siguiente">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 18l6-6-6-6"/>
+    </svg>
+  </button>
+</div>
+
+<div class="case-block" data-case="1" data-sub-label="Psicoeducativa · Activo">
+
+  <div class="info-card" style="margin-bottom: 32px;">
+    <h3>
+      Información general
+    </h3>
+    <div class="info-grid">
+      <div class="info-field">
+        <label>
+          Fecha de apertura
+        </label>
+        <div class="value">
+          15 de marzo, 2026
+        </div>
       </div>
-    </div>
-    <div class="info-field">
-      <label>
-        Estado
-      </label>
-      <span class="meta-badge on">
-        Activo
-      </span>
-    </div>
-    <div class="info-field">
-      <label>
-        Tipo
-      </label>
-      <div class="value">
-        Psicoeducativa
-      </div>
-    </div>
-    <div class="info-field">
-      <label>
-        Motivos
-      </label>
-      <div class="simple-tag-list">
-        <span class="tag">
-          Depresión
+      <div class="info-field">
+        <label>
+          Estado
+        </label>
+        <span class="meta-badge on">
+          Activo
         </span>
-        <span class="tag">
-          Ansiedad
-        </span>
       </div>
-    </div>
-    <div class="info-field">
-      <label>Canalizado</label>
-      <div class="value">Institución canalizado</div>
+      <div class="info-field">
+        <label>
+          Tipo
+        </label>
+        <div class="value">
+          Psicoeducativa
+        </div>
+      </div>
+      <div class="info-field">
+        <label>
+          Motivos
+        </label>
+        <div class="simple-tag-list">
+          <span class="tag">
+            Depresión
+          </span>
+          <span class="tag">
+            Ansiedad
+          </span>
+        </div>
+      </div>
+      <div class="info-field">
+        <label>Canalizado</label>
+        <div class="value">Institución canalizado</div>
+      </div>
     </div>
   </div>
-</div>
-<div class="doc-card" style="margin-bottom: 32px;">
-  <div class="doc-section">
-    <h3>Petición de la persona</h3>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+  <div class="doc-card" style="margin-bottom: 32px;">
+    <div class="doc-section">
+      <h3>Petición de la persona</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <h3>
+      Tutor(es)
+    </h3>
+    <button class="btn-outline btn-small">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 5v14"/>
+        <path d="M5 12h14"/>
+      </svg>
+      Agregar tutor
+    </button>
+  </div>
+  <div class="table-card" style="margin-bottom: 32px;">
+    <div style="padding: 6px 24px;">
+      <div class="related-row">
+        <span class="name">
+          Alejandra Vidal Reyes
+        </span>
+        <span class="role-badge participante">
+          Madre
+        </span>
+      </div>
+      <div class="related-row">
+        <span class="name">
+          Marco Camposeco Ruiz
+        </span>
+        <span class="role-badge participante">
+          Padre
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <h3>
+      Historial
+    </h3>
+    <button class="btn-outline btn-small">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 5v14"/>
+        <path d="M5 12h14"/>
+      </svg>
+      Nuevo seguimiento
+    </button>
+  </div>
+  <div class="timeline-card">
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot">
+        </div>
+        <div class="timeline-date">
+          22 de julio, 2026
+        </div>
+        <p class="timeline-text">
+          Reunión con los padres.
+        </p>
+        <div class="attendees">
+          <span class="mini-label">
+            Atendido por
+          </span>
+          <span class="attendee-chip">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+            </svg>
+            Emilio Vargas Núñez
+          </span>
+          <span class="attendee-chip">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+            </svg>
+            María Torres Salinas
+          </span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot">
+        </div>
+        <div class="timeline-date">
+          10 de junio, 2026
+        </div>
+        <p class="timeline-text">
+          Seguimiento del caso.
+        </p>
+        <div class="attendees">
+          <span class="mini-label">
+            Atendido por
+          </span>
+          <span class="attendee-chip">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+            </svg>
+            Emilio Vargas Núñez
+          </span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot">
+        </div>
+        <div class="timeline-date">
+          15 de marzo, 2026
+        </div>
+        <p class="timeline-text">
+          Primera consulta.
+        </p>
+        <div class="attendees">
+          <span class="mini-label">
+            Atendido por
+          </span>
+          <span class="attendee-chip">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+            </svg>
+            Emilio Vargas Núñez
+          </span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
-<div class="section-header">
-  <h3>
-    Tutor(es)
-  </h3>
-  <button class="btn-outline btn-small">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M12 5v14"/>
-      <path d="M5 12h14"/>
-    </svg>
-    Agregar tutor
-  </button>
-</div>
-<div class="table-card" style="margin-bottom: 32px;">
-  <div style="padding: 6px 24px;">
-    <div class="related-row">
-      <span class="name">
-        Alejandra Vidal Reyes
-      </span>
-      <span class="role-badge participante">
-        Madre
-      </span>
+<div class="case-block" data-case="2" data-sub-label="Académica · Cerrado" hidden>
+
+  <div class="info-card" style="margin-bottom: 32px;">
+    <h3>
+      Información general
+    </h3>
+    <div class="info-grid">
+      <div class="info-field">
+        <label>
+          Fecha de apertura
+        </label>
+        <div class="value">
+          3 de enero, 2025
+        </div>
+      </div>
+      <div class="info-field">
+        <label>
+          Estado
+        </label>
+        <span class="meta-badge off">
+          Cerrado
+        </span>
+      </div>
+      <div class="info-field">
+        <label>
+          Tipo
+        </label>
+        <div class="value">
+          Académica
+        </div>
+      </div>
+      <div class="info-field">
+        <label>
+          Motivos
+        </label>
+        <div class="simple-tag-list">
+          <span class="tag">
+            Duelo
+          </span>
+        </div>
+      </div>
+      <div class="info-field">
+        <label>Canalizado</label>
+        <div class="value">N/A</div>
+      </div>
     </div>
-    <div class="related-row">
-      <span class="name">
-        Marco Camposeco Ruiz
-      </span>
-      <span class="role-badge participante">
-        Padre
-      </span>
+  </div>
+  <div class="doc-card" style="margin-bottom: 32px;">
+    <div class="doc-section">
+      <h3>Petición de la persona</h3>
+      <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <h3>
+      Tutor(es)
+    </h3>
+    <button class="btn-outline btn-small">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 5v14"/>
+        <path d="M5 12h14"/>
+      </svg>
+      Agregar tutor
+    </button>
+  </div>
+  <div class="table-card" style="margin-bottom: 32px;">
+    <div style="padding: 6px 24px;">
+      <div class="related-row">
+        <span class="name">
+          Alejandra Vidal Reyes
+        </span>
+        <span class="role-badge participante">
+          Madre
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <h3>
+      Historial
+    </h3>
+    <button class="btn-outline btn-small">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 5v14"/>
+        <path d="M5 12h14"/>
+      </svg>
+      Nuevo seguimiento
+    </button>
+  </div>
+  <div class="timeline-card">
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot">
+        </div>
+        <div class="timeline-date">
+          3 de enero, 2025
+        </div>
+        <p class="timeline-text">
+          Primera consulta de crisis. Caso cerrado tras estabilización.
+        </p>
+        <div class="attendees">
+          <span class="mini-label">
+            Atendido por
+          </span>
+          <span class="attendee-chip">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+            </svg>
+            María Torres Salinas
+          </span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="section-header">
-  <h3>
-    Historial
-  </h3>
-  <button class="btn-outline btn-small">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M12 5v14"/>
-      <path d="M5 12h14"/>
-    </svg>
-    Nuevo seguimiento
-  </button>
-</div>
-<div class="timeline-card">
-  <div class="timeline">
-    <div class="timeline-item">
-      <div class="timeline-dot">
-      </div>
-      <div class="timeline-date">
-        22 de julio, 2026
-      </div>
-      <p class="timeline-text">
-        Reunión con los padres.
-      </p>
-      <div class="attendees">
-        <span class="mini-label">
-          Atendido por
-        </span>
-        <span class="attendee-chip">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-            <circle cx="9" cy="7" r="4"/>
-          </svg>
-          Emilio Vargas Núñez
-        </span>
-        <span class="attendee-chip">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-            <circle cx="9" cy="7" r="4"/>
-          </svg>
-          María Torres Salinas
-        </span>
-      </div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-dot">
-      </div>
-      <div class="timeline-date">
-        10 de junio, 2026
-      </div>
-      <p class="timeline-text">
-        Seguimiento del caso.
-      </p>
-      <div class="attendees">
-        <span class="mini-label">
-          Atendido por
-        </span>
-        <span class="attendee-chip">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-            <circle cx="9" cy="7" r="4"/>
-          </svg>
-          Emilio Vargas Núñez
-        </span>
-      </div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-dot">
-      </div>
-      <div class="timeline-date">
-        15 de marzo, 2026
-      </div>
-      <p class="timeline-text">
-        Primera consulta.
-      </p>
-      <div class="attendees">
-        <span class="mini-label">
-          Atendido por
-        </span>
-        <span class="attendee-chip">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-            <circle cx="9" cy="7" r="4"/>
-          </svg>
-          Emilio Vargas Núñez
-        </span>
-      </div>
-    </div>
-  </div>
-</div>
+<script>
+let currentCase = 1;
+const totalCases = document.querySelectorAll('.case-block').length;
+
+function changeCase(direction) {
+  const next = currentCase + direction;
+  if (next < 1 || next > totalCases) return;
+
+  document.querySelector('.case-block[data-case="' + currentCase + '"]').hidden = true;
+  currentCase = next;
+  const block = document.querySelector('.case-block[data-case="' + currentCase + '"]');
+  block.hidden = false;
+
+  document.getElementById('caseCurrentNum').textContent = currentCase;
+  document.getElementById('caseSubLabel').textContent = block.getAttribute('data-sub-label');
+  document.getElementById('casePrevBtn').disabled = currentCase === 1;
+  document.getElementById('caseNextBtn').disabled = currentCase === totalCases;
+}
+
+document.getElementById('caseTotalNum').textContent = totalCases;
+document.getElementById('casePrevBtn').disabled = true;
+</script>
 @endsection

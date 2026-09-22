@@ -262,4 +262,55 @@ dialog.confirm-modal::backdrop {
     gap: 10px;
 }
 
+/* ============ NUEVO: SELECTOR DE CASOS (varios casos por persona) ============ */
 
+.case-switcher {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+.case-switcher-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 180px;
+}
+.case-switcher-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+}
+.case-switcher-sub {
+    font-size: 12px;
+    color: var(--steel);
+    margin-top: 2px;
+}
+.case-nav-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid var(--mist);
+    background: var(--white);
+    color: var(--graphite);
+    cursor: pointer;
+    transition: background .15s ease, border-color .15s ease;
+}
+.case-nav-btn:hover:not(:disabled) {
+    background: var(--pearl);
+    border-color: var(--steel);
+}
+.case-nav-btn svg {
+    stroke: var(--graphite);
+    fill: none;
+}
+.case-nav-btn:hover:not(:disabled) svg {
+    stroke: var(--ink);
+}
+.case-nav-btn:disabled svg {
+    stroke: var(--steel);
+}
