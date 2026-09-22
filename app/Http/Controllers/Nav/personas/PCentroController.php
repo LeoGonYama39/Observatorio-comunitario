@@ -155,12 +155,29 @@ class PCentroController extends Controller
         return $view;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+
+    public function edit(Request $request, $id)
     {
-        //
+        $datosUsuario = new DatosUsuario();
+        $aux = $datosUsuario->getDatosUsuario();
+        $persona = $aux[0];
+        $otros = $aux[1];
+
+        $opCargo = $datosUsuario->getEnumValues('p_centro', 'cargo');
+
+        $centro = $this->getDatosShow($id);
+
+        $view = view("system.modules.personas.p_centro.edit", compact('persona', 'otros', 'centro', 'opCargo'));
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
     }
 
     /**
@@ -221,7 +238,8 @@ class PCentroController extends Controller
                 'nombre',
                 'ap_pat',
                 'ap_mat',
-                'cargo'
+                'cargo',
+                'usuario'
             )
             ->find($id);
     }

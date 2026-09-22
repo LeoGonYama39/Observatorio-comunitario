@@ -34,19 +34,19 @@ Route::middleware('auth:centro,externo')->group(function () {
     //Vistas del sistema con get para info
 
     //Con las generadas por Laravel
-    Route::resource('/sistema/personas-centro', PCentroController::class)->only(['index', 'show', 'create', 'store', 'destroy']);
-    Route::resource('/sistema/personas-externo', PExternoController::class)->only(['index', 'show', 'create', 'store', 'destroy']);
-    Route::resource('/sistema/personas-usuarias', PComunidadController::class)->only(['index', 'show', 'create', 'store', 'destroy']);
-    Route::resource('/sistema/proyectos', ProyectosController::class)->only(['index', 'show', 'create', 'store']);
-    Route::resource('/sistema/a-juridicas', AJuridicasController::class)->only(['index', 'show', 'create', 'store']);
-    Route::resource('/sistema/a-familiares', AFamiliaresController::class)->only(['index', 'show', 'create', 'store']);
-    Route::resource('/sistema/educ_basica', EducBasicController::class)->only(['index', 'show', 'create', 'store']);
-    Route::resource('/sistema/educ_sup', EducSupController::class)->only(['index', 'show', 'create', 'store']);
-    Route::resource('/sistema/aten_pers', AtenPersController::class)->only(['index', 'show', 'create', 'store']);
-    Route::resource('/sistema/proc_grup', ProcGrupController::class)->only(['index', 'show', 'create', 'store']);
-    Route::resource('/sistema/talleres', TalleresController::class)->only(['index', 'show', 'create', 'store']);
-    Route::resource('/sistema/eventos', EventosController::class)->only(['index', 'show', 'create', 'store']);
-    Route::resource('/sistema/colonias', ColoniasController::class)->only(['index', 'show', 'create', 'store']);
+    Route::resource('/sistema/personas-centro', PCentroController::class);
+    Route::resource('/sistema/personas-externo', PExternoController::class);
+    Route::resource('/sistema/personas-usuarias', PComunidadController::class);
+    Route::resource('/sistema/proyectos', ProyectosController::class);
+    Route::resource('/sistema/a-juridicas', AJuridicasController::class);
+    Route::resource('/sistema/a-familiares', AFamiliaresController::class);
+    Route::resource('/sistema/educ_basica', EducBasicController::class);
+    Route::resource('/sistema/educ_sup', EducSupController::class);
+    Route::resource('/sistema/aten_pers', AtenPersController::class);
+    Route::resource('/sistema/proc_grup', ProcGrupController::class);
+    Route::resource('/sistema/talleres', TalleresController::class);
+    Route::resource('/sistema/eventos', EventosController::class);
+    Route::resource('/sistema/colonias', ColoniasController::class);
 });
 
 

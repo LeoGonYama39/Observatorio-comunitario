@@ -99,3 +99,7 @@ function toggleOtroField(select, targetId, triggerValue) {
     const trigger = triggerValue || 'otros';
     document.getElementById(targetId).hidden = select.value !== trigger;
 }
+
+function toggleEliminarAcceso(checkbox) {
+  document.getElementById('accesoExistenteFields').hidden = checkbox.checked;
+}
