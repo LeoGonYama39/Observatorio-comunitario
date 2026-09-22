@@ -45,16 +45,17 @@ class PComunidadController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $datos = $this->getDropDownOptions($datosUsuario);
+        //$datos = $this->getDropDownOptions($datosUsuario);
 
-        $view = view(
-            "system.modules.personas.p_comunidad.create",
-            array_merge(
-                compact('persona', 'otros'),
-                $datos
-            )
-        );
-        return $view;
+        $view = view("system.modules.personas.p_comunidad.create", compact('persona', 'otros'));
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
     }
 
     /**

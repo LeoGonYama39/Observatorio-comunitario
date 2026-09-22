@@ -145,7 +145,8 @@ async function navigateTo(url, tipo) {
         //Actualizo la barra de enlace, sin recargar
         window.history.pushState({}, '', url);} 
       } catch (err)   {
-      console.error(err);
+        console.log('Error al hacer el push');
+        console.error(err);
       }
 }
 
