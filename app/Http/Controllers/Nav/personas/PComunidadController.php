@@ -81,9 +81,15 @@ class PComunidadController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $usuaria = $this->getDatosShow($id);
+        $datos = $this->getDatosShow($id);
 
-        $view = view("system.modules.personas.p_comunidad.show", compact('persona', 'otros', 'usuaria'));
+        $view = view(
+            "system.modules.personas.p_comunidad.show",
+            array_merge(
+                compact('persona', 'otros'),
+                $datos ?? ['usuaria' => null]
+            )
+        );
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -170,6 +176,9 @@ class PComunidadController extends Controller
             'noTrabajos',
             'serviciosMedicos',
             'personasDependen',
+            'inscripcionEducativa.inscripcionesCurso.curso',
+            'talleresComoParticipante.taller',
+            'talleresComoTallerista.taller',
         ])
             ->leftJoin(
                 'colonia',
@@ -208,7 +217,77 @@ class PComunidadController extends Controller
             ->where('p_comunidad.id', $id)
             ->first();
 
-        return $usuaria;
+        if(!$usuaria) return null;
+
+        $actividades = collect();
+
+        // Educación
+        if ($usuaria->inscripcionEducativa) {
+            foreach ($usuaria->inscripcionEducativa->inscripcionesCurso as $inscripcion) {
+                $actividades->push([
+                    'anio' => $inscripcion->anio,
+                    'temporada' => $inscripcion->temporada,
+                    'tipo' => 'educacion',
+                    'nombre' => $inscripcion->curso->nombre,
+                ]);
+            }
+        }
+
+        // Talleres como participante
+        foreach ($usuaria->talleresComoParticipante as $tallerGen) {
+            $actividades->push([
+                'anio' => $tallerGen->anio,
+                'temporada' => $tallerGen->temporada,
+                'tipo' => 'taller',
+                'nombre' => $tallerGen->taller->nombre,
+                'rol' => 'participante',
+            ]);
+        }
+
+        // Talleres como tallerista
+        foreach ($usuaria->talleresComoTallerista as $tallerGen) {
+            $actividades->push([
+                'anio' => $tallerGen->anio,
+                'temporada' => $tallerGen->temporada,
+                'tipo' => 'taller',
+                'nombre' => $tallerGen->taller->nombre,
+                'rol' => 'tallerista',
+            ]);
+        }
+
+
+        $ordenTemporada = [
+            'otoño' => 2,
+            'primavera' => 1,
+        ];
+
+        $actividades = $actividades
+            ->groupBy(function ($actividad) {
+                return $actividad['anio'] . ' ' . $actividad['temporada'];
+            })
+            ->sortByDesc(function ($grupo, $periodo) use ($ordenTemporada) {
+                [$anio, $temporada] = explode(' ', $periodo);
+
+                return ((int) $anio * 10) + $ordenTemporada[$temporada];
+            })
+            ->mapWithKeys(function ($grupo, $periodo) {
+
+                [$anio, $temporada] = explode(' ', $periodo);
+
+                return [
+                    ucfirst($temporada) . ' ' . $anio => [
+                        'educacion' => $grupo
+                            ->where('tipo', 'educacion')
+                            ->values(),
+
+                        'talleres' => $grupo
+                            ->where('tipo', 'taller')
+                            ->values(),
+                    ]
+                ];
+            });
+
+        return compact('usuaria', 'actividades');
     }
 
     private function getDropDownOptions($datosUsuario) {

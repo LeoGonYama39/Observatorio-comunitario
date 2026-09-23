@@ -1,29 +1,26 @@
 @extends('system.app')
 
-@section(
-    'title',
+@section('title',
     $usuaria
-        ? $usuaria->nombre . ' ' . $usuaria->ap_pat . ' ' . $usuaria->ap_mat . ' · Ficha'
-        : 'Sin resultados'
-)
+    ? $usuaria->nombre . ' ' . $usuaria->ap_pat . ' ' . $usuaria->ap_mat . ' · Ficha'
+    : 'Sin
+    resultados')
 
 @section('content')
     @if ($usuaria)
-        @php
-            $coloniaMostrar = $usuaria->colonia_otro ?: $usuaria->colonia;
-            $alcaldiaMostrar = $usuaria->alcaldia_otro ?: $usuaria->alcaldia;
-        @endphp
         <div class="breadcrumb">
-            <a href="{{ route('personas-usuarias.index') }}" data-url="{{ route('personas-usuarias.index') }}" class="return-index">
+            <a href="{{ route('personas-usuarias.index') }}" data-url="{{ route('personas-usuarias.index') }}"
+               class="return-index">
                 Personas usuarias
             </a>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"
+                 stroke-linejoin="round">
                 <path d="M9 6l6 6-6 6" />
             </svg>
             <span class="current">
-    {{ $usuaria->nombre }} {{ $usuaria->ap_pat }} {{ $usuaria->ap_mat }}
-  </span>
-@include('system.parts.alerts')
+                {{ $usuaria->nombre }} {{ $usuaria->ap_pat }} {{ $usuaria->ap_mat }}
+            </span>
+            @include('system.parts.alerts')
         </div>
         <div class="content-header">
             <div>
@@ -36,14 +33,16 @@
             </div>
             <div class="header-actions">
                 <button class="btn-outline">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                         stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 20h9" />
                         <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
                     </svg>
                     Editar
                 </button>
                 <button type="button" class="btn-danger" onclick="document.getElementById('modalEliminar').showModal()">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                         stroke-linecap="round" stroke-linejoin="round">
                         <path d="M3 6h18" />
                         <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
                         <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
@@ -192,9 +191,9 @@
             <div class="info-grid">
                 <div class="info-field full-width">
                     <label>¿Cómo se enteró del centro? (Difusión)</label>
-                    @if($usuaria->difuciones->isNotEmpty())
+                    @if ($usuaria->difuciones->isNotEmpty())
                         <div class="tag-chip-list">
-                            @foreach($usuaria->difuciones as $difucion)
+                            @foreach ($usuaria->difuciones as $difucion)
                                 <span class="attendee-chip">{{ $difucion->nombre }}</span>
                             @endforeach
                         </div>
@@ -205,9 +204,9 @@
 
                 <div class="info-field full-width">
                     <label>Parentesco de quien provee el sustento económico</label>
-                    @if($usuaria->sustentos->isNotEmpty())
+                    @if ($usuaria->sustentos->isNotEmpty())
                         <div class="tag-chip-list">
-                            @foreach($usuaria->sustentos as $sustento)
+                            @foreach ($usuaria->sustentos as $sustento)
                                 <span class="attendee-chip">{{ $sustento->nombre }}</span>
                             @endforeach
                         </div>
@@ -218,9 +217,9 @@
 
                 <div class="info-field full-width">
                     <label>En caso de no trabajar, ¿cómo obtiene sus ingresos?</label>
-                    @if($usuaria->noTrabajos->isNotEmpty())
+                    @if ($usuaria->noTrabajos->isNotEmpty())
                         <div class="tag-chip-list">
-                            @foreach($usuaria->noTrabajos as $no_trabaja)
+                            @foreach ($usuaria->noTrabajos as $no_trabaja)
                                 <span class="attendee-chip">{{ $no_trabaja->nombre }}</span>
                             @endforeach
                         </div>
@@ -231,9 +230,9 @@
 
                 <div class="info-field full-width">
                     <label>Servicio médico al que recurre</label>
-                    @if($usuaria->serviciosMedicos->isNotEmpty())
+                    @if ($usuaria->serviciosMedicos->isNotEmpty())
                         <div class="tag-chip-list">
-                            @foreach($usuaria->serviciosMedicos as $servicio_medico)
+                            @foreach ($usuaria->serviciosMedicos as $servicio_medico)
                                 <span class="attendee-chip">{{ $servicio_medico->nombre }}</span>
                             @endforeach
                         </div>
@@ -244,9 +243,9 @@
 
                 <div class="info-field full-width">
                     <label>¿Cuántas personas dependen de usted?</label>
-                    @if($usuaria->personasDependen->isNotEmpty())
+                    @if ($usuaria->personasDependen->isNotEmpty())
                         <div class="tag-chip-list">
-                            @foreach($usuaria->personasDependen as $persona_dependen)
+                            @foreach ($usuaria->personasDependen as $persona_dependen)
                                 <span class="attendee-chip">{{ $persona_dependen->nombre }}</span>
                             @endforeach
                         </div>
@@ -257,7 +256,7 @@
             </div>
         </div>
 
-        @if($usuaria->saberes)
+        @if ($usuaria->saberes)
             <div class="doc-card" style="margin-top: 32px;">
                 <div class="doc-section">
                     <h3>Directorio de saberes</h3>
@@ -266,35 +265,103 @@
             </div>
         @endif
 
+        <h2 style="margin-top: 20px;">
+            Actividades por periodo
+        </h2>
+
+        @if ($actividades->isEmpty())
+            <p style="margin-top: 10px;">No hay actividades registradas.</p>
+        @else
+            @foreach ($actividades as $periodo => $actividad)
+                <h3 style="margin-top: 20px;">{{ $periodo }}</h3>
+                <div class="related-grid">
+                    @if ($actividad['educacion']->isNotEmpty())
+                        <div class="related-card">
+                            <h3>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                                </svg>
+                                Educación
+                            </h3>
+                            @foreach ($actividad['educacion'] as $curso)
+                                <div class="related-list">
+                                    <div class="related-row">
+                                        <span class="name">
+                                            {{ $curso['nombre'] }}
+                                        </span>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    @if ($actividad['talleres']->isNotEmpty())
+                        <div class="related-card">
+                            <h3>
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14.7 6.3a4 4 0 1 1-5.4 5.4L2 19v3h3l7.3-7.3" />
+                                    <path d="M17.5 3.5 20.5 6.5" />
+                                    <path d="M15 9l5-5" />
+                                </svg>
+                                Talleres
+                            </h3>
+                            @foreach ($actividad['talleres'] as $taller)
+                                <div class="related-list">
+                                    <div class="related-row">
+                                        <span class="name">
+                                            {{ $taller['nombre'] }}
+                                        </span>
+                                        <span class="role-badge lider">
+                                            {{ ucfirst($taller['rol']) }}
+                                        </span>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+            @endforeach
+
+        @endif
+
         <dialog id="modalEliminar" class="confirm-modal" onclick="if (event.target === this) this.close()">
             <div class="confirm-modal-content">
                 <div class="confirm-modal-header">
                     <div class="confirm-modal-icon">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 6h18"/>
-                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                            <path d="M10 11v6"/>
-                            <path d="M14 11v6"/>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 6h18" />
+                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                            <path d="M10 11v6" />
+                            <path d="M14 11v6" />
                         </svg>
                     </div>
                     <div>
                         <h3>¿Eliminar persona del centro?</h3>
-                        <p>Esta acción no se puede deshacer. Se eliminará el registro de <strong>{{ $usuaria->nombre }} {{ $usuaria->ap_pat }} {{ $usuaria->ap_mat }}</strong> y todos sus registros en tallers, proyectos, etc.</p>
+                        <p>Esta acción no se puede deshacer. Se eliminará el registro de <strong>{{ $usuaria->nombre }}
+                                {{ $usuaria->ap_pat }} {{ $usuaria->ap_mat }}</strong> y todos sus registros en tallers,
+                            proyectos, etc.</p>
                     </div>
                 </div>
                 <div class="confirm-modal-actions">
-                    <button type="button" class="btn-outline" onclick="document.getElementById('modalEliminar').close()">
+                    <button type="button" class="btn-outline"
+                            onclick="document.getElementById('modalEliminar').close()">
                         Cancelar
                     </button>
-                    <form action="{{ route('personas-usuarias.destroy', $usuaria->id) }}" method="POST" style="margin: 0;">
+                    <form action="{{ route('personas-usuarias.destroy', $usuaria->id) }}" method="POST"
+                          style="margin: 0;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn-danger">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M3 6h18"/>
-                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                                 stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 6h18" />
+                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
                             </svg>
                             Confirmar eliminación
                         </button>
@@ -302,22 +369,25 @@
                 </div>
             </div>
         </dialog>
-
     @else
         <div class="empty-state">
             <div class="empty-state-icon">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="7"/>
-                    <path d="m21 21-4.3-4.3"/>
-                    <path d="M9 9l4 4"/>
-                    <path d="M13 9l-4 4"/>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="m21 21-4.3-4.3" />
+                    <path d="M9 9l4 4" />
+                    <path d="M13 9l-4 4" />
                 </svg>
             </div>
             <h2>No se encontró ningún resultado</h2>
             <p>No hay información que coincida con lo que buscas.</p>
-            <a type="button" class="btn-outline" href="{{ route('personas-usuarias.index') }}" data-url="{{ route('personas-usuarias.index') }}">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/>
+            <a type="button" class="btn-outline" href="{{ route('personas-usuarias.index') }}"
+               data-url="{{ route('personas-usuarias.index') }}">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2.2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5" />
+                    <path d="M11 18l-6-6 6-6" />
                 </svg>
                 Regresar
             </a>

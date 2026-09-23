@@ -12,6 +12,8 @@ use App\Models\listas\NoTrabaja;
 use App\Models\listas\PersonasDependen;
 use App\Models\listas\ServicioMedico;
 use App\Models\listas\Sustento;
+use App\Models\Talleres\Taller;
+use App\Models\Talleres\TallerGen;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -234,10 +236,13 @@ class PComunidad extends Model
         );
     }
 
-	/*public function inscripcion_educativa()
-	{
-		return $this->hasOne(InscripcionEducativa::class, 'comunidad_id');
-	}*/
+    public function inscripcionEducativa()
+    {
+        return $this->hasOne(
+            InscripcionEducativa::class,
+            'comunidad_id'
+        );
+    }
 
 	/*public function rol_evento_comunidads()
 	{
