@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Nav\AreasController;
+use App\Http\Controllers\Nav\EjesController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Nav\personas\PCentroController;
@@ -34,6 +36,8 @@ Route::middleware('auth:centro,externo')->group(function () {
     //Vistas del sistema con get para info
 
     //Con las generadas por Laravel
+    Route::resource('/sistema/areas', AreasController::class)->only(['index']);
+    Route::resource('/sistema/ejes', EjesController::class);
     Route::resource('/sistema/personas-centro', PCentroController::class);
     Route::resource('/sistema/personas-externo', PExternoController::class);
     Route::resource('/sistema/personas-usuarias', PComunidadController::class);

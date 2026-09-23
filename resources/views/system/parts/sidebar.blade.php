@@ -21,6 +21,27 @@
         </svg>
         Áreas
       </button>
+        <a
+            class="nav-item {{ request()->
+        routeIs('ejes.*') ? 'active' : '' }}"
+            href="{{ route('ejes.index') }}" data-url="{{ route('ejes.index') }}"
+        >
+            <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
+                <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                <rect x="14" y="14" width="7" height="7" rx="1.5" />
+            </svg>
+            Ejes
+        </a>
       <button class="nav-item has-submenu {{ request()->
         routeIs('personas-centro.*') || request()->routeIs('personas-externo.*') || request()->routeIs('personas-usuarias.*') ? 'section-active parent-active' : '' }}">
         <svg

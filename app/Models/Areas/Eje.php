@@ -7,6 +7,7 @@
 namespace App\Models\Areas;
 
 use App\Models\Proyectos\Proyecto;
+use App\Models\Talleres\Taller;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
@@ -32,6 +33,10 @@ class Eje extends Model
 		'nombre'
 	];
 
+    protected $appends = [
+      'responsabilidades_formato'
+    ];
+
 	/*public function eventos()
 	{
 		return $this->belongsToMany(Evento::class, 'evento_eje');
@@ -52,7 +57,15 @@ class Eje extends Model
         );
     }
 
-	public function tallers()
+    public function getResponsabilidadesFormatoAttribute()
+    {
+        if(!$this->responsabilidades()->count()) return null;
+        return $this->responsabilidades
+            ->pluck('nombre')
+            ->implode(' · ');
+    }
+
+	public function talleres()
 	{
 		return $this->belongsToMany(Taller::class, 'taller_eje');
 	}
