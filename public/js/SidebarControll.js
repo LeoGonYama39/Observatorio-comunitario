@@ -5,12 +5,12 @@ const MOBILE_BREAKPOINT = 900; //DEFINE de la dimención a la que cambia
 
 //Función para mostrar sidebar
 function toggleSidebar()  {
-  document.body.classList.toggle('sidebar-toggled');
+    document.body.classList.toggle('sidebar-toggled');
 }
 
 //Función para ocultar sidebar
 function closeSidebar()  {
-  document.body.classList.remove('sidebar-toggled');
+    document.body.classList.remove('sidebar-toggled');
 }
 
 //Evento click para los botones
@@ -18,14 +18,14 @@ sidebarToggleBtn.addEventListener('click', toggleSidebar);
 sidebarBackdrop.addEventListener('click', closeSidebar);
 
 let wasMobile = window.innerWidth <=
-MOBILE_BREAKPOINT;
+    MOBILE_BREAKPOINT;
 window.addEventListener('resize', () =>  {
-  const isMobile = window.innerWidth <=
-  MOBILE_BREAKPOINT;
-  if (isMobile !== wasMobile)  {
-    closeSidebar();
-    wasMobile = isMobile;
-  }
+    const isMobile = window.innerWidth <=
+        MOBILE_BREAKPOINT;
+    if (isMobile !== wasMobile)  {
+        closeSidebar();
+        wasMobile = isMobile;
+    }
 });
 
 
@@ -34,15 +34,15 @@ window.addEventListener('resize', () =>  {
 //Función para navegación AJAX con elementos que aparecen y desaparecen del main-content
 //Agregar los elementos correspondientes a closest si hay nuevos
 document.addEventListener('click', function(e) {
-  const elemento = e.target.closest(
-    'tr[data-url], a.return-index[data-url], a.btn-new[data-url], a.btn-outline[data-url]');
-  if (!elemento){
-    return;
-  } else {
-    e.preventDefault();
-    const url = elemento.getAttribute('data-url');
-    navigateTo(url, 1);
-  }  
+    const elemento = e.target.closest(
+        'tr[data-url], a.return-index[data-url], a.btn-new[data-url], a.btn-outline[data-url]');
+    if (!elemento){
+        return;
+    } else {
+        e.preventDefault();
+        const url = elemento.getAttribute('data-url');
+        navigateTo(url, 1);
+    }
 });
 
 
@@ -50,11 +50,11 @@ document.addEventListener('click', function(e) {
 //Agrego evento a popstate
 window.addEventListener('popstate', async () =>   {
 
-  clearActiveStates();
-  
-  //Obtengo el nuevo url al que salté con atrás o adelante
-  const url = location.href;
-  const elemento = [...document.querySelectorAll(
+    clearActiveStates();
+
+    //Obtengo el nuevo url al que salté con atrás o adelante
+    const url = location.href;
+    const elemento = [...document.querySelectorAll(
         '.sidebar .sub-item[data-url], .sidebar .nav-item[data-url]'
     )].find(el => {
         const dataUrl = el.getAttribute('data-url');
@@ -63,8 +63,8 @@ window.addEventListener('popstate', async () =>   {
 
     gestionMenuParent(elemento);
 
-  //GET a url
-  navigateTo(url, 2);
+    //GET a url
+    navigateTo(url, 2);
 });
 
 //Control de los submenus
@@ -107,18 +107,18 @@ function clearActiveStates() {
 //Función para el control de los botones active o no active
 //Para poder hacerlo con click o popstate
 function actualizarActivo(url)   {
-  // Quitar active de todos
-  document
-  .querySelectorAll('.sidebar .sub-item, .sidebar .nav-item')
-  .forEach(el => el.classList.remove('active'));
-  // Buscar el botón cuya data-url coincide con la URL actual
-  const elemento = document.querySelector(
-  `.sidebar [data-url="${url}"]`
-  );
-  // Activarlo
-  if (elemento)   {
-    elemento.classList.add('active');
-  }
+    // Quitar active de todos
+    document
+        .querySelectorAll('.sidebar .sub-item, .sidebar .nav-item')
+        .forEach(el => el.classList.remove('active'));
+    // Buscar el botón cuya data-url coincide con la URL actual
+    const elemento = document.querySelector(
+        `.sidebar [data-url="${url}"]`
+    );
+    // Activarlo
+    if (elemento)   {
+        elemento.classList.add('active');
+    }
 }
 
 
@@ -126,39 +126,44 @@ function actualizarActivo(url)   {
 ///esperar la respuesta y reemplazar el contenido
 async function navigateTo(url, tipo) {
     try{
-      const res = await fetch(url,   {
-        headers:   {
-          'X-Requested-With': 'XMLHttpRequest'
-        }
-      });
+        const res = await fetch(url,   {
+            headers:   {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
 
-      if (!res.ok) throw new Error('Error al cargar la sección');
-      
-      //Laravel responde con un json con varias cosas
-      const data = await res.json();
-      
-      //Reempazar
-      document.getElementById('mainContent').innerHTML = data.content;
-      document.title = data.title;
-      
-      if(tipo === 1){
-        //Actualizo la barra de enlace, sin recargar
-        window.history.pushState({}, '', url);} 
-      } catch (err)   {
+        if (!res.ok) throw new Error('Error al cargar la sección');
+
+        //Laravel responde con un json con varias cosas
+        const data = await res.json();
+
+        //Reempazar
+        document.getElementById('mainContent').innerHTML = data.content;
+        document.title = data.title;
+
+        //Reinicializar los scripts que dependen de elementos del contenido nuevo
+        if (typeof initPageScripts === 'function') {
+            initPageScripts();
+        }
+
+        if(tipo === 1){
+            //Actualizo la barra de enlace, sin recargar
+            window.history.pushState({}, '', url);}
+    } catch (err)   {
         console.log('Error al hacer el push');
         console.error(err);
-      }
+    }
 }
 
 function gestionMenuParent(elemento){
-  if (elemento.classList.contains('sub-item')) {
+    if (elemento.classList.contains('sub-item')) {
         elemento.classList.add('active');
 
         // Busca el nav-item padre (el submenu siempre es su hermano justo después)
         const submenu = elemento.closest('.submenu');
         const parentNavItem = submenu ? submenu.previousElementSibling : null;
         if (parentNavItem) parentNavItem.classList.add('section-active');
-      } else {
+    } else {
         elemento.classList.add('active');
     }
 }

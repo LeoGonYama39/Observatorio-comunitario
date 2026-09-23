@@ -17,8 +17,8 @@ function toggleMateria(box) {
     box.classList.toggle('done');
     const check = box.querySelector('.check-circle');
     check.innerHTML = box.classList.contains('done')
-      ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'
-      : '';
+        ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'
+        : '';
 }
 
 //Toggle del checkbox para toggle de crear usuario en p_centro
@@ -44,62 +44,129 @@ function togglePasswordField() {
         : '<path d="M3 3l18 18"/><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.5 5.3A9.8 9.8 0 0 1 12 5c6.5 0 10 7 10 7a15.6 15.6 0 0 1-3.4 4.4M6.6 6.6C4 8.3 2 12 2 12s3.5 7 10 7a9.7 9.7 0 0 0 4-.8"/>';
 }
 
-
-function updatePoblRange() {
-  const lowInput = document.getElementById('poblRangeLow');
-  const highInput = document.getElementById('poblRangeHigh');
-  let low = parseInt(lowInput.value);
-  let high = parseInt(highInput.value);
-
-  if (low > high) {
-    [low, high] = [high, low];
-    lowInput.value = low;
-    highInput.value = high;
-  }
-
-  document.getElementById('poblLowLabel').textContent = low;
-  document.getElementById('poblHighLabel').textContent = high >= 60 ? '60+' : high;
-  document.getElementById('poblObjLow').value = low;
-  document.getElementById('poblObjHigh').value = high;
-
-  const min = 3, max = 60;
-  const fill = document.getElementById('poblRangeFill');
-  const leftPct = ((low - min) / (max - min)) * 100;
-  const rightPct = ((high - min) / (max - min)) * 100;
-  fill.style.left = leftPct + '%';
-  fill.style.width = (rightPct - leftPct) + '%';
-}
-updatePoblRange();
-
-function addTag(select, group) {
-  const value = select.value;
-  const label = select.options[select.selectedIndex].text;
-  if (!value) return;
-
-  const list = document.getElementById(group + '-list');
-  if (list.querySelector('[data-value="' + value + '"]')) {
-    select.value = '';
-    return;
-  }
-
-  const chip = document.createElement('span');
-  chip.className = 'tag-chip';
-  chip.setAttribute('data-value', value);
-  chip.innerHTML = label +
-    '<button type="button" class="remove-tag" onclick="this.parentElement.remove()">' +
-    '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>' +
-    '</button>' +
-    '<input type="hidden" name="' + group + '[]" value="' + value + '">';
-
-  list.appendChild(chip);
-  select.value = '';
-}
-
 function toggleOtroField(select, targetId, triggerValue) {
     const trigger = triggerValue || 'otros';
     document.getElementById(targetId).hidden = select.value !== trigger;
 }
 
 function toggleEliminarAcceso(checkbox) {
-  document.getElementById('accesoExistenteFields').hidden = checkbox.checked;
+    document.getElementById('accesoExistenteFields').hidden = checkbox.checked;
 }
+
+function addTag(select, group) {
+    const value = select.value;
+    const label = select.options[select.selectedIndex].text;
+    if (!value) return;
+
+    const list = document.getElementById(group + '-list');
+    if (list.querySelector('[data-value="' + value + '"]')) {
+        select.value = '';
+        return;
+    }
+
+    const chip = document.createElement('span');
+    chip.className = 'tag-chip';
+    chip.setAttribute('data-value', value);
+    chip.innerHTML = label +
+        '<button type="button" class="remove-tag" onclick="this.parentElement.remove()">' +
+        '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>' +
+        '</button>' +
+        '<input type="hidden" name="' + group + '[]" value="' + value + '">';
+
+    list.appendChild(chip);
+    select.value = '';
+}
+
+//// Rango de población objetivo (create proyectos)
+//Se llama por oninput desde los <input type="range">, y por initPoblRange() al (re)cargar la vista
+function updatePoblRange() {
+    const lowInput = document.getElementById('poblRangeLow');
+    const highInput = document.getElementById('poblRangeHigh');
+    if (!lowInput || !highInput) return; //esta vista no tiene el slider, no hacer nada
+
+    let low = parseInt(lowInput.value);
+    let high = parseInt(highInput.value);
+
+    if (low > high) {
+        [low, high] = [high, low];
+        lowInput.value = low;
+        highInput.value = high;
+    }
+
+    document.getElementById('poblLowLabel').textContent = low;
+    document.getElementById('poblHighLabel').textContent = high >= 60 ? '60+' : high;
+    document.getElementById('poblObjLow').value = low;
+    document.getElementById('poblObjHigh').value = high;
+
+    const min = 3, max = 60;
+    const fill = document.getElementById('poblRangeFill');
+    const leftPct = ((low - min) / (max - min)) * 100;
+    const rightPct = ((high - min) / (max - min)) * 100;
+    fill.style.left = leftPct + '%';
+    fill.style.width = (rightPct - leftPct) + '%';
+}
+
+function initPoblRange() {
+    //Solo fija el estado visual inicial si el slider existe en la vista actual
+    if (document.getElementById('poblRangeLow')) {
+        updatePoblRange();
+    }
+}
+
+//// Navegación entre los varios casos de una persona en atención individual (psicopedagogía)
+const caseSwitcher = { current: 1, total: 0 };
+
+function initCaseSwitcher() {
+    const blocks = document.querySelectorAll('.case-block');
+    caseSwitcher.total = blocks.length;
+    caseSwitcher.current = 1;
+
+    if (caseSwitcher.total === 0) return; //esta vista no tiene selector de casos
+
+    blocks.forEach((block, index) => {
+        block.hidden = index !== 0;
+    });
+
+    const currentNumEl = document.getElementById('caseCurrentNum');
+    const totalNumEl = document.getElementById('caseTotalNum');
+    const subLabelEl = document.getElementById('caseSubLabel');
+    const prevBtn = document.getElementById('casePrevBtn');
+    const nextBtn = document.getElementById('caseNextBtn');
+
+    if (currentNumEl) currentNumEl.textContent = caseSwitcher.current;
+    if (totalNumEl) totalNumEl.textContent = caseSwitcher.total;
+    if (subLabelEl) subLabelEl.textContent = blocks[0].getAttribute('data-sub-label') || '';
+    if (prevBtn) prevBtn.disabled = true;
+    if (nextBtn) nextBtn.disabled = caseSwitcher.total <= 1;
+}
+
+function changeCase(direction) {
+    const next = caseSwitcher.current + direction;
+    if (next < 1 || next > caseSwitcher.total) return;
+
+    const currentBlock = document.querySelector('.case-block[data-case="' + caseSwitcher.current + '"]');
+    if (currentBlock) currentBlock.hidden = true;
+
+    caseSwitcher.current = next;
+    const block = document.querySelector('.case-block[data-case="' + caseSwitcher.current + '"]');
+    if (!block) return;
+    block.hidden = false;
+
+    const currentNumEl = document.getElementById('caseCurrentNum');
+    const subLabelEl = document.getElementById('caseSubLabel');
+    const prevBtn = document.getElementById('casePrevBtn');
+    const nextBtn = document.getElementById('caseNextBtn');
+
+    if (currentNumEl) currentNumEl.textContent = caseSwitcher.current;
+    if (subLabelEl) subLabelEl.textContent = block.getAttribute('data-sub-label') || '';
+    if (prevBtn) prevBtn.disabled = caseSwitcher.current === 1;
+    if (nextBtn) nextBtn.disabled = caseSwitcher.current === caseSwitcher.total;
+}
+
+//// Función para inicializar. Cuando se recarga con AJAX o petición directa
+function initPageScripts() {
+    initPoblRange();
+    initCaseSwitcher();
+}
+
+initPageScripts();

@@ -367,27 +367,4 @@
     </div>
   </div>
 </div>
-
-<script>
-let currentCase = 1;
-const totalCases = document.querySelectorAll('.case-block').length;
-
-function changeCase(direction) {
-  const next = currentCase + direction;
-  if (next < 1 || next > totalCases) return;
-
-  document.querySelector('.case-block[data-case="' + currentCase + '"]').hidden = true;
-  currentCase = next;
-  const block = document.querySelector('.case-block[data-case="' + currentCase + '"]');
-  block.hidden = false;
-
-  document.getElementById('caseCurrentNum').textContent = currentCase;
-  document.getElementById('caseSubLabel').textContent = block.getAttribute('data-sub-label');
-  document.getElementById('casePrevBtn').disabled = currentCase === 1;
-  document.getElementById('caseNextBtn').disabled = currentCase === totalCases;
-}
-
-document.getElementById('caseTotalNum').textContent = totalCases;
-document.getElementById('casePrevBtn').disabled = true;
-</script>
 @endsection
