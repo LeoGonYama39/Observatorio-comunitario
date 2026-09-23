@@ -45,9 +45,15 @@ class PComunidadController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        //$datos = $this->getDropDownOptions($datosUsuario);
+        $datos = $this->getDropDownOptions($datosUsuario);
 
-        $view = view("system.modules.personas.p_comunidad.create", compact('persona', 'otros'));
+        $view = view(
+            "system.modules.personas.p_comunidad.create",
+            array_merge(
+                compact('persona', 'otros'),
+                $datos ?? ['datos' => null]
+            )
+        );
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -56,6 +62,8 @@ class PComunidadController extends Controller
                 'title' => $sections['title'],
             ]);
         }
+
+        return $view;
     }
 
     /**
