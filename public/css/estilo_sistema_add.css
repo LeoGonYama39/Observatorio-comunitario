@@ -314,3 +314,64 @@ dialog.confirm-modal::backdrop {
 .case-nav-btn:disabled svg {
     stroke: var(--steel);
 }
+
+/* ============ NUEVO: ÁREAS (edición inline de responsables) ============ */
+
+.area-block {
+    margin-bottom: 40px;
+}
+.area-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+.area-header h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0;
+}
+
+.select-shell-compact {
+    height: 38px;
+    padding: 0 12px;
+    min-width: 220px;
+}
+.select-shell-compact .form-select {
+    padding: 8px 0;
+}
+
+.responsable-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.responsable-feedback {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    opacity: 0;
+    transition: opacity .15s ease;
+}
+.responsable-feedback.show {
+    opacity: 1;
+}
+.responsable-feedback::after {
+    content: '';
+    display: block;
+    width: 16px;
+    height: 16px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+.responsable-feedback.ok::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23111111' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+}
+.responsable-feedback.error::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b3261e' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18'/%3E%3Cpath d='M6 6l12 12'/%3E%3C/svg%3E");
+}
