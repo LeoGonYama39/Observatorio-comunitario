@@ -4,7 +4,9 @@
   </div>
   <div class="nav-scroll">
     <nav>
-      <button class="nav-item">
+      <a class="nav-item {{ request()-> routeIs('areas.*') ? 'active' : '' }}"
+            href="{{ route('areas.index') }}" data-url="{{ route('areas.index') }}"
+        >
         <svg
                width="18"
                height="18"
@@ -20,7 +22,7 @@
           <rect x="14" y="14" width="7" height="7" rx="1.5" />
         </svg>
         Áreas
-      </button>
+</a>
         <a
             class="nav-item {{ request()->
         routeIs('ejes.*') ? 'active' : '' }}"

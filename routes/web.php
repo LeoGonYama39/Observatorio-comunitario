@@ -51,6 +51,12 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::resource('/sistema/talleres', TalleresController::class);
     Route::resource('/sistema/eventos', EventosController::class);
     Route::resource('/sistema/colonias', ColoniasController::class);
+
+    //Para lo de areas y responsabilidades
+    Route::patch('/areas/{area}/responsable', [AreasController::class, 'updateResponsableArea'])
+    ->name('areas.updateResponsable');
+    Route::patch('/responsabilidades/{responsabilidad}/responsable', [AreasController::class, 'updateResponsableResponsabilidad'])
+    ->name('responsabilidades.updateResponsable');
 });
 
 

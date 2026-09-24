@@ -17,8 +17,8 @@ function toggleMateria(box) {
     box.classList.toggle('done');
     const check = box.querySelector('.check-circle');
     check.innerHTML = box.classList.contains('done')
-        ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'
-        : '';
+      ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'
+      : '';
 }
 
 //Toggle del checkbox para toggle de crear usuario en p_centro
@@ -114,6 +114,8 @@ function initPoblRange() {
 }
 
 //// Navegación entre los varios casos de una persona en atención individual (psicopedagogía)
+//Estado guardado en un objeto (no en variables sueltas) para poder reinicializarlo sin
+//provocar errores de "ya declarado" al recargar contenido por AJAX
 const caseSwitcher = { current: 1, total: 0 };
 
 function initCaseSwitcher() {
@@ -163,10 +165,68 @@ function changeCase(direction) {
     if (nextBtn) nextBtn.disabled = caseSwitcher.current === caseSwitcher.total;
 }
 
-//// Función para inicializar. Cuando se recarga con AJAX o petición directa
+//// Edición inline del responsable en Áreas
+function initResponsableSelects() {
+    document.querySelectorAll('.responsable-select').forEach(select => {
+        select.dataset.previous = select.value;
+    });
+}
+
+async function updateResponsable(select) {
+    const tipo = select.dataset.tipo; // 'area' | 'responsabilidad'
+    const id = select.dataset.id;
+    const nuevoResponsable = select.value;
+    const previousValue = select.dataset.previous || '';
+    const feedback = select.closest('.responsable-cell')?.querySelector('.responsable-feedback');
+
+    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+    if (!csrfMeta) {
+        console.error('Falta <meta name="csrf-token"> en app.blade.php');
+        return;
+    }
+
+    select.disabled = true; //Desactivar el dropdown en lo que hace el fetch, evita dobles peticiones
+
+    try {
+        const url = tipo === 'area'
+            ? `/areas/${id}/responsable`
+            : `/responsabilidades/${id}/responsable`;
+
+        const res = await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfMeta.content
+            },
+            body: JSON.stringify({ responsable_id: nuevoResponsable || null })
+        });
+
+        if (!res.ok) throw new Error('No se pudo guardar el responsable');
+
+        select.dataset.previous = nuevoResponsable;
+        showResponsableFeedback(feedback, 'ok');
+    } catch (err) {
+        select.value = previousValue;
+        showResponsableFeedback(feedback, 'error');
+    } finally {
+        select.disabled = false;        //Vuelve a activar el dropdown
+    }
+}
+
+function showResponsableFeedback(feedback, tipo) {
+    if (!feedback) return;
+    feedback.className = 'responsable-feedback show ' + tipo;
+    clearTimeout(feedback._timeout);
+    feedback._timeout = setTimeout(() => {
+        feedback.className = 'responsable-feedback';
+    }, 1800);
+}
+
+//// Punto único de inicialización
 function initPageScripts() {
     initPoblRange();
     initCaseSwitcher();
+    initResponsableSelects();
 }
 
 initPageScripts();

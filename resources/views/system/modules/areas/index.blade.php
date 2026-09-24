@@ -17,10 +17,9 @@
                 <div class="responsable-cell">
                     <div class="select-shell select-shell-compact">
                         <select class="form-select responsable-select" data-tipo="area" data-id="{{ $area->id }}" onchange="updateResponsable(this)">
-                            <option value="">Sin asignar</option>
-                            @foreach($personasCentro as $persona)
-                                <option value="{{ $persona->id }}" {{ $area->responsable_id == $persona->id ? 'selected' : '' }}>
-                                    {{ $persona->nombre }} {{ $persona->ap_pat }}
+                            @foreach($centros as $centro)
+                                <option value="{{ $centro->id }}" {{ $area->centro_id == $centro->id ? 'selected' : '' }}>
+                                    {{ $centro->nombre }} {{ $centro->ap_pat }} {{ $centro->ap_mat }}
                                 </option>
                             @endforeach
                         </select>
@@ -48,10 +47,9 @@
                                 <div class="responsable-cell">
                                     <div class="select-shell select-shell-compact">
                                         <select class="form-select responsable-select" data-tipo="responsabilidad" data-id="{{ $resp->id }}" onchange="updateResponsable(this)">
-                                            <option value="">Sin asignar</option>
-                                            @foreach($personasCentro as $persona)
-                                                <option value="{{ $persona->id }}" {{ $resp->responsable_id == $persona->id ? 'selected' : '' }}>
-                                                    {{ $persona->nombre }} {{ $persona->ap_pat }}
+                                            @foreach($centros as $centro)
+                                                <option value="{{ $centro->id }}" {{ $resp->centro_id == $centro->id ? 'selected' : '' }}>
+                                                    {{ $centro->nombre }} {{ $centro->ap_pat }} {{ $centro->ap_mat }}
                                                 </option>
                                             @endforeach
                                         </select>
