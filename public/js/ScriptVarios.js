@@ -17,20 +17,38 @@ function toggleMateria(box) {
     box.classList.toggle('done');
     const check = box.querySelector('.check-circle');
     check.innerHTML = box.classList.contains('done')
-      ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'
-      : '';
+        ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'
+        : '';
+}
+
+//Sincroniza el atributo disabled de los inputs dentro de un bloque con su estado hidden,
+//para que los campos ocultos no se manden en el POST
+function syncFieldGroupDisabled(container) {
+    if (!container) return;
+    const disable = container.hidden;
+    container.querySelectorAll('input, select, textarea').forEach(el => {
+        el.disabled = disable;
+    });
+}
+
+//Corre al cargar cualquier vista (full reload o AJAX), para que el estado inicial
+//(definido por old() en el blade) también respete la regla de disabled
+function initToggleGroups() {
+    document.querySelectorAll('.acceso-fields').forEach(syncFieldGroupDisabled);
 }
 
 //Toggle del checkbox para toggle de crear usuario en p_centro
 function toggleAccesoFields(checkbox) {
     const fields = document.getElementById('accesoFields');
     fields.hidden = !checkbox.checked;
+    syncFieldGroupDisabled(fields);
 }
 
 //Toggle del checkbox para toggle de crear participación en create p_externo
 function toggleParticipacionFields(checkbox) {
     const fields = document.getElementById('participacionFields');
     fields.hidden = !checkbox.checked;
+    syncFieldGroupDisabled(fields);
 }
 
 //Toggle para mostrar o no contraseña
@@ -185,7 +203,7 @@ async function updateResponsable(select) {
         return;
     }
 
-    select.disabled = true; //Desactivar el dropdown en lo que hace el fetch, evita dobles peticiones
+    select.disabled = true;
 
     try {
         const url = tipo === 'area'
@@ -209,7 +227,7 @@ async function updateResponsable(select) {
         select.value = previousValue;
         showResponsableFeedback(feedback, 'error');
     } finally {
-        select.disabled = false;        //Vuelve a activar el dropdown
+        select.disabled = false;
     }
 }
 
@@ -223,10 +241,13 @@ function showResponsableFeedback(feedback, tipo) {
 }
 
 //// Punto único de inicialización
+//Se llama una vez al cargar la página completa, y de nuevo cada vez que
+//SidebarControll.js reemplaza el contenido de #mainContent por AJAX
 function initPageScripts() {
     initPoblRange();
     initCaseSwitcher();
     initResponsableSelects();
+    initToggleGroups();
 }
 
 initPageScripts();

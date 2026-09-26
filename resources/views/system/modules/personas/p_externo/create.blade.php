@@ -14,7 +14,6 @@
     Nuevo registro
   </span>
     </div>
-
     <div class="content-header">
         <div>
             <h1>Nuevo registro</h1>
@@ -68,22 +67,40 @@
                     <input type="text" name="correo" class="form-input" value="{{ old('correo') }}">
                     @error('correo') <span class="field-error">{{ $message }}</span> @enderror
                 </div>
+                <div class="form-field">
+                    <label>Responsabilidad</label>
+                    <div class="select-shell">
+                        <select name="responsabilidad_id" class="form-select">
+                            <option value="">Sin asignar</option>
+                            @foreach($responsabilidades as $responsabilidad)
+                                <option value="{{ $responsabilidad->id }}" {{ old('responsabilidad_id') == $responsabilidad->id ? 'selected' : '' }}>
+                                    {{ $responsabilidad->nombre }} @if($responsabilidad->area) ({{ $responsabilidad->area->nombre }}) @endif
+                                </option>
+                            @endforeach
+                        </select>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 9l6 6 6-6"/>
+                        </svg>
+                    </div>
+                    @error('responsabilidad_id') <span class="field-error">{{ $message }}</span> @enderror
+                </div>
             </div>
 
             <div class="form-checkbox-row">
-                <input type="checkbox" id="agregar_participacion" onchange="toggleParticipacionFields(this)">
+                <input type="checkbox" id="agregar_participacion" name="agregar_participacion" value="1" onchange="toggleParticipacionFields(this)" {{ old('agregar_participacion') ? 'checked' : '' }}>
                 <label for="agregar_participacion">Agregar participación</label>
             </div>
 
-            <div class="acceso-fields" id="participacionFields" hidden>
+            <div class="acceso-fields" id="participacionFields" {{ old('agregar_participacion') ? '' : 'hidden' }}>
                 <div class="form-grid">
                     <div class="form-field">
                         <label>Temporada <span class="required">*</span></label>
                         <div class="select-shell">
                             <select name="temporada" class="form-select">
                                 <option value="">Seleccionar</option>
+
                                 <option value="primavera" {{ old('temporada') == 'primavera' ? 'selected' : '' }}>Primavera</option>
-                                <option value="otono" {{ old('temporada') == 'otono' ? 'selected' : '' }}>Otoño</option>
+                                <option value="otoño" {{ old('temporada') == 'otoño' ? 'selected' : '' }}>Otoño</option>
                             </select>
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M6 9l6 6 6-6"/>

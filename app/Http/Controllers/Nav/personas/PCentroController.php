@@ -93,7 +93,7 @@ class PCentroController extends Controller
 
             $crearAcceso = $request->boolean('crear_acceso');
 
-            PCentro::create([
+            $centro = PCentro::create([
                 'nombre'   => trim($validated['nombre']),
                 'ap_pat'   => trim($validated['ap_pat']),
                 'ap_mat'   => !empty($validated['ap_mat']) ? trim($validated['ap_mat']) : null,
@@ -103,7 +103,7 @@ class PCentroController extends Controller
             ]);
 
             return redirect()
-                ->route('personas-centro.index')
+                ->route('personas-centro.show', $centro->id)
                 ->with('success', 'Persona del centro registrada con éxito.');
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;

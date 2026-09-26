@@ -92,7 +92,7 @@
                     <div class="acceso-fields" id="accesoExistenteFields">
                         <div class="form-grid">
                             <div class="form-field">
-                                <label>Usuario</label>
+                                <label>Usuario<span class="required">*</span></label>
                                 <input type="text" name="usuario" class="form-input"
                                        value="{{ old('usuario', $centro->usuario) }}">
                                 @error('usuario')
@@ -123,20 +123,19 @@
                     </div>
 
                     <div class="form-checkbox-row">
-                        <input type="checkbox" id="eliminar_acceso" name="eliminar_acceso" value="1"
-                               onchange="toggleEliminarAcceso(this)">
+                        <input type="checkbox" id="eliminar_acceso" name="eliminar_acceso" value="1" onchange="toggleEliminarAcceso(this)">
                         <label for="eliminar_acceso">Eliminar acceso al sistema</label>
                     </div>
                 @else
                     <div class="form-checkbox-row">
-                        <input type="checkbox" id="crear_acceso" onchange="toggleAccesoFields(this)">
+                        <input type="checkbox" id="crear_acceso" name="crear_acceso" value="1" onchange="toggleAccesoFields(this)" {{ old('crear_acceso') ? 'checked' : '' }}>
                         <label for="crear_acceso">Crear acceso al sistema</label>
                     </div>
 
-                    <div class="acceso-fields" id="accesoFields" hidden>
+                    <div class="acceso-fields" id="accesoFields" {{ old('crear_acceso') ? '' : 'hidden' }}>
                         <div class="form-grid">
                             <div class="form-field">
-                                <label>Usuario</label>
+                                <label>Usuario <span class="required">*</span></label>
                                 <input type="text" name="usuario" class="form-input" value="{{ old('usuario') }}">
                                 @error('usuario')
                                 <span class="field-error">{{ $message }}</span>
@@ -144,7 +143,7 @@
                             </div>
 
                             <div class="form-field">
-                                <label>Contraseña</label>
+                                <label>Contraseña <span class="required">*</span></label>
                                 <div class="input-shell">
                                     <input type="password" name="password" id="password_field">
                                     <button type="button" class="toggle-pass" onclick="togglePasswordField()"
