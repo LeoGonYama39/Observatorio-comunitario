@@ -56,25 +56,14 @@ class PCentroController extends Controller
         return $view;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
+        $datosUsuario = new DatosUsuario();
+        $opCargo = $datosUsuario->getEnumValues('p_centro', 'cargo');
+
         try {
-            $messages = [
-                'nombre.required'   => 'El nombre es obligatorio.',
-                'nombre.max'        => 'El nombre no puede tener más de 40 caracteres.',
-                'ap_pat.required'   => 'El apellido paterno es obligatorio.',
-                'ap_pat.max'        => 'El apellido paterno no puede tener más de 40 caracteres.',
-                'ap_mat.max'        => 'El apellido materno no puede tener más de 40 caracteres.',
-                'cargo.in'          => 'El cargo seleccionado no es válido.',
-                'usuario.required'  => 'El nombre de usuario es obligatorio al crear acceso.',
-                'usuario.max'       => 'El usuario no puede superar los 20 caracteres.',
-                'usuario.unique'    => 'Este nombre de usuario ya está registrado en el sistema.',
-                'password.required' => 'La contraseña es obligatoria al crear acceso.',
-                'password.min'      => 'La contraseña debe tener al menos 6 caracteres.',
-            ];
+            $messages = $this->getMessages();
 
             $validated = $request->validate([
                 'nombre' => ['required', 'string', 'max:40'],
@@ -83,14 +72,7 @@ class PCentroController extends Controller
                 'cargo'  => [
                     'nullable',
                     'string',
-                    Rule::in([
-                        'coordinador_general',
-                        'asistente_de_coordinación',
-                        'administración',
-                        'recepción',
-                        'coordinador',
-                        'responsable',
-                    ]),
+                    Rule::in($opCargo),
                 ],
                 'crear_acceso' => ['nullable', 'boolean'],
                 'usuario' => [
@@ -180,12 +162,73 @@ class PCentroController extends Controller
         return $view;
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, PCentro $personas_centro)
     {
-        //
+        $datosUsuario = new DatosUsuario();
+        $opCargo = $datosUsuario->getEnumValues('p_centro', 'cargo');
+
+        // ¿En qué estado queda el acceso al sistema después de este update?
+        $teniaAcceso = !is_null($personas_centro->usuario);
+        $eliminarAcceso = $request->boolean('eliminar_acceso');
+        $crearAcceso = $request->boolean('crear_acceso');
+        $accesoActivo = !$eliminarAcceso && (($teniaAcceso || $crearAcceso));
+
+        try {
+            $messages = $this->getMessages();
+            $validated = $request->validate([
+                'nombre'            => ['required', 'string', 'max:40'],
+                'ap_pat'            => ['required', 'string', 'max:40'],
+                'ap_mat'            => ['nullable', 'string', 'max:40'],
+                'cargo'             => ['nullable', 'string', Rule::in($opCargo)],
+                'eliminar_acceso'   => ['nullable', 'boolean'],
+                'crear_acceso'      => ['nullable', 'boolean'],
+                'usuario' => [
+                    Rule::requiredIf($accesoActivo),
+                    'nullable',
+                    'string',
+                    'max:20',
+                    Rule::unique('p_centro', 'usuario')->ignore($personas_centro->id),
+                ],
+                // Solo obligatoria si el acceso se está creando desde cero;
+                // si ya existía, en blanco significa "no cambiar la contraseña"
+                'password' => [
+                    Rule::requiredIf($accesoActivo && !$teniaAcceso),
+                    'nullable',
+                    'string',
+                    'min:6',
+                    'max:255',
+                ],
+            ], $messages);
+
+            $personas_centro->nombre = trim($validated['nombre']);
+            $personas_centro->ap_pat = trim($validated['ap_pat']);
+            $personas_centro->ap_mat = !empty($validated['ap_mat']) ? trim($validated['ap_mat']) : null;
+            $personas_centro->cargo  = !empty($validated['cargo']) ? $validated['cargo'] : null;
+
+            if (!$accesoActivo) {
+                $personas_centro->usuario = null;
+                $personas_centro->password = null;
+                $personas_centro->remember_token = null;
+            } else {
+                $personas_centro->usuario = trim($validated['usuario']);
+
+                if (!empty($validated['password'])) {
+                    $personas_centro->password = Hash::make($validated['password']);
+                }
+            }
+
+            $personas_centro->save();
+
+            return redirect()
+                ->route('personas-centro.show', $personas_centro->id)
+                ->with('success', 'Registro actualizado con éxito.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
+        }
     }
 
     public function destroy(string $id)
@@ -207,6 +250,10 @@ class PCentroController extends Controller
                 ->with('error', 'Ocurrió un error al intentar eliminar el registro: ' . $e->getMessage());
         }
     }
+
+    //------------------------------
+    //          Funciones
+    //------------------------------
 
     //Obtiene los datos para la tabla index
     private function getDatosIndex()
@@ -242,5 +289,21 @@ class PCentroController extends Controller
                 'usuario'
             )
             ->find($id);
+    }
+
+    private function getMessages(){
+        return [
+            'nombre.required'   => 'El nombre es obligatorio.',
+            'nombre.max'        => 'El nombre no puede tener más de 40 caracteres.',
+            'ap_pat.required'   => 'El apellido paterno es obligatorio.',
+            'ap_pat.max'        => 'El apellido paterno no puede tener más de 40 caracteres.',
+            'ap_mat.max'        => 'El apellido materno no puede tener más de 40 caracteres.',
+            'cargo.in'          => 'El cargo seleccionado no es válido.',
+            'usuario.required'  => 'El nombre de usuario es obligatorio mientras el acceso esté activo.',
+            'usuario.max'       => 'El usuario no puede superar los 20 caracteres.',
+            'usuario.unique'    => 'Este nombre de usuario ya está registrado en el sistema.',
+            'password.required' => 'La contraseña es obligatoria al crear el acceso.',
+            'password.min'      => 'La contraseña debe tener al menos 6 caracteres.',
+        ];
     }
 }

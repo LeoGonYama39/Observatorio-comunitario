@@ -77,52 +77,6 @@
     @endif
   </div>
 </div>
-<div class="related-grid">
-  <div class="related-card">
-    <h3>
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M9 11l3 3L22 4"/>
-        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
-      </svg>
-      Proyectos
-    </h3>
-    <div class="related-list">
-      <div class="related-row">
-        <span class="name">
-          Huertos Comunitarios
-        </span>
-        <span class="role-badge lider">
-          Líder
-        </span>
-      </div>
-      <div class="related-row">
-        <span class="name">
-          Salud Preventiva en Colonias
-        </span>
-        <span class="role-badge participante">
-          Participante
-        </span>
-      </div>
-    </div>
-  </div>
-  <div class="related-card">
-    <h3>
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M14.7 6.3a4 4 0 1 1-5.4 5.4L2 19v3h3l7.3-7.3"/>
-        <path d="M17.5 3.5 20.5 6.5"/>
-        <path d="M15 9l5-5"/>
-      </svg>
-      Talleres
-    </h3>
-    <div class="related-list">
-      <div class="related-row">
-        <span class="name">
-          Alimentación Saludable
-        </span>
-      </div>
-    </div>
-  </div>
-</div>
 
 <dialog id="modalEliminar" class="confirm-modal" onclick="if (event.target === this) this.close()">
   <div class="confirm-modal-content">
