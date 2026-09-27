@@ -72,11 +72,15 @@
                     <div class="select-shell">
                         <select name="responsabilidad_id" class="form-select">
                             <option value="">Sin asignar</option>
-                            @foreach($responsabilidades as $responsabilidad)
-                                <option value="{{ $responsabilidad->id }}" {{ old('responsabilidad_id') == $responsabilidad->id ? 'selected' : '' }}>
-                                    {{ $responsabilidad->nombre }} @if($responsabilidad->area) ({{ $responsabilidad->area->nombre }}) @endif
-                                </option>
-                            @endforeach
+                            @if (empty($responsabilidades))
+                                <option value="">Error al buscar las opciones</option>
+                            @else
+                                @foreach($responsabilidades as $responsabilidad)
+                                    <option value="{{ $responsabilidad->id }}" {{ old('responsabilidad_id') == $responsabilidad->id ? 'selected' : '' }}>
+                                        {{ $responsabilidad->nombre }} @if($responsabilidad->area) ({{ $responsabilidad->area->nombre }}) @endif
+                                    </option>
+                                @endforeach
+                            @endif
                         </select>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M6 9l6 6 6-6"/>
@@ -98,9 +102,13 @@
                         <div class="select-shell">
                             <select name="temporada" class="form-select">
                                 <option value="">Seleccionar</option>
-
-                                <option value="primavera" {{ old('temporada') == 'primavera' ? 'selected' : '' }}>Primavera</option>
-                                <option value="otoño" {{ old('temporada') == 'otoño' ? 'selected' : '' }}>Otoño</option>
+                                @if(empty($opTemporada))
+                                    <option value="">Error al buscar las opciones</option>
+                                @else
+                                    @foreach($opTemporada as $temporada)
+                                        <option value="{{ $temporada }}" {{ old('temporada') == $temporada ? 'selected' : '' }}>{{ ucfirst(str_replace('_', ' ', $temporada)) }}</option>
+                                    @endforeach
+                                @endif
                             </select>
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M6 9l6 6 6-6"/>

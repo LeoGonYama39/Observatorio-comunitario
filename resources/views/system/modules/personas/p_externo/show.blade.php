@@ -9,7 +9,7 @@
 
 @section('content')
 
-@if ($externo)
+@if($externo)
 <div class="breadcrumb">
   <a href="{{ route('personas-externo.index') }}" data-url="{{ route('personas-externo.index') }}" class="return-index">
     Personas Externas
@@ -34,13 +34,13 @@
     </p>
   </div>
   <div class="header-actions">
-    <button class="btn-outline">
+      <a href="{{ route('personas-externo.edit', $externo->id) }}" data-url="{{ route('personas-externo.edit', $externo->id) }}" class="btn-outline">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 20h9"/>
         <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>
       </svg>
       Editar
-    </button>
+    </a>
       <button type="button" class="btn-danger" onclick="document.getElementById('modalEliminar').showModal()">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <path d="M3 6h18"/>

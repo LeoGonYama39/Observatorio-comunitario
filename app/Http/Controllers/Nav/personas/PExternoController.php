@@ -44,16 +44,11 @@ class PExternoController extends Controller
         $otros = $aux[1];
 
         $datos = $this->getDropDownOptions($datosUsuario);
-        $responsabilidades = Responsabilidad::select(
-                'responsabilidad.id',
-                'responsabilidad.nombre',
-                'responsabilidad.area_id'
-            )->get();
 
         $view = view(
             "system.modules.personas.p_externo.create",
             array_merge(
-                compact('persona', 'otros', 'responsabilidades'),
+                compact('persona', 'otros'),
                 $datos ?? ['datos' => null]
             )
         );
@@ -151,9 +146,6 @@ class PExternoController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Request $request, $id)
     {
         $datosUsuario = new DatosUsuario();
@@ -182,20 +174,70 @@ class PExternoController extends Controller
         return $view;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit(Request $request, $id)
     {
-        //
+        $datosUsuario = new DatosUsuario();
+        $aux = $datosUsuario->getDatosUsuario();
+        $persona = $aux[0];
+        $otros = $aux[1];
+
+        $datos = $this->getDatosEdit($id);
+
+        $view = view(
+            "system.modules.personas.p_externo.edit",
+            array_merge(
+                compact('persona', 'otros'),
+                $datos ?? ['externo' => null]
+            )
+        );
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, PExterno $personas_externo)
     {
-        //
+        try {
+            $messages = $this->getMessages();
+            $validated = $request->validate([
+                'nombre'             => ['required', 'string', 'max:40'],
+                'ap_pat'             => ['required', 'string', 'max:40'],
+                'ap_mat'             => ['nullable', 'string', 'max:40'],
+                'responsabilidad_id' => ['nullable', 'exists:responsabilidad,id'],
+                'universidad'        => ['nullable', 'string', 'max:100'],
+                'correo'             => ['nullable', 'string', 'max:100'],
+                'matricula'          => ['nullable', 'string', 'max:30'],
+                'carrera'            => ['nullable', 'string', 'max:50'],
+            ], $messages);
+
+            $personas_externo->nombre = trim($validated['nombre']);
+            $personas_externo->ap_pat = trim($validated['ap_pat']);
+            $personas_externo->ap_mat = !empty($validated['ap_mat']) ? trim($validated['ap_mat']) : null;
+            $personas_externo->responsabilidad_id  = !empty($validated['responsabilidad_id']) ? $validated['responsabilidad_id'] : null;
+            $personas_externo->universidad = !empty($validated['universidad']) ? trim($validated['universidad']) : null;
+            $personas_externo->correo = !empty($validated['correo']) ? trim($validated['correo']) : null;
+            $personas_externo->matricula = !empty($validated['matricula']) ? trim($validated['matricula']) : null;
+            $personas_externo->carrera = !empty($validated['carrera']) ? trim($validated['carrera']) : null;
+
+            $personas_externo->save();
+
+            return redirect()
+                ->route('personas-externo.show', $personas_externo->id)
+                ->with('success', 'Registro actualizado con éxito.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
+        }
     }
 
     public function destroy(string $id)
@@ -218,7 +260,9 @@ class PExternoController extends Controller
         }
     }
 
-    //Funciones de apoyo para querys
+    //--------------------------------
+    //          Funciones
+    //--------------------------------
 
     //Regresa la tabla de "participaciones" pero únicamente con las participaciones más
     //recientes de cada externo_id
@@ -285,17 +329,7 @@ class PExternoController extends Controller
 
     private function getDatosShow($id) {
         //Búsqueda de datos del externo
-        $externo = PExterno::select(
-            'id',
-            'nombre',
-            'ap_pat',
-            'ap_mat',
-            'universidad',
-            'responsabilidad_id',   //Necesario para posteriormente hacer la búsqueda de resposabilidad
-            'correo',
-            'matricula',
-            'carrera'
-        )->find($id);
+        $externo = $this->getExternoByID($id);
 
         if(!$externo) return null;
 
@@ -326,11 +360,48 @@ class PExternoController extends Controller
         );
     }
 
+    private function getDatosEdit($id) {
+        $externo = $this->getExternoByID($id);
+        if(!$externo) return null;
+        $responsabilidades = Responsabilidad::select(
+            'responsabilidad.id',
+            'responsabilidad.nombre',
+            'responsabilidad.area_id'
+        )->get();
+
+        return compact(
+            'externo',
+            'responsabilidades');
+    }
+
     private function getDropDownOptions($datosUsuario) {
         $opTipo = $datosUsuario->getEnumValues('participaciones', 'tipo');
         $opTemporada = $datosUsuario->getEnumValues('participaciones', 'temporada');
+        $responsabilidades = Responsabilidad::select(
+            'responsabilidad.id',
+            'responsabilidad.nombre',
+            'responsabilidad.area_id'
+        )->get();
 
-        return compact('opTipo', 'opTemporada');
+        return compact(
+            'opTipo',
+            'opTemporada',
+            'responsabilidades');
+    }
+
+    private function getExternoByID($id)
+    {
+        return PExterno::select(
+            'id',
+            'nombre',
+            'ap_pat',
+            'ap_mat',
+            'universidad',
+            'responsabilidad_id',   //Necesario para posteriormente hacer la búsqueda de resposabilidad
+            'correo',
+            'matricula',
+            'carrera'
+        )->find($id);
     }
 
     private function getMessages(){

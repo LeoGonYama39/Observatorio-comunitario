@@ -3,11 +3,19 @@
 @section('title', 'Editar registro de persona del centro')
 
 @section('content')
-    @if ($centro)
+    @if($centro)
         <div class="breadcrumb">
             <a href="{{ route('personas-centro.index') }}" data-url="{{ route('personas-centro.index') }}"
                class="return-index">
                 Personas del Centro
+            </a>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"
+                 stroke-linejoin="round">
+                <path d="M9 6l6 6-6 6" />
+            </svg>
+            <a href="{{ route('personas-centro.show', $centro->id) }}" data-url="{{ route('personas-centro.show', $centro->id) }}"
+               class="return-index">
+                {{ $centro->nombre }} {{ $centro->ap_pat }} {{ $centro->ap_mat }}
             </a>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"
                  stroke-linejoin="round">
