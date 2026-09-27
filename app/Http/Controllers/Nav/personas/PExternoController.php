@@ -257,26 +257,12 @@ class PExternoController extends Controller
 
             $personas_externo->nombre = trim($validated["nombre"]);
             $personas_externo->ap_pat = trim($validated["ap_pat"]);
-            $personas_externo->ap_mat = !empty($validated["ap_mat"])
-                ? trim($validated["ap_mat"])
-                : null;
-            $personas_externo->responsabilidad_id = !empty(
-            $validated["responsabilidad_id"]
-            )
-                ? $validated["responsabilidad_id"]
-                : null;
-            $personas_externo->universidad = !empty($validated["universidad"])
-                ? trim($validated["universidad"])
-                : null;
-            $personas_externo->correo = !empty($validated["correo"])
-                ? trim($validated["correo"])
-                : null;
-            $personas_externo->matricula = !empty($validated["matricula"])
-                ? trim($validated["matricula"])
-                : null;
-            $personas_externo->carrera = !empty($validated["carrera"])
-                ? trim($validated["carrera"])
-                : null;
+            $personas_externo->ap_mat = !empty($validated["ap_mat"]) ? trim($validated["ap_mat"]) : null;
+            $personas_externo->responsabilidad_id = !empty($validated["responsabilidad_id"]) ? $validated["responsabilidad_id"] : null;
+            $personas_externo->universidad = !empty($validated["universidad"]) ? trim($validated["universidad"]) : null;
+            $personas_externo->correo = !empty($validated["correo"]) ? trim($validated["correo"]) : null;
+            $personas_externo->matricula = !empty($validated["matricula"])  ? trim($validated["matricula"]) : null;
+            $personas_externo->carrera = !empty($validated["carrera"]) ? trim($validated["carrera"]) : null;
 
             $personas_externo->save();
 
@@ -359,10 +345,7 @@ class PExternoController extends Controller
     public function store_participacion(Request $request, PExterno $externo)
     {
         $datosUsuario = new DatosUsuario();
-        $opTemporada = $datosUsuario->getEnumValues(
-            "participaciones",
-            "temporada"
-        );
+        $opTemporada = $datosUsuario->getEnumValues("participaciones","temporada");
         $opTipo = $datosUsuario->getEnumValues("participaciones", "tipo");
 
         try {
@@ -410,6 +393,105 @@ class PExternoController extends Controller
                     "Ocurrió un error al guardar en la base de datos: " .
                     $e->getMessage()
                 );
+        }
+    }
+
+    public function edit_participacion(Request $request, Participacion $participacion)
+    {
+        $datosUsuario = new DatosUsuario();
+        $aux = $datosUsuario->getDatosUsuario();
+        $persona = $aux[0];
+        $otros = $aux[1];
+
+        $datos = $this->getDropDownOptions($datosUsuario);
+
+        $view = view(
+            "system.modules.personas.p_externo.edit_participacion",
+            array_merge(
+                compact("persona", "otros", 'participacion'),
+                $datos ?? ["datos" => null]
+            )
+        );
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                "content" => $sections["content"],
+                "title" => $sections["title"],
+            ]);
+        }
+
+        return $view;
+    }
+
+    public function update_participacion(Request $request, Participacion $participacion)
+    {
+        $datosUsuario = new DatosUsuario();
+        $opTemporada = $datosUsuario->getEnumValues("participaciones", "temporada");
+        $opTipo = $datosUsuario->getEnumValues("participaciones", "tipo");
+        try {
+            $messages = $this->getMessages();
+            $validated = $request->validate(
+                [
+                    "temporada" => [
+                        "required",
+                        "string",
+                        Rule::in($opTemporada),
+                    ],
+                    "anio" => [
+                        "required",
+                        "digits:4",
+                        "integer",
+                        "min:1901",
+                        "max:2155",
+                    ],
+                    "aport" => ["nullable", "string"],
+                    "tipo" => ["required", "string", Rule::in($opTipo)],
+                ],
+                $messages
+            );
+
+            $participacion->temporada = trim($validated["temporada"]);
+            $participacion->anio = trim($validated["anio"]);
+            $participacion->tipo = $validated["tipo"];
+            $participacion->aport = !empty($validated["aport"]) ? trim($validated["aport"]) : null;
+            $participacion->save();
+
+            return redirect()
+                ->route("personas-externo.show", $participacion->externo->id)
+                ->with("success", "Registro actualizado con éxito.");
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            return back()
+                ->withInput()
+                ->with(
+                    "error",
+                    "Ocurrió un error al guardar en la base de datos: " .
+                    $e->getMessage()
+                );
+        }
+    }
+
+    public function destroy_participacion(Participacion $participacion)
+    {
+        try {
+            $idOld = $participacion->externo->id;
+            $participacion->delete();
+
+            return redirect()
+                ->route("personas-externo.show", $idOld)
+                ->with("success", "Participación eliminada con éxito.");
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return redirect()
+                ->route("personas-externo.show", $idOld)
+                ->with("error", "El registro que intentas eliminar no existe.");
+        } catch (\Throwable $e) {
+            return back()->with(
+                "error",
+                "Ocurrió un error al intentar eliminar el registro: " .
+                $e->getMessage()
+            );
         }
     }
 
@@ -586,25 +668,25 @@ class PExternoController extends Controller
     private function getMessages()
     {
         return [
-            "nombre.required"           => "El nombre es obligatorio.",
-            "nombre.max"                => "El nombre no puede tener más de 40 caracteres.",
-            "ap_pat.required"           => "El apellido paterno es obligatorio.",
-            "ap_pat.max"                => "El apellido paterno no puede tener más de 40 caracteres.",
-            "ap_mat.max"                => "El apellido materno no puede tener más de 40 caracteres.",
-            "responsabilidad_id.exists" => "La responsabilidad seleccionada no es válida.",
-            "universidad.max"           => "La universidad no puede tener más de 100 caracteres.",
-            "correo.max"                => "El correo no puede tener más de 100 caracteres.",
-            "matricula.max"             => "La matrícula no puede tener más de 30 caracteres.",
-            "carrera.max"               => "La carrera no puede tener más de 50 caracteres.",
+            "nombre.required"           => "El nombre es obligatorio",
+            "nombre.max"                => "El nombre no puede tener más de 40 caracteres",
+            "ap_pat.required"           => "El apellido paterno es obligatorio",
+            "ap_pat.max"                => "El apellido paterno no puede tener más de 40 caracteres",
+            "ap_mat.max"                => "El apellido materno no puede tener más de 40 caracteres",
+            "responsabilidad_id.exists" => "La responsabilidad seleccionada no es válida",
+            "universidad.max"           => "La universidad no puede tener más de 100 caracteres",
+            "correo.max"                => "El correo no puede tener más de 100 caracteres",
+            "matricula.max"             => "La matrícula no puede tener más de 30 caracteres",
+            "carrera.max"               => "La carrera no puede tener más de 50 caracteres",
 
-            "temporada.required"        => "La temporada es obligatoria al agregar una participación.",
-            "temporada.in"              => "La temporada seleccionada no es válida.",
-            "anio.required"             => "El año es obligatorio al agregar una participación.",
-            "anio.digits"               => "El año debe tener 4 dígitos.",
-            "anio.min"                  => "El año debe ser mayor o igual a 1901.",
-            "anio.max"                  => "El año debe ser menor o igual a 2155.",
-            "tipo.required"             => "El tipo de participación es obligatorio.",
-            "tipo.in"                   => "El tipo de participación seleccionado no es válido.",
+            "temporada.required"        => "La temporada es obligatoria",
+            "temporada.in"              => "La temporada seleccionada no es válida",
+            "anio.required"             => "El año es obligatorio",
+            "anio.digits"               => "El año debe tener 4 dígitos",
+            "anio.min"                  => "El año debe ser mayor o igual a 1901",
+            "anio.max"                  => "El año debe ser menor o igual a 2155",
+            "tipo.required"             => "El tipo de participación es obligatoria",
+            "tipo.in"                   => "El tipo de participación seleccionado no es válido",
         ];
     }
 }

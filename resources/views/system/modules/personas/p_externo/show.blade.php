@@ -1,248 +1,327 @@
 @extends('system.app')
 
-@section(
-    'title',
-    $externo
-        ? $externo->nombre . ' ' . $externo->ap_pat . ' ' . $externo->ap_mat . ' · Ficha'
-        : 'Sin resultados'
-)
+@section('title', $externo ? $externo->nombre . ' ' . $externo->ap_pat . ' ' . $externo->ap_mat . ' · Ficha' : 'Sin
+    resultados')
 
 @section('content')
 
-@if($externo)
-<div class="breadcrumb">
-  <a href="{{ route('personas-externo.index') }}" data-url="{{ route('personas-externo.index') }}" class="return-index">
-    Personas Externas
-  </a>
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M9 6l6 6-6 6"/>
-  </svg>
-  <span class="current">
-    {{ $externo->nombre }} {{ $externo->ap_pat }} {{ $externo->ap_mat }}
-  </span>
-</div>
-
-@include('system.parts.alerts')
-
-<div class="content-header">
-  <div>
-    <h1>
-      {{ $externo->nombre }} {{ $externo->ap_pat }} {{ $externo->ap_mat }}
-    </h1>
-    <p>
-      Ficha de persona externa
-    </p>
-  </div>
-  <div class="header-actions">
-      <a href="{{ route('personas-externo.edit', $externo->id) }}" data-url="{{ route('personas-externo.edit', $externo->id) }}" class="btn-outline">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 20h9"/>
-        <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>
-      </svg>
-      Editar
-    </a>
-      <button type="button" class="btn-danger" onclick="document.getElementById('modalEliminar').showModal()">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 6h18"/>
-        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-        <path d="M10 11v6"/>
-        <path d="M14 11v6"/>
-      </svg>
-      Borrar
-    </button>
-  </div>
-</div>
-<div class="info-card">
-  <h3>
-    Información general
-  </h3>
-  <div class="info-grid">
-    @if($externo->correo)
-    <div class="info-field">
-      <label>
-        Correo
-      </label>
-      <div class="value">
-        {{ $externo->correo }}
-      </div>
-    </div>
-    @endif
-    @if($participaciones->isNotEmpty())
-    <div class="info-field">
-      <label>
-        Rol actual
-      </label>
-      <div class="value">
-        {{ $participaciones[0]->activo ? ucfirst(str_replace('_', ' ', $participaciones[0]->tipo)) : 'No activo' }}
-      </div>
-    </div>
-    @endif
-    @if($externo->universidad)
-    <div class="info-field">
-      <label>
-        Universidad
-      </label>
-      <div class="value">
-        {{ $externo->universidad }}
-      </div>
-    </div>
-    @endif
-    @if($externo->matricula)
-    <div class="info-field">
-      <label>
-        Matrícula
-      </label>
-      <div class="value">
-        {{ $externo->matricula }}
-      </div>
-    </div>
-    @endif
-    @if($externo->carrera)
-    <div class="info-field">
-      <label>
-        Carrera
-      </label>
-      <div class="value">
-        {{ $externo->carrera }}
-      </div>
-    </div>
-    @endif
-    @if($respons)
-    <div class="info-field">
-        <label>
-            Área (Actividad)
-        </label>
-        <div class="value">
-            {{ $area->nombre }} ({{ $respons->nombre }})
+    @if ($externo)
+        <div class="breadcrumb">
+            <a href="{{ route('personas-externo.index') }}" data-url="{{ route('personas-externo.index') }}"
+               class="return-index">
+                Personas Externas
+            </a>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"
+                 stroke-linejoin="round">
+                <path d="M9 6l6 6-6 6" />
+            </svg>
+            <span class="current">
+                {{ $externo->nombre }} {{ $externo->ap_pat }} {{ $externo->ap_mat }}
+            </span>
         </div>
-    </div>
-    @endif
-  </div>
-</div>
-<div class="section-header">
-  <h3>
-    Participaciones
-  </h3>
-    <a href="{{ route('personas-externo.create_participacion', $externo->id) }}" data-url="{{ route('personas-externo.create_participacion', $externo->id) }}" class="btn-outline btn-small">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 5v14"/>
-          <path d="M5 12h14"/>
-        </svg>
-        Nueva participación
-    </a>
-</div>
 
-@if($participaciones->isNotEmpty())
-<div class="participations-list">
-  @foreach($participaciones as $participacion)
-  <details class="participation-item" @if(($loop->iteration === 1) && ($participacion->activo)) open @endif>
-    <summary class="participation-summary">
-      <div>
-        <span class="person-name">
-          {{ ucfirst(str_replace('_', ' ', $participacion->tipo)) }}
-          <span class="current-badge">
-            @if(($loop->iteration === 1) && ($participacion->activo))
-            Activo
-            @else
-            Concluido
-            @endif
-          </span>
-        </span>
-        <div class="person-role">
-          {{ ucfirst($participacion->temporada) }} {{ $participacion->anio }}
-        </div>
-      </div>
-      <svg class="chevron-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M6 9l6 6 6-6"/>
-      </svg>
-    </summary>
-    <div class="participation-body">
-      @if($participacion->aport)
-      <label class="mini-label">
-        Aportaciones
-      </label>
-      <p class="participation-text">
-        {{ $participacion->aport}}
-      </p>
-      @endif
-      <label class="mini-label">
-        Proyectos
-      </label>
-      <div class="related-list">
-        <div class="related-row">
-          <span class="name">
-            Diagnóstico Comunitario
-          </span>
-          <span class="role-badge participante">
-            Participante
-          </span>
-        </div>
-      </div>
-    </div>
-  </details>
-  @endforeach
-</div>
-@else
-<p>Sin participaciones</p>
-@endif
+        @include('system.parts.alerts')
 
-<dialog id="modalEliminar" class="confirm-modal" onclick="if (event.target === this) this.close()">
-    <div class="confirm-modal-content">
-        <div class="confirm-modal-header">
-            <div class="confirm-modal-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 6h18"/>
-                    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                    <path d="M10 11v6"/>
-                    <path d="M14 11v6"/>
+        <div class="content-header">
+            <div>
+                <h1>
+                    {{ $externo->nombre }} {{ $externo->ap_pat }} {{ $externo->ap_mat }}
+                </h1>
+                <p>
+                    Ficha de persona externa
+                </p>
+            </div>
+            <div class="header-actions">
+                <a href="{{ route('personas-externo.edit', $externo->id) }}"
+                   data-url="{{ route('personas-externo.edit', $externo->id) }}" class="btn-outline">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 20h9" />
+                        <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                    </svg>
+                    Editar
+                </a>
+                <button type="button" class="btn-danger" onclick="document.getElementById('modalEliminar').showModal()">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 6h18" />
+                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                        <path d="M10 11v6" />
+                        <path d="M14 11v6" />
+                    </svg>
+                    Borrar
+                </button>
+            </div>
+        </div>
+        <div class="info-card">
+            <h3>
+                Información general
+            </h3>
+            <div class="info-grid">
+                @if ($externo->correo)
+                    <div class="info-field">
+                        <label>
+                            Correo
+                        </label>
+                        <div class="value">
+                            {{ $externo->correo }}
+                        </div>
+                    </div>
+                @endif
+                @if ($participaciones->isNotEmpty())
+                    <div class="info-field">
+                        <label>
+                            Rol actual
+                        </label>
+                        <div class="value">
+                            {{ $participaciones[0]->activo ? ucfirst(str_replace('_', ' ', $participaciones[0]->tipo)) : 'No activo' }}
+                        </div>
+                    </div>
+                @endif
+                @if ($externo->universidad)
+                    <div class="info-field">
+                        <label>
+                            Universidad
+                        </label>
+                        <div class="value">
+                            {{ $externo->universidad }}
+                        </div>
+                    </div>
+                @endif
+                @if ($externo->matricula)
+                    <div class="info-field">
+                        <label>
+                            Matrícula
+                        </label>
+                        <div class="value">
+                            {{ $externo->matricula }}
+                        </div>
+                    </div>
+                @endif
+                @if ($externo->carrera)
+                    <div class="info-field">
+                        <label>
+                            Carrera
+                        </label>
+                        <div class="value">
+                            {{ $externo->carrera }}
+                        </div>
+                    </div>
+                @endif
+                @if ($respons)
+                    <div class="info-field">
+                        <label>
+                            Área (Actividad)
+                        </label>
+                        <div class="value">
+                            {{ $area->nombre }} ({{ $respons->nombre }})
+                        </div>
+                    </div>
+                @endif
+            </div>
+        </div>
+        <div class="section-header">
+            <h3>
+                Participaciones
+            </h3>
+            <a href="{{ route('personas-externo.create_participacion', $externo->id) }}"
+               data-url="{{ route('personas-externo.create_participacion', $externo->id) }}"
+               class="btn-outline btn-small">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 5v14" />
+                    <path d="M5 12h14" />
+                </svg>
+                Nueva participación
+            </a>
+        </div>
+
+        @if ($participaciones->isNotEmpty())
+            <div class="participations-list">
+                @foreach ($participaciones as $participacion)
+                    <details class="participation-item" @if ($loop->iteration === 1 && $participacion->activo) open @endif>
+                        <summary class="participation-summary">
+                            <div>
+                                <span class="person-name">
+                                    {{ ucfirst(str_replace('_', ' ', $participacion->tipo)) }}
+                                    <span class="current-badge">
+                                        @if ($loop->iteration === 1 && $participacion->activo)
+                                            Activo
+                                        @else
+                                            Concluido
+                                        @endif
+                                    </span>
+                                </span>
+                                <div class="person-role">
+                                    {{ ucfirst($participacion->temporada) }} {{ $participacion->anio }}
+                                </div>
+                            </div>
+                            <svg class="chevron-icon" width="17" height="17" viewBox="0 0 24 24" fill="none"
+                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M6 9l6 6 6-6" />
+                            </svg>
+                        </summary>
+                        <div class="participation-body">
+                            @if ($participacion->aport)
+                                <label class="mini-label">
+                                    Aportaciones
+                                </label>
+                                <p class="participation-text">
+                                    {{ $participacion->aport }}
+                                </p>
+                            @endif
+                            <label class="mini-label">
+                                Proyectos
+                            </label>
+                            <div class="related-list">
+                                <div class="related-row">
+                                    <span class="name">
+                                        Diagnóstico Comunitario
+                                    </span>
+                                    <span class="role-badge participante">
+                                        Participante
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="header-actions" style="margin-top: 16px;">
+                                <a href="{{ route('personas-externo.edit_participacion', $participacion->id) }}"
+                                   data-url="{{ route('personas-externo.edit_participacion', $participacion->id) }}"
+                                   class="btn-outline btn-small">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 20h9"/>
+                                        <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+                                    </svg>
+                                    Editar
+                                </a>
+
+                                <button type="button" class="btn-danger btn-small"
+                                        onclick="document.getElementById('modalEliminarParticipacion{{ $participacion->id }}').showModal()">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M3 6h18"/>
+                                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                                        <path d="M10 11v6"/>
+                                        <path d="M14 11v6"/>
+                                    </svg>
+                                    Borrar
+                                </button>
+                            </div>
+                        </div>
+                    </details>
+                    <dialog id="modalEliminarParticipacion{{ $participacion->id }}" class="confirm-modal"
+                            onclick="if (event.target === this) this.close()">
+                        <div class="confirm-modal-content">
+                            <div class="confirm-modal-header">
+                                <div class="confirm-modal-icon">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M3 6h18" />
+                                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                                        <path d="M10 11v6" />
+                                        <path d="M14 11v6" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3>¿Eliminar participación?</h3>
+                                    <p>Esta acción no se puede deshacer. Se eliminará la participación de tipo
+                                        <strong>{{ ucfirst(str_replace('_', ' ', $participacion->tipo)) }}</strong>
+                                        ({{ ucfirst($participacion->temporada) }} {{ $participacion->anio }}).</p>
+                                </div>
+                            </div>
+                            <div class="confirm-modal-actions">
+                                <button type="button" class="btn-outline"
+                                        onclick="document.getElementById('modalEliminarParticipacion{{ $participacion->id }}').close()">
+                                    Cancelar
+                                </button>
+                                <form action="{{ route('personas-externo.destroy_participacion', $participacion->id) }}"
+                                      method="POST" style="margin: 0;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn-danger">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                                             stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M3 6h18" />
+                                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                                        </svg>
+                                        Confirmar eliminación
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </dialog>
+                @endforeach
+            </div>
+        @else
+            <p>Sin participaciones</p>
+        @endif
+
+        <dialog id="modalEliminar" class="confirm-modal" onclick="if (event.target === this) this.close()">
+            <div class="confirm-modal-content">
+                <div class="confirm-modal-header">
+                    <div class="confirm-modal-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 6h18" />
+                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                            <path d="M10 11v6" />
+                            <path d="M14 11v6" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3>¿Eliminar persona del centro?</h3>
+                        <p>Esta acción no se puede deshacer. Se eliminará el registro de <strong>{{ $externo->nombre }}
+                                {{ $externo->ap_pat }} {{ $externo->ap_mat }}</strong>.</p>
+                    </div>
+                </div>
+                <div class="confirm-modal-actions">
+                    <button type="button" class="btn-outline" onclick="document.getElementById('modalEliminar').close()">
+                        Cancelar
+                    </button>
+                    <form action="{{ route('personas-externo.destroy', $externo->id) }}" method="POST"
+                          style="margin: 0;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn-danger">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                                 stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 6h18" />
+                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                            </svg>
+                            Confirmar eliminación
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </dialog>
+    @else
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="m21 21-4.3-4.3" />
+                    <path d="M9 9l4 4" />
+                    <path d="M13 9l-4 4" />
                 </svg>
             </div>
-            <div>
-                <h3>¿Eliminar persona del centro?</h3>
-                <p>Esta acción no se puede deshacer. Se eliminará el registro de <strong>{{ $externo->nombre }} {{ $externo->ap_pat }} {{ $externo->ap_mat }}</strong>.</p>
-            </div>
+            <h2>No se encontró ningún resultado</h2>
+            <p>No hay información que coincida con lo que buscas.</p>
+            <a type="button" class="btn-outline" href="{{ route('personas-externo.index') }}"
+               data-url="{{ route('personas-externo.index') }}">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2.2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5" />
+                    <path d="M11 18l-6-6 6-6" />
+                </svg>
+                Regresar
+            </a>
         </div>
-        <div class="confirm-modal-actions">
-            <button type="button" class="btn-outline" onclick="document.getElementById('modalEliminar').close()">
-                Cancelar
-            </button>
-            <form action="{{ route('personas-externo.destroy', $externo->id) }}" method="POST" style="margin: 0;">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn-danger">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 6h18"/>
-                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                    </svg>
-                    Confirmar eliminación
-                </button>
-            </form>
-        </div>
-    </div>
-</dialog>
-
-@else
-<div class="empty-state">
-  <div class="empty-state-icon">
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="11" cy="11" r="7"/>
-      <path d="m21 21-4.3-4.3"/>
-      <path d="M9 9l4 4"/>
-      <path d="M13 9l-4 4"/>
-    </svg>
-  </div>
-  <h2>No se encontró ningún resultado</h2>
-  <p>No hay información que coincida con lo que buscas.</p>
-  <a type="button" class="btn-outline" href="{{ route('personas-externo.index') }}" data-url="{{ route('personas-externo.index') }}">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/>
-    </svg>
-    Regresar
-</a>
-</div>
-@endif
+    @endif
 
 @endsection

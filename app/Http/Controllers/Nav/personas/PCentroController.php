@@ -293,17 +293,17 @@ class PCentroController extends Controller
 
     private function getMessages(){
         return [
-            'nombre.required'   => 'El nombre es obligatorio.',
-            'nombre.max'        => 'El nombre no puede tener más de 40 caracteres.',
-            'ap_pat.required'   => 'El apellido paterno es obligatorio.',
-            'ap_pat.max'        => 'El apellido paterno no puede tener más de 40 caracteres.',
-            'ap_mat.max'        => 'El apellido materno no puede tener más de 40 caracteres.',
-            'cargo.in'          => 'El cargo seleccionado no es válido.',
-            'usuario.required'  => 'El nombre de usuario es obligatorio mientras el acceso esté activo.',
-            'usuario.max'       => 'El usuario no puede superar los 20 caracteres.',
-            'usuario.unique'    => 'Este nombre de usuario ya está registrado en el sistema.',
-            'password.required' => 'La contraseña es obligatoria al crear el acceso.',
-            'password.min'      => 'La contraseña debe tener al menos 6 caracteres.',
+            'nombre.required'   => 'El nombre es obligatorio',
+            'nombre.max'        => 'El nombre no puede tener más de 40 caracteres',
+            'ap_pat.required'   => 'El apellido paterno es obligatorio',
+            'ap_pat.max'        => 'El apellido paterno no puede tener más de 40 caracteres',
+            'ap_mat.max'        => 'El apellido materno no puede tener más de 40 caracteres',
+            'cargo.in'          => 'El cargo seleccionado no es válido',
+            'usuario.required'  => 'El nombre de usuario es obligatorio mientras el acceso esté activo',
+            'usuario.max'       => 'El usuario no puede superar los 20 caracteres',
+            'usuario.unique'    => 'Este nombre de usuario ya está registrado en el sistema',
+            'password.required' => 'La contraseña es obligatoria al crear el acceso',
+            'password.min'      => 'La contraseña debe tener al menos 6 caracteres',
         ];
     }
 }

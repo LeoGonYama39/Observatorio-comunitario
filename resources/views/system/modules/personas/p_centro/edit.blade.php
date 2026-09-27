@@ -25,7 +25,7 @@
                 Editar registro
             </span>
         </div>
-
+        @include('system.parts.alerts')
         <div class="content-header">
             <div>
                 <h1>Editar registro</h1>
