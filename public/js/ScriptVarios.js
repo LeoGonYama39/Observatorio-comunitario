@@ -248,6 +248,7 @@ function initPageScripts() {
     initCaseSwitcher();
     initResponsableSelects();
     initToggleGroups();
+    initTableSearch();
 }
 
 initPageScripts();
