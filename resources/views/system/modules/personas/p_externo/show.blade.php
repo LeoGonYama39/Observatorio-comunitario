@@ -124,13 +124,13 @@
   <h3>
     Participaciones
   </h3>
-  <button class="btn-outline btn-small">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M12 5v14"/>
-      <path d="M5 12h14"/>
-    </svg>
-    Nueva participación
-  </button>
+    <a href="{{ route('personas-externo.create_participacion', $externo->id) }}" data-url="{{ route('personas-externo.create_participacion', $externo->id) }}" class="btn-outline btn-small">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 5v14"/>
+          <path d="M5 12h14"/>
+        </svg>
+        Nueva participación
+    </a>
 </div>
 
 @if($participaciones->isNotEmpty())

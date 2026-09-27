@@ -33,8 +33,6 @@ Route::middleware('auth:centro,externo')->group(function () {
     //Vistas del sistema con get (y asignación del nombre) para index
     Route::get('/sistema', function () {return redirect()->route('personas-centro.index');});
 
-    //Vistas del sistema con get para info
-
     //Con las generadas por Laravel
     Route::resource('/sistema/areas', AreasController::class)->only(['index']);
     Route::resource('/sistema/ejes', EjesController::class);
@@ -51,6 +49,11 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::resource('/sistema/talleres', TalleresController::class);
     Route::resource('/sistema/eventos', EventosController::class);
     Route::resource('/sistema/colonias', ColoniasController::class);
+
+    //Rutas para externos
+    Route::resource('/sistema/personas-externo', PExternoController::class);
+    Route::get('/sistema/personas-externo/{id}/participacion', [PExternoController::class, 'create_participacion'])->name('personas-externo.create_participacion');
+    Route::post('/sistema/personas-externo/{externo}/participacion', [PExternoController::class, 'store_participacion'])->name('personas-externo.store_participacion');
 
     //Para lo de areas y responsabilidades
     Route::patch('/areas/{area}/responsable', [AreasController::class, 'updateResponsableArea'])
