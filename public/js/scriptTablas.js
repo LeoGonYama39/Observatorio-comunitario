@@ -4,21 +4,23 @@
 
 //Función para inicializar el buscado por texto y filtrar la búsqueda
 function initTableSearch() {
-    const searchInput = document.querySelector('.table-search input');
-    const table = document.querySelector('.table-card table');
+    document.querySelectorAll('.table-search input').forEach(searchInput => {   //Se hace así para que sirva si hay más de una tabla del mismo tipo
+        const scope = searchInput.closest('.entity-picker') || document.getElementById('mainContent');
+        const table = scope ? scope.querySelector('.table-card table') : null;
 
-    if (!searchInput || !table) {return;}
+        if (!table) { return; }
 
-    const rows = table.querySelectorAll('tbody tr');
+        const rows = table.querySelectorAll('tbody tr');
 
-    searchInput.addEventListener('input', function () {
-        const search = this.value.toLowerCase().trim();
+        searchInput.addEventListener('input', function () {
+            const search = this.value.toLowerCase().trim();
 
-        rows.forEach(row => {
-            const name = row.querySelector('.person-name');
-            if (!name) {return;}
-            const text = name.textContent.toLowerCase();
-            row.style.display = text.includes(search) ? '' : 'none';
+            rows.forEach(row => {
+                const name = row.querySelector('.person-name');
+                if (!name) { return; }
+                const text = name.textContent.toLowerCase();
+                row.style.display = text.includes(search) ? '' : 'none';
+            });
         });
     });
 }
@@ -29,16 +31,20 @@ function initTableSearch() {
 //---------------------------------------------------------
 
 //// Vincular participantes a un proyecto (selección en tabla + tarjeta de rol)
-//Opciones de rol genéricas por ahora — luego se reemplazan por las reales de la BD
-const ROLES_PROYECTO_OPCIONES = [
-    { value: 'lider', label: 'Líder' },
-    { value: 'participante', label: 'Participante' },
-    { value: 'colaborador', label: 'Colaborador' },
-    { value: 'enlace', label: 'Enlace' },
-    { value: 'otro', label: 'Otro' },
-];
 
-//Se llama al hacer click en cualquier fila seleccionable de las 4 tablas
+//Opciones de rol genéricas por ahora, luego se reemplazan por las reales de la BD.
+//Es función (no const) para que no pueda dar "ya declarado" si el script se carga dos veces.
+function getRolesProyectoOpciones() {
+    return [
+        { value: 'lider', label: 'Líder' },
+        { value: 'participante', label: 'Participante' },
+        { value: 'colaborador', label: 'Colaborador' },
+        { value: 'enlace', label: 'Enlace' },
+        { value: 'otro', label: 'Otro' },
+    ];
+}
+
+//Click en una fila de cualquiera de las 4 tablas: selecciona o deselecciona
 function toggleEntitySelection(row) {
     const tipo = row.dataset.tipo;
     const id = row.dataset.id;
@@ -54,12 +60,12 @@ function toggleEntitySelection(row) {
     }
 }
 
-//Crea la tarjeta con el select de rol + campo "otro" para una entidad recién seleccionada
+//Crea la tarjeta con el dropdown de rol y el campo "otro" (oculto hasta elegir "Otro")
 function addEntityCard(tipo, id, nombre, subtitle) {
     const container = document.getElementById('selected-' + tipo);
     const otroFieldId = 'otro_field_' + tipo + '_' + id;
 
-    const opcionesHtml = ROLES_PROYECTO_OPCIONES
+    const opcionesHtml = getRolesProyectoOpciones()
         .map(op => '<option value="' + op.value + '">' + op.label + '</option>')
         .join('');
 
@@ -68,14 +74,22 @@ function addEntityCard(tipo, id, nombre, subtitle) {
     card.setAttribute('data-card-id', id);
 
     card.innerHTML =
+        '<div class="entity-card-head">' +
         '<div class="entity-info">' +
-        '<div class="entity-name">' + nombre + '</div>' +
-        (subtitle ? '<div class="entity-subtitle">' + subtitle + '</div>' : '') +
+        '<div class="person-name"></div>' +
+        '<div class="person-role"></div>' +
+        '</div>' +
+        '<button type="button" class="remove-entity-btn" aria-label="Quitar" ' +
+        'onclick="removeEntityCard(this, \'' + tipo + '\', \'' + id + '\')">' +
+        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">' +
+        '<path d="M18 6 6 18"/><path d="M6 6l12 12"/>' +
+        '</svg>' +
+        '</button>' +
         '</div>' +
         '<div class="entity-rol-group">' +
         '<div class="select-shell">' +
-        '<select class="form-select" name="roles_' + tipo + '[' + id + '][rol]" ' +
-        'onchange="toggleOtroField(this, \'' + otroFieldId + '\')">' +
+        '<select class="form-select" required name="roles_' + tipo + '[' + id + '][rol]" ' +
+        'onchange="onEntityRolChange(this, \'' + otroFieldId + '\')">' +
         '<option value="">Seleccionar rol…</option>' +
         opcionesHtml +
         '</select>' +
@@ -83,19 +97,34 @@ function addEntityCard(tipo, id, nombre, subtitle) {
         '<path d="M6 9l6 6 6-6"/>' +
         '</svg>' +
         '</div>' +
-        '<input type="text" class="form-input entity-otro-input" id="' + otroFieldId + '" ' +
+        '<input type="text" class="form-input" id="' + otroFieldId + '" ' +
         'name="roles_' + tipo + '[' + id + '][otros]" placeholder="Especificar otro rol" maxlength="30" hidden>' +
-        '</div>' +
-        '<button type="button" class="remove-entity-btn" onclick="removeEntityCard(this, \'' + tipo + '\', \'' + id + '\')" aria-label="Quitar">' +
-        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">' +
-        '<path d="M18 6 6 18"/><path d="M6 6l12 12"/>' +
-        '</svg>' +
-        '</button>';
+        '</div>';
+
+    //textContent (no innerHTML) para que un nombre con caracteres raros no rompa ni inyecte HTML
+    card.querySelector('.person-name').textContent = nombre;
+    const roleEl = card.querySelector('.person-role');
+    if (subtitle) {
+        roleEl.textContent = subtitle;
+    } else {
+        roleEl.remove();
+    }
 
     container.appendChild(card);
 }
 
-//Quita la tarjeta y desmarca la fila correspondiente en la tabla
+//Muestra el input "otro" solo si el rol elegido es "otro", y lo vacía si se cambia a otro rol
+//(así un texto viejo escondido no viaja en el POST)
+function onEntityRolChange(select, otroFieldId) {
+    const otro = document.getElementById(otroFieldId);
+    if (!otro) return;
+
+    const esOtro = select.value === 'otro';
+    otro.hidden = !esOtro;
+    if (!esOtro) otro.value = '';
+}
+
+//Botón ✕ de la tarjeta: la quita y desmarca la fila en la tabla
 function removeEntityCard(button, tipo, id) {
     const card = button.closest('.selected-entity-card');
     if (card) card.remove();
@@ -103,8 +132,19 @@ function removeEntityCard(button, tipo, id) {
     const row = document.querySelector('.selectable-row[data-tipo="' + tipo + '"][data-id="' + id + '"]');
     if (row) row.classList.remove('row-selected');
 }
- 
 
+//Buscador de cada tabla (oninput desde el <input>); filtra solo dentro de su propio .entity-picker
+function filterEntityRows(input) {
+    const picker = input.closest('.entity-picker');
+    if (!picker) return;
+
+    const search = input.value.toLowerCase().trim();
+    picker.querySelectorAll('.selectable-row').forEach(row => {
+        const name = row.querySelector('.person-name');
+        if (!name) return;
+        row.style.display = name.textContent.toLowerCase().includes(search) ? '' : 'none';
+    });
+}
 
 
 

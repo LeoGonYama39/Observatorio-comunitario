@@ -7,6 +7,7 @@ use App\Http\Controllers\Sup\DatosUsuario;
 use App\Models\listas\Institucion;
 use App\Models\PCentro;
 use App\Models\PComunidad;
+use App\Models\PExterno;
 use Illuminate\Http\Request;
 use App\Models\Proyectos\Proyecto;
 use Illuminate\Support\Facades\DB;
@@ -251,11 +252,22 @@ class ProyectosController extends Controller
             'ap_pat',
             'ap_mat',
             'cargo',
-        )->get();
+        )->orderBy('nombre')
+            ->get();
     }
 
     private function getPExterno(){
-        return null;
+        return PExterno::with(
+            'participaciones'
+        )
+            ->select(
+                'id',
+                'nombre',
+                'ap_pat',
+                'ap_mat',
+                'universidad',
+            )->orderBy('nombre')
+            ->get();
     }
 
     private function getPComunidad()
@@ -268,6 +280,7 @@ class ProyectosController extends Controller
             'colonia_id',
         )
             ->where('lider', true)
+            ->orderBy('nombre')
             ->get();
     }
 
@@ -275,7 +288,7 @@ class ProyectosController extends Controller
         return Institucion::select(
             'id',
             'nombre',
-        )->get();
+        )->orderBy('nombre')->get();
     }
 
 }

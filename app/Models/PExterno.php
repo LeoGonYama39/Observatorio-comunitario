@@ -63,8 +63,8 @@ class PExterno extends Authenticatable
     protected $appends = [
         'tipo_categ',
         'tipo_formateado',
+        'ultima_participacion'
     ];
-
 
     //Genera la etiqueta para el dato de la tabla, para filtrar con js
     public function getTipoCategAttribute()
@@ -85,6 +85,14 @@ class PExterno extends Authenticatable
 
         //Si la participación es activa
         return $this->tipo;
+    }
+
+    public function getUltimaParticipacionAttribute()
+    {
+        return $this->participaciones()
+            ->orderByDesc('anio')
+            ->orderByDesc('temporada')
+            ->first();
     }
 
     //Genera para la UI

@@ -376,36 +376,59 @@ dialog.confirm-modal::backdrop {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b3261e' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18'/%3E%3Cpath d='M6 6l12 12'/%3E%3C/svg%3E");
 }
 
+/* ============ NUEVO: VINCULAR PARTICIPANTES A PROYECTO ============ */
 
-.selectable-row {
-    cursor: pointer;
-    transition: background .1s ease;
+/* Cuadrícula 2 x 2 de selectores */
+.entity-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px 24px;
+    align-items: start;
+    margin-bottom: 32px;
 }
-.selectable-row:hover {
-    background: var(--pearl);
-}
-.selectable-row.row-selected {
-    background: var(--pearl);
-}
-.selectable-row.row-selected td {
-    font-weight: 600;
-    color: var(--ink);
+@media (max-width: 900px) {
+    .entity-picker-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
+/* Buscador y tabla con altura fija + scroll
+   (.table-card tiene overflow:hidden, por eso el scroll va en un contenedor interno) */
+.entity-picker .table-search {
+    max-width: none;
+    margin-bottom: 12px;
+}
+.entity-scroll {
+    max-height: 280px;
+    overflow-y: auto;
+}
+.entity-picker tbody td {
+    padding: 11px 16px;
+}
+.entity-picker tbody td.select-check-cell {
+    width: 40px;
+    padding-right: 0;
+}
+
+/* Fila seleccionable: el check aparece al seleccionar */
 .select-check-cell svg {
     stroke: var(--ink);
     opacity: 0;
     transition: opacity .12s ease;
 }
+.selectable-row.row-selected {
+    background: var(--mist-soft);
+}
 .selectable-row.row-selected .select-check-cell svg {
     opacity: 1;
 }
 
+/* Lista de seleccionados debajo de cada tabla */
 .selected-entity-list {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin-top: 16px;
+    margin-top: 14px;
 }
 .selected-entity-list:empty::before {
     content: 'Nadie seleccionado todavía.';
@@ -414,59 +437,50 @@ dialog.confirm-modal::backdrop {
     color: var(--steel);
 }
 
+/* Tarjeta compacta: nombre arriba, rol (y "otro") abajo */
 .selected-entity-card {
     display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 14px;
-    padding: 12px 16px;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 14px;
     border: 1.5px solid var(--mist);
     border-radius: var(--radius-sm);
     background: var(--white);
 }
-.selected-entity-card .entity-info {
-    flex: 0 0 200px;
-    min-width: 160px;
-}
-.selected-entity-card .entity-name {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--ink);
-}
-.selected-entity-card .entity-subtitle {
-    font-size: 12px;
-    color: var(--steel);
-    margin-top: 2px;
+.entity-card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
 }
 .selected-entity-card .entity-rol-group {
-    flex: 1;
     display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    min-width: 200px;
+    flex-direction: column;
+    gap: 8px;
 }
 .selected-entity-card .select-shell {
-    min-width: 180px;
+    width: 100%;
+    height: 38px;
+    padding: 0 12px;
 }
-.selected-entity-card .entity-otro-input {
-    flex: 1;
-    min-width: 160px;
+.selected-entity-card .form-select {
+    padding: 8px 0;
 }
-.selected-entity-card .remove-entity-btn {
+.remove-entity-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 26px;
     height: 26px;
-    border-radius: 50%;
+    flex-shrink: 0;
     border: none;
+    border-radius: 50%;
     background: none;
     color: var(--steel);
     cursor: pointer;
-    flex-shrink: 0;
 }
-.selected-entity-card .remove-entity-btn:hover {
+.remove-entity-btn:hover {
     color: #b3261e;
     background: var(--pearl);
 }
+
