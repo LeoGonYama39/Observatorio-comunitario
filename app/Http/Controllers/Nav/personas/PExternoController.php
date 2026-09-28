@@ -396,12 +396,14 @@ class PExternoController extends Controller
         }
     }
 
-    public function edit_participacion(Request $request, Participacion $participacion)
+    public function edit_participacion( Request $request, $participacion)
     {
         $datosUsuario = new DatosUsuario();
         $aux = $datosUsuario->getDatosUsuario();
         $persona = $aux[0];
         $otros = $aux[1];
+
+        $participacion = Participacion::find($participacion);
 
         $datos = $this->getDropDownOptions($datosUsuario);
 

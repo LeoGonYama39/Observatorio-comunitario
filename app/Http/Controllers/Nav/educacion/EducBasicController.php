@@ -158,7 +158,7 @@ class EducBasicController extends Controller
     private function getDatosShow($id)
     {
         $inscripcion = InscripcionEducativa::with([
-            'comunidad:id,nombre,ap_pat,ap_mat,birth_date,genero,colonia_id',
+            'comunidad:id,nombre,ap_pat,ap_mat,birth_date,genero,colonia_id,colonia_otro',
             'comunidad.colonia:id,nombre',
             'inscripcionesCurso' => function ($query) {
                 $query->select(
