@@ -132,7 +132,7 @@
                 ])
 
                 <div class="form-field" id="alcaldia_otro_field"
-                    {{ old('alcaldia', $usuaria->alcaldia) === 'otros' ? '' : 'hidden' }}>
+                    {{ old('alcaldia', $usuaria->alcaldia) === 'otro' ? '' : 'hidden' }}>
                     <label>Especificar alcaldía</label>
                     <input type="text" name="alcaldia_otro" class="form-input" maxlength="50" value="{{ old('alcaldia_otro', $usuaria->alcaldia_otro) }}">
                     @error('alcaldia_otro') <span class="field-error">{{ $message }}</span> @enderror

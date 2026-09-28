@@ -4,7 +4,7 @@
     $format = $format ?? fn ($valor) => \Illuminate\Support\Str::ucfirst(str_replace('_', ' ', $valor));
 @endphp
 <div class="form-field">
-    <label>{{ $label }}</label>
+    <label>{{ $label }} @if(!empty($obligatorio)) <span class="required">*</span>@endif</label>
     <div class="select-shell">
         <select name="{{ $name }}" class="form-select" @if(!empty($onchange)) onchange="{{ $onchange }}" @endif>
             <option value="">Sin especificar</option>

@@ -28,26 +28,11 @@
     <div class="form-grid">
       <div class="form-field">
         <label>Nombre <span class="required">*</span></label>
-        <input type="text" name="nombre" class="form-input" value="{{ old('nombre') }}" required>
+        <input type="text" name="nombre" class="form-input" maxlength="50" value="{{ old('nombre') }}" required>
         @error('nombre') <span class="field-error">{{ $message }}</span> @enderror
       </div>
 
-      <div class="form-field">
-        <label>Estado</label>
-        <div class="select-shell">
-          <select name="estado" class="form-select">
-            <option value="">Sin especificar</option>
-            <option value="en_proceso" {{ old('estado') == 'en_proceso' ? 'selected' : '' }}>En proceso</option>
-            <option value="concluido" {{ old('estado') == 'concluido' ? 'selected' : '' }}>Concluido</option>
-            <option value="cancelado" {{ old('estado') == 'cancelado' ? 'selected' : '' }}>Cancelado</option>
-            <option value="pausado" {{ old('estado') == 'pausado' ? 'selected' : '' }}>Pausado</option>
-          </select>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 9l6 6 6-6"/>
-          </svg>
-        </div>
-        @error('estado') <span class="field-error">{{ $message }}</span> @enderror
-      </div>
+        @include('system.parts.enum_select', ['name' => 'estado', 'label' => 'Estado', 'options' => $estado, 'obligatorio' => true])
 
       <div class="form-field">
         <label>Fecha de inicio <span class="required">*</span></label>
@@ -57,19 +42,19 @@
 
       <div class="form-field">
         <label>Fecha de fin</label>
-        <input type="date" name="fecha_fin" class="form-input" value="{{ old('fecha_fin') }}">
+        <input type="date" name="fecha_fin" class="form-input"  value="{{ old('fecha_fin') }}">
         @error('fecha_fin') <span class="field-error">{{ $message }}</span> @enderror
       </div>
 
       <div class="form-field">
         <label>Enlace de repositorio</label>
-        <input type="text" name="repo" class="form-input" value="{{ old('repo') }}">
+        <input type="text" name="repo" class="form-input" maxlength="2048" value="{{ old('repo') }}">
         @error('repo') <span class="field-error">{{ $message }}</span> @enderror
       </div>
 
       <div class="form-field">
         <label>Enlace de evidencia para auditoría</label>
-        <input type="text" name="auditable" class="form-input" value="{{ old('auditable') }}">
+        <input type="text" name="auditable" class="form-input" maxlength="2048" value="{{ old('auditable') }}">
         @error('auditable') <span class="field-error">{{ $message }}</span> @enderror
       </div>
 
@@ -123,67 +108,13 @@
     </div>
 
     <hr class="form-separator">
+      @include('system.parts.tag_picker', ['group' => 'colonias', 'label' => 'Colonias', 'placeholder' => 'Seleccionar…', 'options' => $colonias])
 
-    <div class="form-field full-width">
-      <label>Colonias</label>
-      <div class="tag-picker">
-        <div class="select-shell">
-          <select class="form-select" onchange="addTag(this, 'colonias')">
-            <option value="">Seleccionar colonia…</option>
-            <option value="la_mexicana">La Mexicana</option>
-            <option value="cuevitas">Cuevitas</option>
-            <option value="pueblo_nuevo">Pueblo Nuevo</option>
-          </select>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 9l6 6 6-6"/>
-          </svg>
-        </div>
-        <div class="tag-chip-list" id="colonias-list"></div>
-      </div>
-    </div>
-    <hr class="form-separator">
-    <div class="form-field full-width">
-      <label>Ejes</label>
-      <div class="tag-picker">
-        <div class="select-shell">
-          <select class="form-select" onchange="addTag(this, 'ejes')">
-            <option value="">Seleccionar eje…</option>
-            <option value="eje_i">Eje I</option>
-            <option value="eje_ii">Eje II</option>
-            <option value="eje_iii">Eje III</option>
-            <option value="eje_iv">Eje IV</option>
-            <option value="eje_v">Eje V</option>
-          </select>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 9l6 6 6-6"/>
-          </svg>
-        </div>
-        <div class="tag-chip-list" id="ejes-list"></div>
-      </div>
-    </div>
-    <hr class="form-separator">
-    <div class="form-field full-width">
-      <label>Problemáticas</label>
-      <div class="tag-picker">
-        <div class="select-shell">
-          <select class="form-select" onchange="addTag(this, 'problematicas')">
-            <option value="">Seleccionar problemática…</option>
-            <option value="analfabetismo">Analfabetismo</option>
-            <option value="diabetes">Diabetes</option>
-            <option value="desnutricion">Desnutrición</option>
-            <option value="inseguridad">Inseguridad</option>
-            <option value="falta_acceso_educacion">Falta de acceso a la educación</option>
-            <option value="falta_acceso_salud">Falta de acceso a la salud</option>
-            <option value="falta_acceso_servicios">Falta de acceso a servicios básicos</option>
-            <option value="inundaciones">Inundaciones constantes</option>
-          </select>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 9l6 6 6-6"/>
-          </svg>
-        </div>
-        <div class="tag-chip-list" id="problematicas-list"></div>
-      </div>
-    </div>
+      <hr class="form-separator">
+      @include('system.parts.tag_picker', ['group' => 'ejes', 'label' => 'Ejes', 'placeholder' => 'Seleccionar…', 'options' => $ejes])
+
+      <hr class="form-separator">
+      @include('system.parts.tag_picker', ['group' => 'problematicas', 'label' => 'Problemáticas', 'placeholder' => 'Seleccionar…', 'options' => $problematicas])
   </div>
 
   <div class="form-actions">

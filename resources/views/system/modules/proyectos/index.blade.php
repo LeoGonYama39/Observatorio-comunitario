@@ -3,6 +3,7 @@
 @section('title', 'Proyectos')
 
 @section('content')
+    @include('system.parts.alerts')
 <div class="content-header">
   <div>
     <h1>
