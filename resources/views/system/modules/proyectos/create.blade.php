@@ -94,8 +94,12 @@
         </div>
         <div class="range-slider-track">
           <div class="range-slider-fill" id="poblRangeFill"></div>
-          <input type="range" min="3" max="60" value="3" id="poblRangeLow" oninput="updatePoblRange()">
-          <input type="range" min="3" max="60" value="60" id="poblRangeHigh" oninput="updatePoblRange()">
+            <input type="range" min="3" max="60"
+                   value="{{ old('pobl_obj_low') }}"
+                   id="poblRangeLow" oninput="updatePoblRange()">
+            <input type="range" min="3" max="60"
+                   value="{{ old('pobl_obj_high') }}"
+                   id="poblRangeHigh" oninput="updatePoblRange()">
         </div>
       </div>
       <input type="hidden" name="pobl_obj_low" id="poblObjLow" value="3">

@@ -40,9 +40,6 @@ class ProyectosController extends Controller
         return $view;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(Request $request)
     {
         $datosUsuario = new DatosUsuario();
@@ -201,17 +198,87 @@ class ProyectosController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request, $id)
     {
-        //
+        $datosUsuario = new DatosUsuario();
+        $aux = $datosUsuario->getDatosUsuario();
+        $persona = $aux[0];
+        $otros = $aux[1];
+
+        $proyecto = Proyecto::find($id);
+        $estado = $datosUsuario->getEnumValues('proyecto', 'estado');
+
+        $view = view(
+            "system.modules.proyectos.edit",compact(
+                'persona',
+                'otros',
+                'proyecto',
+                'estado'));
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Proyecto $proyecto)
     {
-        //
+        $datosUsuario = new DatosUsuario();
+        $limpiar = fn ($valor) => filled($valor) ? trim($valor) : null;
+
+        try {
+            $validated = $request->validate([
+                'nombre'        => ['required', 'string', 'max:50'],
+                'estado'        => ['required', 'string', Rule::in($datosUsuario->getEnumValues('proyecto', 'estado'))],
+                'fecha_inicio'  => ['required', 'date'],
+                'fecha_fin'     => ['nullable', 'date', 'after_or_equal:fecha_inicio'],
+                'antecedentes'  => ['nullable', 'string'],
+                'objetivos'     => ['nullable', 'string'],
+                'alcance'       => ['nullable', 'string'],
+                'evaluacion'    => ['nullable', 'string'],
+                'repo'          => ['nullable', 'url', 'max:2048'],
+                'auditable'     => ['nullable', 'url', 'max:2048'],
+
+                'prioritario'   => ['nullable', 'boolean'],
+
+                'pobl_obj_low'  => ['nullable', 'integer', 'min:3', 'max:60'],
+                'pobl_obj_high' => ['nullable', 'integer', 'min:3', 'max:60', 'gte:pobl_obj_low'],
+            ], $this->getMessages());
+
+            $proyecto->nombre = trim($validated['nombre']);
+            $proyecto->estado = trim($validated['estado']);
+            $proyecto->fecha_inicio = $validated['fecha_inicio'];
+            $proyecto->fecha_fin = $validated['fecha_fin'] ?? null;
+            $proyecto->antecedentes = $limpiar($validated['antecedentes'] ?? null);
+            $proyecto->objetivos = $limpiar($validated['objetivos'] ?? null);
+            $proyecto->alcance = $limpiar($validated['alcance'] ?? null);
+            $proyecto->evaluacion = $limpiar($validated['evaluacion'] ?? null);
+            $proyecto->repo = $limpiar($validated['repo'] ?? null);
+            $proyecto->auditable = $limpiar($validated['auditable'] ?? null);
+            $proyecto->prioritario = $request->boolean('prioritario');
+            $proyecto->pobl_obj_low = $validated['pobl_obj_low'] ?? null;
+            $proyecto->pobl_obj_high = $validated['pobl_obj_high'] ?? null;
+
+            $proyecto->save();
+
+            return redirect()
+                ->route('proyectos.show', $proyecto->id)
+                ->with('success', 'Cambio registrado con éxito.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -332,6 +399,7 @@ class ProyectosController extends Controller
             'nombre',
         )->find($id);
     }
+
     private function getPCentro(){
         return PCentro::select(
             'id',
