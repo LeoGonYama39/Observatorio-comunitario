@@ -72,8 +72,8 @@
                             </span>
                         </td>
                         <td>
-                            <span class="area-tag">
-                                {{ $usuaria->colonia ?? 'Otro' }}
+                            <span class="area-tag {{ (!$usuaria->colonia && !$usuaria->colonia_otro) ? 'empty' : '' }}">
+                                {{ $usuaria->colonia ?? $usuaria->colonia_otro ?? '-' }}
                             </span>
                         </td>
                         <td>

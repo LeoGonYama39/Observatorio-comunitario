@@ -13,6 +13,7 @@ use App\Models\listas\Sustento;
 use Illuminate\Http\Request;
 use App\Models\PComunidad;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class PComunidadController extends Controller
 {
@@ -66,12 +67,114 @@ class PComunidadController extends Controller
         return $view;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $datosUsuario = new DatosUsuario();
+
+        // "Otro" en colonia/alcaldía: el campo de texto solo cuenta (y es obligatorio) en ese caso
+        $esColoniaOtro   = $request->input('colonia_id') === 'otro';
+        $esAlcaldiaOtros = $request->input('alcaldia') === 'otros';
+
+        // Texto opcional: recortado, o null si viene vacío
+        $limpiar = fn ($valor) => filled($valor) ? trim($valor) : null;
+
+        try {
+            $validated = $request->validate([
+                'nombre'  => ['required', 'string', 'max:40'],
+                'ap_pat'  => ['required', 'string', 'max:40'],
+                'ap_mat'  => ['nullable', 'string', 'max:40'],
+                'birth_date'   => ['nullable', 'date', 'before_or_equal:today'],
+                'genero'       => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'genero'))],
+                'estado_civil' => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'estado_civil'))],
+                'num_hijos'    => ['nullable', 'integer', 'min:0', 'max:255'],
+                'nv_escolar'   => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'nv_escolar'))],
+                'ocupacion'    => ['nullable', 'string', 'max:50'],
+
+                'direccion'    => ['nullable', 'string', 'max:200'],
+                // colonia_id es INT en la BD, así que "otro" nunca se guarda ahí: se valida aparte
+                'colonia_id'   => ['nullable', $esColoniaOtro ? Rule::in(['otro']) : Rule::exists(Colonia::class, 'id')],
+                'colonia_otro' => [Rule::requiredIf($esColoniaOtro), 'nullable', 'string', 'max:50'],
+                'alcaldia'     => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'alcaldia'))],
+                'alcaldia_otro' => [Rule::requiredIf($esAlcaldiaOtros), 'nullable', 'string', 'max:50'],
+                'telefono_casa'    => ['nullable', 'string', 'max:20'],
+                'telefono_celular' => ['nullable', 'string', 'max:20'],
+                'correo'           => ['nullable', 'email', 'max:100'],
+
+                'ingreso_mensual' => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'ingreso_mensual'))],
+                'tipo_hogar'      => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'tipo_hogar'))],
+                'tipo_vivienda'   => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'tipo_vivienda'))],
+                'habitantes_menos_18' => ['nullable', 'integer', 'min:0', 'max:255'],
+                'habitantes_mas_18'   => ['nullable', 'integer', 'min:0', 'max:255'],
+                'habitantes_mas_60'   => ['nullable', 'integer', 'min:0', 'max:255'],
+
+                'saberes' => ['nullable', 'string', 'max:255'],
+                'lider'   => ['nullable', 'boolean'],
+
+                // Redes de apoyo: cada campo llega como array de ids (difusion[], sustento[], ...)
+                'difusion'            => ['nullable', 'array'],
+                'difusion.*'          => ['integer', 'distinct', 'exists:difucion,id'],
+                'sustento'            => ['nullable', 'array'],
+                'sustento.*'          => ['integer', 'distinct', 'exists:sustento,id'],
+                'no_trabaja'          => ['nullable', 'array'],
+                'no_trabaja.*'        => ['integer', 'distinct', 'exists:no_trabaja,id'],
+                'servicio_medico'     => ['nullable', 'array'],
+                'servicio_medico.*'   => ['integer', 'distinct', 'exists:servicio_medico,id'],
+                'personas_dependen'   => ['nullable', 'array'],
+                'personas_dependen.*' => ['integer', 'distinct', 'exists:personas_dependen,id'],
+            ], $this->getMessages());
+
+            $comunidad = DB::transaction(function () use ($validated, $request, $esColoniaOtro, $esAlcaldiaOtros, $limpiar) {
+                $comunidad = PComunidad::create([
+                    'nombre'       => trim($validated['nombre']),
+                    'ap_pat'       => trim($validated['ap_pat']),
+                    'ap_mat'       => $limpiar($validated['ap_mat'] ?? null),
+                    'birth_date'   => $validated['birth_date'] ?? null,
+                    'genero'       => $validated['genero'] ?? null,
+                    'estado_civil' => $validated['estado_civil'] ?? null,
+                    'num_hijos'    => $validated['num_hijos'] ?? null,
+                    'nv_escolar'   => $validated['nv_escolar'] ?? null,
+                    'ocupacion'    => $limpiar($validated['ocupacion'] ?? null),
+
+                    'direccion'     => $limpiar($validated['direccion'] ?? null),
+                    'colonia_id'    => $esColoniaOtro ? null : ($validated['colonia_id'] ?? null),
+                    'colonia_otro'  => $esColoniaOtro ? trim($validated['colonia_otro']) : null,
+                    'alcaldia'      => $validated['alcaldia'] ?? null,
+                    'alcaldia_otro' => $esAlcaldiaOtros ? trim($validated['alcaldia_otro']) : null,
+                    'telefono_casa'    => $limpiar($validated['telefono_casa'] ?? null),
+                    'telefono_celular' => $limpiar($validated['telefono_celular'] ?? null),
+                    'correo'           => $limpiar($validated['correo'] ?? null),
+
+                    'ingreso_mensual'     => $validated['ingreso_mensual'] ?? null,
+                    'tipo_hogar'          => $validated['tipo_hogar'] ?? null,
+                    'tipo_vivienda'       => $validated['tipo_vivienda'] ?? null,
+                    'habitantes_menos_18' => $validated['habitantes_menos_18'] ?? null,
+                    'habitantes_mas_18'   => $validated['habitantes_mas_18'] ?? null,
+                    'habitantes_mas_60'   => $validated['habitantes_mas_60'] ?? null,
+
+                    'lider'   => $request->boolean('lider'),
+                    'saberes' => $limpiar($validated['saberes'] ?? null),
+                ]);
+
+                // Tablas intermedias: sync() recibe directamente la lista de ids ya validada
+                $comunidad->difuciones()->sync($validated['difusion'] ?? []);
+                $comunidad->sustentos()->sync($validated['sustento'] ?? []);
+                $comunidad->noTrabajos()->sync($validated['no_trabaja'] ?? []);
+                $comunidad->serviciosMedicos()->sync($validated['servicio_medico'] ?? []);
+                $comunidad->personasDependen()->sync($validated['personas_dependen'] ?? []);
+
+                return $comunidad;
+            });
+
+            return redirect()
+                ->route('personas-usuarias.show', $comunidad->id)
+                ->with('success', 'Persona usuaria registrada con éxito.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
+        }
     }
 
     public function show(Request $request, $id)
@@ -105,9 +208,35 @@ class PComunidadController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request, $id)
     {
-        //
+        $datosUsuario = new DatosUsuario();
+        $aux = $datosUsuario->getDatosUsuario();
+        $persona = $aux[0];
+        $otros = $aux[1];
+
+        $datosUsuaria = $this->getDatosShow($id);
+        $datos = null;
+        if($datosUsuaria) $datos = $this->getDropDownOptions($datosUsuario);
+
+        $view = view(
+            "system.modules.personas.p_comunidad.edit",
+            array_merge(
+                compact('persona', 'otros'),
+                $datosUsuaria ?? ['usuaria' => null],
+                $datos ?? ['datos' => null]
+            )
+        );
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
     }
 
     /**
@@ -148,7 +277,7 @@ class PComunidadController extends Controller
 
     //Obtiene los datos para la tabla index.
     private function getDatosIndex() {
-        $usuarias = PComunidad::leftJoin(
+        return PComunidad::leftJoin(
             'colonia',                  // tabla que quiero unir
             'p_comunidad.colonia_id',   // FK
             '=',                        // operador
@@ -162,10 +291,10 @@ class PComunidadController extends Controller
                  'p_comunidad.genero',
                  'p_comunidad.lider',
                  'p_comunidad.saberes',
+                 'p_comunidad.colonia_otro',
                  'colonia.nombre AS colonia')
         ->orderBy('nombre')
         ->get();
-        return $usuarias;
     }
 
     private function getDatosShow($id)
@@ -320,5 +449,69 @@ class PComunidadController extends Controller
             'personasDependen',
             'colonias'
         );
+    }
+
+    private function getMessages(): array
+    {
+        return [
+            'nombre.required' => 'El nombre es obligatorio.',
+            'nombre.max'      => 'El nombre no puede tener más de 40 caracteres.',
+            'ap_pat.required' => 'El apellido paterno es obligatorio.',
+            'ap_pat.max'      => 'El apellido paterno no puede tener más de 40 caracteres.',
+            'ap_mat.max'      => 'El apellido materno no puede tener más de 40 caracteres.',
+            'birth_date.date' => 'La fecha de nacimiento no es válida.',
+            'birth_date.before_or_equal' => 'La fecha de nacimiento no puede ser futura.',
+            'genero.in'       => 'El género seleccionado no es válido.',
+            'estado_civil.in' => 'El estado civil seleccionado no es válido.',
+            'num_hijos.integer' => 'El número de hijos debe ser un número entero.',
+            'num_hijos.min'     => 'El número de hijos no puede ser negativo.',
+            'num_hijos.max'     => 'El número de hijos no puede ser mayor a 255.',
+            'nv_escolar.in'   => 'El nivel escolar seleccionado no es válido.',
+            'ocupacion.max'   => 'La ocupación no puede tener más de 50 caracteres.',
+
+            'direccion.max'   => 'La dirección no puede tener más de 200 caracteres.',
+            'colonia_id.exists' => 'La colonia seleccionada no es válida.',
+            'colonia_id.in'     => 'La colonia seleccionada no es válida.',
+            'colonia_otro.required' => 'Especifica el nombre de la colonia.',
+            'colonia_otro.max'      => 'La colonia no puede tener más de 50 caracteres.',
+            'alcaldia.in'           => 'La alcaldía seleccionada no es válida.',
+            'alcaldia_otro.required' => 'Especifica el nombre de la alcaldía.',
+            'alcaldia_otro.max'      => 'La alcaldía no puede tener más de 50 caracteres.',
+            'telefono_casa.max'      => 'El teléfono de casa no puede tener más de 20 caracteres.',
+            'telefono_celular.max'   => 'El teléfono celular no puede tener más de 20 caracteres.',
+            'correo.email' => 'Ingresa un correo válido.',
+            'correo.max'   => 'El correo no puede tener más de 100 caracteres.',
+
+            'ingreso_mensual.in' => 'El ingreso mensual seleccionado no es válido.',
+            'tipo_hogar.in'      => 'El tipo de hogar seleccionado no es válido.',
+            'tipo_vivienda.in'   => 'El tipo de vivienda seleccionado no es válido.',
+            'habitantes_menos_18.integer' => 'Los habitantes menores de 18 deben ser un número entero.',
+            'habitantes_menos_18.min'     => 'Los habitantes menores de 18 no pueden ser negativos.',
+            'habitantes_menos_18.max'     => 'Los habitantes menores de 18 no pueden ser más de 255.',
+            'habitantes_mas_18.integer'   => 'Los habitantes mayores de 18 deben ser un número entero.',
+            'habitantes_mas_18.min'       => 'Los habitantes mayores de 18 no pueden ser negativos.',
+            'habitantes_mas_18.max'       => 'Los habitantes mayores de 18 no pueden ser más de 255.',
+            'habitantes_mas_60.integer'   => 'Los habitantes mayores de 60 deben ser un número entero.',
+            'habitantes_mas_60.min'       => 'Los habitantes mayores de 60 no pueden ser negativos.',
+            'habitantes_mas_60.max'       => 'Los habitantes mayores de 60 no pueden ser más de 255.',
+
+            'saberes.max' => 'El directorio de saberes no puede tener más de 255 caracteres.',
+
+            'difusion.array'      => 'La difusión enviada no es válida.',
+            'difusion.*.exists'   => 'Una de las opciones de difusión no es válida.',
+            'difusion.*.distinct' => 'Hay opciones de difusión repetidas.',
+            'sustento.array'      => 'El sustento enviado no es válido.',
+            'sustento.*.exists'   => 'Una de las opciones de sustento no es válida.',
+            'sustento.*.distinct' => 'Hay opciones de sustento repetidas.',
+            'no_trabaja.array'      => 'Los ingresos enviados no son válidos.',
+            'no_trabaja.*.exists'   => 'Una de las opciones de ingresos no es válida.',
+            'no_trabaja.*.distinct' => 'Hay opciones de ingresos repetidas.',
+            'servicio_medico.array'      => 'El servicio médico enviado no es válido.',
+            'servicio_medico.*.exists'   => 'Una de las opciones de servicio médico no es válida.',
+            'servicio_medico.*.distinct' => 'Hay opciones de servicio médico repetidas.',
+            'personas_dependen.array'      => 'Las personas dependientes enviadas no son válidas.',
+            'personas_dependen.*.exists'   => 'Una de las opciones de personas dependientes no es válida.',
+            'personas_dependen.*.distinct' => 'Hay opciones de personas dependientes repetidas.',
+        ];
     }
 }

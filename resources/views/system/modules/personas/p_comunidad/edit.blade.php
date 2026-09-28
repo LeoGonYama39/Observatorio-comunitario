@@ -3,6 +3,7 @@
 @section('title', 'Nuevo registro de persona usuaria')
 
 @section('content')
+    @if($usuaria)
     @php
         // Los rangos de ingreso se muestran como "1000 - 2000"; el resto, como texto normal
         $formatIngreso = fn ($v) => preg_match('/^\d+_\d+$/', $v)
@@ -218,5 +219,7 @@
             <button type="submit" class="btn-new">Registrar</button>
         </div>
     </form>
-
+    @else
+        @include('system.parts.not_found', ['route' => route('personas-usuarias.index')])
+    @endif
 @endsection
