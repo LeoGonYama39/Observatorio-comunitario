@@ -9,7 +9,7 @@
         <select name="{{ $name }}" class="form-select" @if(!empty($onchange)) onchange="{{ $onchange }}" @endif>
             <option value="">Sin especificar</option>
             @foreach($options as $valor)
-                <option value="{{ $valor }}" {{ old($name) === $valor ? 'selected' : '' }}>{{ $format($valor) }}</option>
+                <option value="{{ $valor }}" {{ old($name, !empty($old_option) ? $old_option : '') === $valor ? 'selected' : '' }}>{{ $format($valor) }}</option>
             @endforeach
         </select>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

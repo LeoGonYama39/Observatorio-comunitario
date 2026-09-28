@@ -1,4 +1,8 @@
-{{-- Params: $group (nombre del campo, ej. 'difusion'), $label, $placeholder, $options (colección con id y nombre) --}}
+{{-- Params: $group, $label, $placeholder, $options, y opcional $selected (ids ya vinculados, para el edit) --}}
+@php
+    $selected = old($group, $selected ?? []);
+@endphp
+
 <div class="form-field full-width">
     <label>{{ $label }}</label>
     <div class="tag-picker">
@@ -14,15 +18,13 @@
             </svg>
         </div>
 
-        {{-- Si el form regresó por un error de validación, se vuelven a pintar los chips que ya estaban elegidos --}}
         <div class="tag-chip-list" id="{{ $group }}-list">
-            @foreach($options->whereIn('id', old($group, [])) as $option)
+            @foreach($options->whereIn('id', $selected) as $option)
                 <span class="tag-chip" data-value="{{ $option->id }}">{{ $option->nombre }}<button type="button" class="remove-tag" onclick="this.parentElement.remove()"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button><input type="hidden" name="{{ $group }}[]" value="{{ $option->id }}"></span>
             @endforeach
         </div>
     </div>
 
     @error($group) <span class="field-error">{{ $message }}</span> @enderror
-    {{-- Los errores de cada elemento del array se llaman difusion.0, difusion.1, etc. --}}
     @error($group . '.*') <span class="field-error">{{ $message }}</span> @enderror
 </div>

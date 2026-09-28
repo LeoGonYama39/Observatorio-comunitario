@@ -29,22 +29,6 @@
         </div>
     </div>
 
-    @if (session('error'))
-        <div class="form-card" style="border-color:#b3261e; margin-bottom: 16px;">
-            <p style="color:#b3261e; margin:0;">{{ session('error') }}</p>
-        </div>
-    @endif
-
-    @if ($errors->any())
-        <div class="form-card" style="border-color:#b3261e; margin-bottom: 16px;">
-            <ul style="margin:0; padding-left: 18px; color:#b3261e;">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
     <form method="POST" action="{{ route('personas-usuarias.store') }}">
         @csrf
 

@@ -239,10 +239,7 @@ class PComunidadController extends Controller
         return $view;
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
         //
     }
@@ -341,7 +338,8 @@ class PComunidadController extends Controller
                 'p_comunidad.telefono_casa',
                 'p_comunidad.lider',
                 'p_comunidad.saberes',
-                'colonia.nombre AS colonia'
+                'colonia.nombre AS colonia',
+                'colonia.id AS colonia_id',
             )
             ->where('p_comunidad.id', $id)
             ->first();
