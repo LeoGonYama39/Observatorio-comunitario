@@ -36,24 +36,9 @@
         </div>
     </div>
 
-    @if (session('error'))
-        <div class="form-card" style="border-color:#b3261e; margin-bottom: 16px;">
-            <p style="color:#b3261e; margin:0;">{{ session('error') }}</p>
-        </div>
-    @endif
-
-    @if ($errors->any())
-        <div class="form-card" style="border-color:#b3261e; margin-bottom: 16px;">
-            <ul style="margin:0; padding-left: 18px; color:#b3261e;">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
     <form method="POST" action="{{ route('personas-usuarias.update', $usuaria->id) }}">
         @csrf
+        @method('PUT')
 
         <div class="form-card">
 
@@ -79,7 +64,8 @@
 
                 <div class="form-field">
                     <label>Fecha de nacimiento</label>
-                    <input type="date" name="birth_date" class="form-input" value="{{ old('birth_date', $usuaria->birth_date) }}">
+                    <input type="date" name="birth_date" class="form-input"
+                           value="{{ old('birth_date', $usuaria->birth_date?->format('Y-m-d')) }}">
                     @error('birth_date') <span class="field-error">{{ $message }}</span> @enderror
                 </div>
 
@@ -198,15 +184,20 @@
                 </div>
             </div>
 
-            <hr class="form-separator">
+            @if(!true)
+                <hr class="form-separator">
 
-            <h3 class="form-section-title">Redes de apoyo y servicios</h3>
+                <h3 class="form-section-title">Redes de apoyo y servicios</h3>
 
-            @include('system.parts.tag_picker', ['group' => 'difusion', 'label' => '¿Cómo se enteró del centro? (Difusión)', 'placeholder' => 'Seleccionar…', 'options' => $difuciones])
-            @include('system.parts.tag_picker', ['group' => 'sustento', 'label' => 'Parentesco de quien provee el sustento económico', 'placeholder' => 'Seleccionar…', 'options' => $sustentos])
-            @include('system.parts.tag_picker', ['group' => 'no_trabaja', 'label' => 'En caso de no trabajar, ¿cómo obtiene sus ingresos?', 'placeholder' => 'Seleccionar…', 'options' => $noTrabaja   ])
-            @include('system.parts.tag_picker', ['group' => 'servicio_medico', 'label' => 'Servicio médico al que recurre', 'placeholder' => 'Seleccionar…', 'options' => $serviciosMedicos, 'selected' => $usuaria->serviciosMedicos->pluck('id')->toArray(),])
-            @include('system.parts.tag_picker', ['group' => 'personas_dependen', 'label' => '¿Cuántas personas dependen de usted?', 'placeholder' => 'Seleccionar…', 'options' => $personasDependen])
+
+                @include('system.parts.tag_picker', ['group' => 'difusion', 'label' => '¿Cómo se enteró del centro? (Difusión)', 'placeholder' => 'Seleccionar…', 'options' => $difuciones])
+                @include('system.parts.tag_picker', ['group' => 'sustento', 'label' => 'Parentesco de quien provee el sustento económico', 'placeholder' => 'Seleccionar…', 'options' => $sustentos])
+                @include('system.parts.tag_picker', ['group' => 'no_trabaja', 'label' => 'En caso de no trabajar, ¿cómo obtiene sus ingresos?', 'placeholder' => 'Seleccionar…', 'options' => $noTrabaja   ])
+                @include('system.parts.tag_picker', ['group' => 'servicio_medico', 'label' => 'Servicio médico al que recurre', 'placeholder' => 'Seleccionar…', 'options' => $serviciosMedicos, 'selected' => $usuaria->serviciosMedicos->pluck('id')->toArray(),])
+                @include('system.parts.tag_picker', ['group' => 'personas_dependen', 'label' => '¿Cuántas personas dependen de usted?', 'placeholder' => 'Seleccionar…', 'options' => $personasDependen])
+            @endif
+
+
 
             <hr class="form-separator">
 
@@ -214,13 +205,13 @@
             <div class="form-grid">
                 <div class="form-field full-width">
                     <label>Directorio de saberes</label>
-                    <input type="text" name="saberes" class="form-input" maxlength="255" value="{{ old('saberes') }}">
+                    <input type="text" name="saberes" class="form-input" maxlength="255" value="{{ old('saberes', $usuaria->saberes) }}">
                     @error('saberes') <span class="field-error">{{ $message }}</span> @enderror
                 </div>
             </div>
 
             <div class="form-checkbox-row">
-                <input type="checkbox" id="lider" name="lider" value="1" {{ old('lider') ? 'checked' : '' }}>
+                <input type="checkbox" id="lider" name="lider" value="1" {{ old('lider', $usuaria->lider) ? 'checked' : '' }}>
                 <label for="lider">Líder comunitario</label>
             </div>
         </div>
