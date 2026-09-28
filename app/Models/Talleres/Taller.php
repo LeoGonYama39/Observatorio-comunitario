@@ -3,7 +3,7 @@
 namespace App\Models\Talleres;
 
 use App\Models\Areas\Eje;
-use App\Models\listas\Instituciones;
+use App\Models\listas\Institucion;
 use App\Models\Participacion;
 use App\Models\PCentro;
 use App\Models\PComunidad;
@@ -140,7 +140,7 @@ class Taller extends Model
     public function instituciones()
     {
         return $this->belongsToMany(
-            Instituciones::class,
+            Institucion::class,
             'taller_institucion',
             'taller_id',
             'institucion_id'

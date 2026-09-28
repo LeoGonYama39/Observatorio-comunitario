@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Nav;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sup\DatosUsuario;
+use App\Models\listas\Institucion;
+use App\Models\PCentro;
+use App\Models\PComunidad;
 use Illuminate\Http\Request;
 use App\Models\Proyectos\Proyecto;
 use Illuminate\Support\Facades\DB;
@@ -44,6 +47,33 @@ class ProyectosController extends Controller
 
         $view = view(
             "system.modules.proyectos.create",
+            array_merge(
+                compact('persona', 'otros'),
+                $datos ?? ['proyecto' => null]
+            )
+        );
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
+    }
+
+    public function create_participacion(Request $request, $proyecto){
+        $datosUsuario = new DatosUsuario();
+        $aux = $datosUsuario->getDatosUsuario();
+        $persona = $aux[0];
+        $otros = $aux[1];
+
+        $datos = $this->getDatosAddParticipantes($proyecto);
+
+        $view = view(
+            "system.modules.proyectos.create_participantes",
             array_merge(
                 compact('persona', 'otros'),
                 $datos ?? ['proyecto' => null]
@@ -189,4 +219,63 @@ class ProyectosController extends Controller
             'historial'
         );
     }
+
+    private function getDatosAddParticipantes($id) {
+        $proyecto = $this->getDatosProyectoByIDCompact($id);
+        if(!$proyecto) return null;
+
+        $centros = $this->getPCentro();
+        $externos = $this->getPExterno();
+        $usuarias = $this->getPComunidad();
+        $instituciones = $this->getInstitucion();
+
+        return compact(
+            'proyecto',
+            'centros',
+            'externos',
+            'usuarias',
+            'instituciones',
+        );
+    }
+
+    private function getDatosProyectoByIDCompact($id){
+        return Proyecto::select(
+            'id',
+            'nombre',
+        )->find($id);
+    }
+    private function getPCentro(){
+        return PCentro::select(
+            'id',
+            'nombre',
+            'ap_pat',
+            'ap_mat',
+            'cargo',
+        )->get();
+    }
+
+    private function getPExterno(){
+        return null;
+    }
+
+    private function getPComunidad()
+    {
+        return PComunidad::select(
+            'id',
+            'nombre',
+            'ap_pat',
+            'ap_mat',
+            'colonia_id',
+        )
+            ->where('lider', true)
+            ->get();
+    }
+
+    private function getInstitucion(){
+        return Institucion::select(
+            'id',
+            'nombre',
+        )->get();
+    }
+
 }

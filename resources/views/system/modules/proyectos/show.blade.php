@@ -245,13 +245,13 @@
   <h3>
     Involucrados
   </h3>
-  <button class="btn-outline btn-small">
+  <a class="btn-outline btn-small" href="{{ route('proyectos.create_participacion', $proyecto->id) }}" data-url="{{ route('proyectos.create_participacion', $proyecto->id) }}">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M12 5v14"/>
       <path d="M5 12h14"/>
     </svg>
     Agregar involucrado
-  </button>
+  </a>
 </div>
 @if($involucrados->isNotEmpty())
     <div class="table-card" style="margin-bottom: 32px;">

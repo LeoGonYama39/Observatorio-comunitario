@@ -375,3 +375,98 @@ dialog.confirm-modal::backdrop {
 .responsable-feedback.error::after {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b3261e' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18'/%3E%3Cpath d='M6 6l12 12'/%3E%3C/svg%3E");
 }
+
+
+.selectable-row {
+    cursor: pointer;
+    transition: background .1s ease;
+}
+.selectable-row:hover {
+    background: var(--pearl);
+}
+.selectable-row.row-selected {
+    background: var(--pearl);
+}
+.selectable-row.row-selected td {
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.select-check-cell svg {
+    stroke: var(--ink);
+    opacity: 0;
+    transition: opacity .12s ease;
+}
+.selectable-row.row-selected .select-check-cell svg {
+    opacity: 1;
+}
+
+.selected-entity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+}
+.selected-entity-list:empty::before {
+    content: 'Nadie seleccionado todavía.';
+    font-size: 13px;
+    font-style: italic;
+    color: var(--steel);
+}
+
+.selected-entity-card {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 12px 16px;
+    border: 1.5px solid var(--mist);
+    border-radius: var(--radius-sm);
+    background: var(--white);
+}
+.selected-entity-card .entity-info {
+    flex: 0 0 200px;
+    min-width: 160px;
+}
+.selected-entity-card .entity-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+}
+.selected-entity-card .entity-subtitle {
+    font-size: 12px;
+    color: var(--steel);
+    margin-top: 2px;
+}
+.selected-entity-card .entity-rol-group {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    min-width: 200px;
+}
+.selected-entity-card .select-shell {
+    min-width: 180px;
+}
+.selected-entity-card .entity-otro-input {
+    flex: 1;
+    min-width: 160px;
+}
+.selected-entity-card .remove-entity-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: none;
+    background: none;
+    color: var(--steel);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+.selected-entity-card .remove-entity-btn:hover {
+    color: #b3261e;
+    background: var(--pearl);
+}

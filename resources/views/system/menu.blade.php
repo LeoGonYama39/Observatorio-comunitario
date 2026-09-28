@@ -1,124 +1,107 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
+
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-      Inicio · Centro Ibero Meneses
+        Inicio · Centro Ibero Meneses
     </title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/estilo_menu.css') }}">
-  </head>
-  <body>
-    <div class="bg-shape">
-    </div>
-    <header>
-      <img src="{{ asset('assets/logo.png') }}" alt="Centro Ibero Meneses">
-      <div class="header-right">
+</head>
+
+<body>
+<div class="bg-shape">
+</div>
+<header>
+    <img src="{{ asset('assets/logo.png') }}" alt="Centro Ibero Meneses">
+    <div class="header-right">
         <div class="user-chip">
-          <div class="avatar">
-            {{ $otros->initNombre }}{{ $otros->initApPat }}
-          </div>
-          <span>
-            {{ $persona->nombre }} {{ $persona->ap_pat }}
-          </span>
+            <div class="avatar">
+                {{ $otros->initNombre }}{{ $otros->initApPat }}
+            </div>
+            <span>
+                    {{ $persona->nombre }} {{ $persona->ap_pat }}
+                </span>
         </div>
         <form method="POST" action="{{ route('logout') }}">
-          @csrf
-          <button type="submit" class="logout-btn" title="Cerrar sesión" aria-label="Cerrar sesión">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-              <path d="M16 17l5-5-5-5"/>
-              <path d="M21 12H9"/>
-            </svg>
-          </button>
+            @csrf
+            <button type="submit" class="logout-btn" title="Cerrar sesión" aria-label="Cerrar sesión">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <path d="M16 17l5-5-5-5" />
+                    <path d="M21 12H9" />
+                </svg>
+            </button>
         </form>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-          <path d="M16 17l5-5-5-5"/>
-          <path d="M21 12H9"/>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <path d="M16 17l5-5-5-5" />
+            <path d="M21 12H9" />
         </svg>
-      </button>
     </div>
-  </header>
-  <main>
+</header>
+<main>
     <p class="eyebrow">
-      Centro Ibero Meneses
+        Centro Ibero Meneses
     </p>
     <h1>
-      ¿Qué necesitas hacer hoy?
+        Accesos
     </h1>
-      <a href="{{ route('personas-centro.index') }}" class="primary-action">
+    <a href="{{ route('personas-centro.index') }}" class="primary-action">
         <div class="icon-frame">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="7" height="7" rx="1.5"/>
-            <rect x="14" y="3" width="7" height="7" rx="1.5"/>
-            <rect x="3" y="14" width="7" height="7" rx="1.5"/>
-            <rect x="14" y="14" width="7" height="7" rx="1.5"/>
-          </svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                <rect x="14" y="14" width="7" height="7" rx="1.5" />
+            </svg>
         </div>
         <div class="txt">
-          <strong>
-            Sistema
-          </strong>
-          <p>
-            Personas, proyectos, talleres, casos y colonias
-          </p>
+            <strong>
+                Sistema
+            </strong>
+            <p>
+                Registro digital de centro meneses
+            </p>
         </div>
-        <svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M5 12h14"/>
-          <path d="M13 6l6 6-6 6"/>
+        <svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14" />
+            <path d="M13 6l6 6-6 6" />
         </svg>
-</a>
-    <p class="divider-label">
-      Accesos rápidos
-    </p>
-    <div class="quick-grid">
-      <button class="quick-card">
+    </a>
+    <a href="{{ route('personas-centro.index') }}" class="primary-action">
         <div class="icon-frame">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 11l3 3L22 4"/>
-            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
-          </svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                <rect x="14" y="14" width="7" height="7" rx="1.5" />
+            </svg>
         </div>
-        <span>
-          Reporte de avance
-          <br>
-          de proyecto
-        </span>
-      </button>
-      <button class="quick-card">
-        <div class="icon-frame">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2 2 21h20L12 2Z"/>
-            <path d="M12 9v5"/>
-            <path d="M12 17h.01"/>
-          </svg>
+        <div class="txt">
+            <strong>
+                Estadísticas
+            </strong>
+            <p>
+                Estadísticas del registro digital
+            </p>
         </div>
-        <span>
-          Reporte de problemáticas
-          <br>
-          en territorio
-        </span>
-      </button>
-      @if ($otros->tipo === 'centro')
-      <button class="quick-card">
-        <div class="icon-frame">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 3v18h18"/>
-            <rect x="7" y="12" width="3" height="6" rx="0.5"/>
-            <rect x="12.5" y="8" width="3" height="10" rx="0.5"/>
-            <rect x="18" y="5" width="3" height="13" rx="0.5"/>
-          </svg>
-        </div>
-        <span>
-          Análisis
-        </span>
-      </button>
-      @endif
-    </div>
-  </main>
+        <svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14" />
+            <path d="M13 6l6 6-6 6" />
+        </svg>
+    </a>
+</main>
 </body>
+
 </html>

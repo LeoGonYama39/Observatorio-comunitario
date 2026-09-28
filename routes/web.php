@@ -58,6 +58,9 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::put('/sistema/participacion/{participacion}', [PExternoController::class, 'update_participacion'])->name('personas-externo.update_participacion');
     Route::delete('/sistema/participacion/{participacion}', [PExternoController::class, 'destroy_participacion'])->name('personas-externo.destroy_participacion');
 
+    //Rutas para proyectos
+    Route::resource('/sistema/proyectos', ProyectosController::class);
+    Route::get('/sistema/proyectos/{proyecto}/participacion', [ProyectosController::class, 'create_participacion'])->name('proyectos.create_participacion');
 
     //Para lo de areas y responsabilidades
     Route::patch('/areas/{area}/responsable', [AreasController::class, 'updateResponsableArea'])
