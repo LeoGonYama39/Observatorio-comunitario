@@ -1,12 +1,12 @@
 @extends('system.app')
 
-@section('title', $eje ? $eje->nombre . ' ' . $eje->ap_pat . ' ' . $eje->ap_mat . ' · Ficha' : 'Sin resultados')
+@section('title', $eje ? $eje->nombre .  '· Ficha' : 'Sin resultados')
 
 @section('content')
     @if ($eje)
         <div class="breadcrumb">
             <a href="{{ route('ejes.index') }}" data-url="{{ route('ejes.index') }}" class="return-index">
-                Personas del Centro
+                Ejes
             </a>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"
                  stroke-linejoin="round">
@@ -66,54 +66,33 @@
                 </div>
             </div>
         </div>
-        <div class="related-grid">
-            <div class="related-card">
-                <h3>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
-                         stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M9 11l3 3L22 4" />
-                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-                    </svg>
-                    Proyectos
-                </h3>
-                <div class="related-list">
-                    <div class="related-row">
-                        <span class="name">
-                            Huertos Comunitarios
-                        </span>
-                        <span class="role-badge lider">
-                            Líder
-                        </span>
-                    </div>
-                    <div class="related-row">
-                        <span class="name">
-                            Salud Preventiva en Colonias
-                        </span>
-                        <span class="role-badge participante">
-                            Participante
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <div class="related-card">
-                <h3>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
-                         stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M14.7 6.3a4 4 0 1 1-5.4 5.4L2 19v3h3l7.3-7.3" />
-                        <path d="M17.5 3.5 20.5 6.5" />
-                        <path d="M15 9l5-5" />
-                    </svg>
-                    Talleres
-                </h3>
-                <div class="related-list">
-                    <div class="related-row">
-                        <span class="name">
-                            Alimentación Saludable
-                        </span>
-                    </div>
-                </div>
-            </div>
+
+        <div class="section-header">
+            <h3>
+                Responsabilidades encargadas
+            </h3>
+            <a class="btn-outline btn-small" href="#" data-url="#">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 5v14"/>
+                    <path d="M5 12h14"/>
+                </svg>
+                Agregar responsabilidad
+            </a>
         </div>
+        @if($eje->responsabilidades->isNotEmpty())
+            <div class="table-card" style="margin-bottom: 32px;">
+                <div style="padding: 6px 24px;">
+                    @foreach($eje->responsabilidades as $respons)
+                        <div class="related-row">
+            <span class="name">
+                {{ $respons->nombre }}
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @else
+            <p>Sin responsabilidades registrados</p>
+        @endif
 
         <dialog id="modalEliminar" class="confirm-modal" onclick="if (event.target === this) this.close()">
             <div class="confirm-modal-content">

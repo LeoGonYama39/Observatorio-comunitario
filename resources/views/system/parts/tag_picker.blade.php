@@ -8,10 +8,14 @@
     <div class="tag-picker">
         <div class="select-shell">
             <select class="form-select" onchange="addTag(this, '{{ $group }}')">
-                <option value="">{{ $placeholder }}</option>
-                @foreach($options as $option)
-                    <option value="{{ $option->id }}">{{ $option->nombre }}</option>
-                @endforeach
+                @if($options->isEmpty())
+                    <option value="">Error, options vacío</option>
+                @else
+                    <option value="">{{ $placeholder }}</option>
+                    @foreach($options as $option)
+                        <option value="{{ $option->id }}">{{ $option->nombre }}</option>
+                    @endforeach
+                @endif
             </select>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M6 9l6 6 6-6"/>
