@@ -21,9 +21,11 @@
 <div class="content-header">
   <div>
     <h1>
+        @if($proyecto->prioritario)
       <svg class="star-icon" width="18" height="18" viewBox="0 0 24 24" fill="#111111" stroke="#111111" stroke-width="1.5" stroke-linejoin="round">
         <path d="M12 2.5l2.9 6.3 6.8.7-5.1 4.6 1.5 6.7L12 17.6l-6.1 3.2 1.5-6.7-5.1-4.6 6.8-.7Z"/>
       </svg>
+        @endif
       {{ $proyecto->nombre }}
     </h1>
     <p>
