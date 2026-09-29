@@ -22,6 +22,8 @@
   </span>
     </div>
 
+    @include('system.parts.alerts')
+
     <div class="content-header">
         <div>
             <h1>Editar registro de eje</h1>
@@ -42,6 +44,8 @@
                     <input type="text" name="nombre" class="form-input" maxlength="50" value="{{ old('nombre', $eje->nombre) }}" required>
                     @error('nombre') <span class="field-error">{{ $message }}</span> @enderror
                 </div>
+
+                @include('system.parts.tag_picker', ['group' => 'responsabilidades', 'label' => 'Responsabilidades a cargo del eje', 'placeholder' => 'Seleccionar…', 'options' => $responsabilidades, 'selected' => $eje->responsabilidades->pluck('id')->toArray()])
             </div>
         </div>
 

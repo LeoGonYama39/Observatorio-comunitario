@@ -67,33 +67,6 @@
             </div>
         </div>
 
-        <div class="section-header">
-            <h3>
-                Responsabilidades encargadas
-            </h3>
-            <a class="btn-outline btn-small" href="#" data-url="#">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 5v14"/>
-                    <path d="M5 12h14"/>
-                </svg>
-                Agregar responsabilidad
-            </a>
-        </div>
-        @if($eje->responsabilidades->isNotEmpty())
-            <div class="table-card" style="margin-bottom: 32px;">
-                <div style="padding: 6px 24px;">
-                    @foreach($eje->responsabilidades as $respons)
-                        <div class="related-row">
-            <span class="name">
-                {{ $respons->nombre }}
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        @else
-            <p>Sin responsabilidades registrados</p>
-        @endif
-
         <dialog id="modalEliminar" class="confirm-modal" onclick="if (event.target === this) this.close()">
             <div class="confirm-modal-content">
                 <div class="confirm-modal-header">

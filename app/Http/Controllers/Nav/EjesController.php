@@ -58,19 +58,13 @@ class EjesController extends Controller
     public function store(Request $request)
     {
         try {
-            $validated = $request->validate([
-                'nombre'  => ['required', 'string', 'max:50'],
-
-                'responsabilidades'            => ['nullable', 'array'],
-                'responsabilidades.*'          => ['integer', 'distinct', 'exists:responsabilidad,id'],
-            ], $this->getMessages());
+            $validated = $this->getValidated($request, $this->getMessages());
 
             $eje = DB::transaction(function () use ($validated, $request) {
                 $eje = Eje::create([
                     'nombre'       => trim($validated['nombre']),
                 ]);
 
-                // Tablas intermedias: sync() recibe directamente la lista de ids ya validada
                 $eje->responsabilidades()->sync($validated['responsabilidades'] ?? []);
 
                 return $eje;
@@ -125,8 +119,9 @@ class EjesController extends Controller
         $otros = $aux[1];
 
         $eje = $this->getDatosShow($id);
+        $responsabilidades = $this->getResponsabilidades();
 
-        $view = view("system.modules.ejes.edit", compact('persona', 'otros', 'eje'));
+        $view = view("system.modules.ejes.edit", compact('persona', 'otros', 'eje', 'responsabilidades'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -145,12 +140,13 @@ class EjesController extends Controller
     public function update(Request $request, Eje $eje)
     {
         try {
-            $validated = $request->validate([
-                'nombre'  => ['required', 'string', 'max:50'],
-            ], $this->getMessages());
+            $validated = $this->getValidated($request, $this->getMessages());
 
-            $eje->nombre = trim($validated['nombre']);
-            $eje->save();
+            DB::transaction(function () use ($eje, $validated, $request) {
+                $eje->nombre = trim($validated['nombre']);
+                $eje->save();
+                $eje->responsabilidades()->sync($validated['responsabilidades'] ?? []);
+            });
 
             return redirect()
                 ->route('ejes.show', $eje->id)
@@ -201,6 +197,15 @@ class EjesController extends Controller
 
     private function getResponsabilidades() {
         return Responsabilidad::select('id', 'nombre')->get();
+    }
+
+    private function getValidated($request, $messages) {
+        return $request->validate([
+                'nombre'  => ['required', 'string', 'max:50'],
+
+                'responsabilidades'            => ['nullable', 'array'],
+                'responsabilidades.*'          => ['integer', 'distinct', 'exists:responsabilidad,id'],
+            ], $messages);
     }
 
     private function getMessages(): array

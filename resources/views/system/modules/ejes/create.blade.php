@@ -15,6 +15,8 @@
   </span>
     </div>
 
+    @include('system.parts.alerts')
+
     <div class="content-header">
         <div>
             <h1>Nuevo registro</h1>
