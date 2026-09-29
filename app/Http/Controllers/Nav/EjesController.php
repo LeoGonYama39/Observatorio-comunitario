@@ -208,8 +208,7 @@ class EjesController extends Controller
             ], $messages);
     }
 
-    private function getMessages(): array
-    {
+    private function getMessages(): array {
         return [
             'nombre.required' => 'El nombre es obligatorio.',
             'nombre.max'      => 'El nombre no puede tener más de 40 caracteres.',

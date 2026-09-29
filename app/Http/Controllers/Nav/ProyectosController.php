@@ -411,19 +411,19 @@ class ProyectosController extends Controller
             ->get();
     }
 
-    private function getPExterno(){
-        return PExterno::with(
-            'participaciones'
+    private function getPExterno() {
+    return PExterno::with('participaciones')
+        ->whereHas('participaciones')
+        ->select(
+            'id',
+            'nombre',
+            'ap_pat',
+            'ap_mat',
+            'universidad',
         )
-            ->select(
-                'id',
-                'nombre',
-                'ap_pat',
-                'ap_mat',
-                'universidad',
-            )->orderBy('nombre')
-            ->get();
-    }
+        ->orderBy('nombre')
+        ->get();
+}
 
     private function getPComunidad()
     {
