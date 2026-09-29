@@ -115,10 +115,10 @@
                     'name' => 'alcaldia',
                     'label' => 'Alcaldía',
                     'options' => $alcaldia,
-                    'onchange' => "toggleOtroField(this, 'alcaldia_otro_field', 'otros')",
+                    'onchange' => "toggleOtroField(this, 'alcaldia_otro_field', 'otro')",
                 ])
 
-                <div class="form-field" id="alcaldia_otro_field" {{ old('alcaldia') === 'otros' ? '' : 'hidden' }}>
+                <div class="form-field" id="alcaldia_otro_field" {{ old('alcaldia') === 'otro' ? '' : 'hidden' }}>
                     <label>Especificar alcaldía</label>
                     <input type="text" name="alcaldia_otro" class="form-input" maxlength="50" value="{{ old('alcaldia_otro') }}">
                     @error('alcaldia_otro') <span class="field-error">{{ $message }}</span> @enderror

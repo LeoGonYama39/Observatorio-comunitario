@@ -95,10 +95,10 @@
         <div class="range-slider-track">
           <div class="range-slider-fill" id="poblRangeFill"></div>
             <input type="range" min="3" max="60"
-                   value="{{ old('pobl_obj_low') }}"
+                   value="{{ old('pobl_obj_low', 3) }}"
                    id="poblRangeLow" oninput="updatePoblRange()">
             <input type="range" min="3" max="60"
-                   value="{{ old('pobl_obj_high') }}"
+                   value="{{ old('pobl_obj_high', 60) }}"
                    id="poblRangeHigh" oninput="updatePoblRange()">
         </div>
       </div>

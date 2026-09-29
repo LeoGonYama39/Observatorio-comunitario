@@ -72,7 +72,7 @@
                 <div class="info-field">
                     <label>Género</label>
                     <div class="value {{ $usuaria->genero ? '' : 'empty' }}">
-                        {{ $usuaria->genero ? ucfirst($usuaria->genero) : '-' }}
+                        {{ $usuaria->genero ? ucfirst(str_replace('_', ' ', $usuaria->genero)) : '-' }}
                     </div>
                 </div>
                 <div class="info-field">

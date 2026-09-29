@@ -29,6 +29,23 @@
   </span>
     </div>
 
+
+    @include('system.parts.alerts')
+        @if (session('error'))
+<div class="form-card" style="border-color:#b3261e; margin-bottom: 16px;">
+  <p style="color:#b3261e; margin:0;">{{ session('error') }}</p>
+</div>
+@endif
+ 
+@if ($errors->any())
+<div class="form-card" style="border-color:#b3261e; margin-bottom: 16px;">
+  <ul style="margin:0; padding-left: 18px; color:#b3261e;">
+    @foreach ($errors->all() as $error)
+      <li>{{ $error }}</li>
+    @endforeach
+  </ul>
+</div>
+@endif
     <div class="content-header">
         <div>
             <h1>Editar registro</h1>
@@ -127,7 +144,7 @@
                     'name' => 'alcaldia',
                     'label' => 'Alcaldía',
                     'options' => $alcaldia,
-                    'onchange' => "toggleOtroField(this, 'alcaldia_otro_field', 'otros')",
+                    'onchange' => "toggleOtroField(this, 'alcaldia_otro_field', 'otro')",
                     'old_option' => $usuaria->alcaldia,
                 ])
 
@@ -184,19 +201,15 @@
                 </div>
             </div>
 
-            @if(!true)
                 <hr class="form-separator">
 
                 <h3 class="form-section-title">Redes de apoyo y servicios</h3>
 
-
-                @include('system.parts.tag_picker', ['group' => 'difusion', 'label' => '¿Cómo se enteró del centro? (Difusión)', 'placeholder' => 'Seleccionar…', 'options' => $difuciones])
-                @include('system.parts.tag_picker', ['group' => 'sustento', 'label' => 'Parentesco de quien provee el sustento económico', 'placeholder' => 'Seleccionar…', 'options' => $sustentos])
-                @include('system.parts.tag_picker', ['group' => 'no_trabaja', 'label' => 'En caso de no trabajar, ¿cómo obtiene sus ingresos?', 'placeholder' => 'Seleccionar…', 'options' => $noTrabaja   ])
-                @include('system.parts.tag_picker', ['group' => 'servicio_medico', 'label' => 'Servicio médico al que recurre', 'placeholder' => 'Seleccionar…', 'options' => $serviciosMedicos, 'selected' => $usuaria->serviciosMedicos->pluck('id')->toArray(),])
-                @include('system.parts.tag_picker', ['group' => 'personas_dependen', 'label' => '¿Cuántas personas dependen de usted?', 'placeholder' => 'Seleccionar…', 'options' => $personasDependen])
-            @endif
-
+                @include('system.parts.tag_picker', ['group' => 'difusion', 'label' => '¿Cómo se enteró del centro? (Difusión)', 'placeholder' => 'Seleccionar…', 'options' => $difuciones, 'selected' => $usuaria->difuciones->pluck('id')->toArray()])
+                @include('system.parts.tag_picker', ['group' => 'sustento', 'label' => 'Parentesco de quien provee el sustento económico', 'placeholder' => 'Seleccionar…', 'options' => $sustentos, 'selected' => $usuaria->sustentos->pluck('id')->toArray()])
+                @include('system.parts.tag_picker', ['group' => 'no_trabaja', 'label' => 'En caso de no trabajar, ¿cómo obtiene sus ingresos?', 'placeholder' => 'Seleccionar…', 'options' => $noTrabaja, 'selected' => $usuaria->noTrabajos->pluck('id')->toArray()])
+                @include('system.parts.tag_picker', ['group' => 'servicio_medico', 'label' => 'Servicio médico al que recurre', 'placeholder' => 'Seleccionar…', 'options' => $serviciosMedicos, 'selected' => $usuaria->serviciosMedicos->pluck('id')->toArray()])
+                @include('system.parts.tag_picker', ['group' => 'personas_dependen', 'label' => '¿Cuántas personas dependen de usted?', 'placeholder' => 'Seleccionar…', 'options' => $personasDependen, 'selected' => $usuaria->personasDependen->pluck('id')->toArray()])
 
 
             <hr class="form-separator">

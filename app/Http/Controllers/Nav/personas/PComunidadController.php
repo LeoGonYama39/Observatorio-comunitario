@@ -73,55 +73,13 @@ class PComunidadController extends Controller
 
         // "Otro" en colonia/alcaldía: el campo de texto solo cuenta (y es obligatorio) en ese caso
         $esColoniaOtro   = $request->input('colonia_id') === 'otro';
-        $esAlcaldiaOtros = $request->input('alcaldia') === 'otros';
+        $esAlcaldiaOtros = $request->input('alcaldia') === 'otro';
 
         // Texto opcional: recortado, o null si viene vacío
         $limpiar = fn ($valor) => filled($valor) ? trim($valor) : null;
 
         try {
-            $validated = $request->validate([
-                'nombre'  => ['required', 'string', 'max:40'],
-                'ap_pat'  => ['required', 'string', 'max:40'],
-                'ap_mat'  => ['nullable', 'string', 'max:40'],
-                'birth_date'   => ['nullable', 'date', 'before_or_equal:today'],
-                'genero'       => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'genero'))],
-                'estado_civil' => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'estado_civil'))],
-                'num_hijos'    => ['nullable', 'integer', 'min:0', 'max:255'],
-                'nv_escolar'   => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'nv_escolar'))],
-                'ocupacion'    => ['nullable', 'string', 'max:50'],
-
-                'direccion'    => ['nullable', 'string', 'max:200'],
-                // colonia_id es INT en la BD, así que "otro" nunca se guarda ahí: se valida aparte
-                'colonia_id'   => ['nullable', $esColoniaOtro ? Rule::in(['otro']) : Rule::exists(Colonia::class, 'id')],
-                'colonia_otro' => [Rule::requiredIf($esColoniaOtro), 'nullable', 'string', 'max:50'],
-                'alcaldia'     => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'alcaldia'))],
-                'alcaldia_otro' => [Rule::requiredIf($esAlcaldiaOtros), 'nullable', 'string', 'max:50'],
-                'telefono_casa'    => ['nullable', 'string', 'max:20'],
-                'telefono_celular' => ['nullable', 'string', 'max:20'],
-                'correo'           => ['nullable', 'email', 'max:100'],
-
-                'ingreso_mensual' => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'ingreso_mensual'))],
-                'tipo_hogar'      => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'tipo_hogar'))],
-                'tipo_vivienda'   => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'tipo_vivienda'))],
-                'habitantes_menos_18' => ['nullable', 'integer', 'min:0', 'max:255'],
-                'habitantes_mas_18'   => ['nullable', 'integer', 'min:0', 'max:255'],
-                'habitantes_mas_60'   => ['nullable', 'integer', 'min:0', 'max:255'],
-
-                'saberes' => ['nullable', 'string', 'max:255'],
-                'lider'   => ['nullable', 'boolean'],
-
-                // Redes de apoyo: cada campo llega como array de ids (difusion[], sustento[], ...)
-                'difusion'            => ['nullable', 'array'],
-                'difusion.*'          => ['integer', 'distinct', 'exists:difucion,id'],
-                'sustento'            => ['nullable', 'array'],
-                'sustento.*'          => ['integer', 'distinct', 'exists:sustento,id'],
-                'no_trabaja'          => ['nullable', 'array'],
-                'no_trabaja.*'        => ['integer', 'distinct', 'exists:no_trabaja,id'],
-                'servicio_medico'     => ['nullable', 'array'],
-                'servicio_medico.*'   => ['integer', 'distinct', 'exists:servicio_medico,id'],
-                'personas_dependen'   => ['nullable', 'array'],
-                'personas_dependen.*' => ['integer', 'distinct', 'exists:personas_dependen,id'],
-            ], $this->getMessages());
+            $validated = $this->getValitadate($request, $this->getMessages(), $datosUsuario, $esColoniaOtro, $esAlcaldiaOtros);
 
             $comunidad = DB::transaction(function () use ($validated, $request, $esColoniaOtro, $esAlcaldiaOtros, $limpiar) {
                 $comunidad = PComunidad::create([
@@ -243,73 +201,63 @@ class PComunidadController extends Controller
         $datosUsuario = new DatosUsuario();
 
         $esColoniaOtro   = $request->input('colonia_id') === 'otro';
-        $esAlcaldiaOtros = $request->input('alcaldia') === 'otros';
+        $esAlcaldiaOtros = $request->input('alcaldia') === 'otro';
 
         // Texto opcional: recortado, o null si viene vacío
         $limpiar = fn ($valor) => filled($valor) ? trim($valor) : null;
 
         try {
-            $validated = $request->validate([
-                'nombre'  => ['required', 'string', 'max:40'],
-                'ap_pat'  => ['required', 'string', 'max:40'],
-                'ap_mat'  => ['nullable', 'string', 'max:40'],
-                'birth_date'   => ['nullable', 'date', 'before_or_equal:today'],
-                'genero'       => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'genero'))],
-                'estado_civil' => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'estado_civil'))],
-                'num_hijos'    => ['nullable', 'integer', 'min:0', 'max:255'],
-                'nv_escolar'   => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'nv_escolar'))],
-                'ocupacion'    => ['nullable', 'string', 'max:50'],
+            $validated = $this->getValitadate($request, $this->getMessages(), $datosUsuario, $esColoniaOtro, $esAlcaldiaOtros);
+            
+            DB::transaction(function () use ($personas_usuaria, $validated, $request, $esColoniaOtro, $esAlcaldiaOtros, $limpiar) {
+                $personas_usuaria->nombre = trim($validated['nombre']);
+                $personas_usuaria->ap_pat = trim($validated['ap_pat']);
+                $personas_usuaria->ap_mat = $limpiar($validated['ap_mat'] ?? null);
+                $personas_usuaria->birth_date = $validated['birth_date'] ?? null;
+                $personas_usuaria->genero = $validated['genero'] ?? null;
+                $personas_usuaria->estado_civil = $validated['estado_civil'] ?? null;
+                $personas_usuaria->num_hijos = $validated['num_hijos'] ?? null;
+                $personas_usuaria->nv_escolar = $validated['nv_escolar'] ?? null;
+                $personas_usuaria->ocupacion = $limpiar($validated['ocupacion'] ?? null);
 
-                'direccion'    => ['nullable', 'string', 'max:200'],
-                'colonia_id'   => ['nullable', $esColoniaOtro ? Rule::in(['otro']) : Rule::exists(Colonia::class, 'id')],
-                'colonia_otro' => [Rule::requiredIf($esColoniaOtro), 'nullable', 'string', 'max:50'],
-                'alcaldia'     => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'alcaldia'))],
-                'alcaldia_otro' => [Rule::requiredIf($esAlcaldiaOtros), 'nullable', 'string', 'max:50'],
-                'telefono_casa'    => ['nullable', 'string', 'max:20'],
-                'telefono_celular' => ['nullable', 'string', 'max:20'],
-                'correo'           => ['nullable', 'email', 'max:100'],
+                $personas_usuaria->direccion = $limpiar($validated['direccion'] ?? null);
+                $personas_usuaria->colonia_id = $esColoniaOtro
+                    ? null
+                    : ($validated['colonia_id'] ?? null);
 
-                'ingreso_mensual' => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'ingreso_mensual'))],
-                'tipo_hogar'      => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'tipo_hogar'))],
-                'tipo_vivienda'   => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'tipo_vivienda'))],
-                'habitantes_menos_18' => ['nullable', 'integer', 'min:0', 'max:255'],
-                'habitantes_mas_18'   => ['nullable', 'integer', 'min:0', 'max:255'],
-                'habitantes_mas_60'   => ['nullable', 'integer', 'min:0', 'max:255'],
+                $personas_usuaria->colonia_otro = $esColoniaOtro
+                    ? trim($validated['colonia_otro'])
+                    : null;
 
-                'saberes' => ['nullable', 'string', 'max:255'],
-                'lider'   => ['nullable', 'boolean'],
-            ], $this->getMessages());
+                $personas_usuaria->alcaldia = $validated['alcaldia'] ?? null;
+                $personas_usuaria->alcaldia_otro = $esAlcaldiaOtros
+                    ? trim($validated['alcaldia_otro'])
+                    : null;
 
-            $personas_usuaria->nombre = trim($validated['nombre']);
-            $personas_usuaria->ap_pat = trim($validated['ap_pat']);
-            $personas_usuaria->ap_mat = $limpiar($validated['ap_mat'] ?? null);
-            $personas_usuaria->birth_date = $validated['birth_date'] ?? null;
-            $personas_usuaria->genero = $validated['genero'] ?? null;
-            $personas_usuaria->estado_civil = $validated['estado_civil'] ?? null;
-            $personas_usuaria->num_hijos = $validated['num_hijos'] ?? null;
-            $personas_usuaria->nv_escolar = $validated['nv_escolar'] ?? null;
-            $personas_usuaria->ocupacion = $limpiar($validated['ocupacion'] ?? null);
+                $personas_usuaria->telefono_casa = $limpiar($validated['telefono_casa'] ?? null);
+                $personas_usuaria->telefono_celular = $limpiar($validated['telefono_celular'] ?? null);
+                $personas_usuaria->correo = $limpiar($validated['correo'] ?? null);
 
-            $personas_usuaria->direccion = $limpiar($validated['direccion'] ?? null);
-            $personas_usuaria->colonia_id = $esColoniaOtro ? null : ($validated['colonia_id'] ?? null);
-            $personas_usuaria->colonia_otro = $esColoniaOtro ? trim($validated['colonia_otro']) : null;
-            $personas_usuaria->alcaldia = $validated['alcaldia'] ?? null;
-            $personas_usuaria->alcaldia_otro = $esAlcaldiaOtros ? trim($validated['alcaldia_otro']) : null;
-            $personas_usuaria->telefono_casa = $limpiar($validated['telefono_casa'] ?? null);
-            $personas_usuaria->telefono_celular = $limpiar($validated['telefono_celular'] ?? null);
-            $personas_usuaria->correo = $limpiar($validated['correo'] ?? null);
+                $personas_usuaria->ingreso_mensual = $validated['ingreso_mensual'] ?? null;
+                $personas_usuaria->tipo_hogar = $validated['tipo_hogar'] ?? null;
+                $personas_usuaria->tipo_vivienda = $validated['tipo_vivienda'] ?? null;
+                $personas_usuaria->habitantes_menos_18 = $validated['habitantes_menos_18'] ?? null;
+                $personas_usuaria->habitantes_mas_18 = $validated['habitantes_mas_18'] ?? null;
+                $personas_usuaria->habitantes_mas_60 = $validated['habitantes_mas_60'] ?? null;
 
-            $personas_usuaria->ingreso_mensual = $validated['ingreso_mensual'] ?? null;
-            $personas_usuaria->tipo_hogar = $validated['tipo_hogar'] ?? null;
-            $personas_usuaria->tipo_vivienda = $validated['tipo_vivienda'] ?? null;
-            $personas_usuaria->habitantes_menos_18 = $validated['habitantes_menos_18'] ?? null;
-            $personas_usuaria->habitantes_mas_18 = $validated['habitantes_mas_18'] ?? null;
-            $personas_usuaria->habitantes_mas_60 = $validated['habitantes_mas_60'] ?? null;
+                $personas_usuaria->lider = $request->boolean('lider');
+                $personas_usuaria->saberes = $limpiar($validated['saberes'] ?? null);
 
-            $personas_usuaria->lider = $request->boolean('lider');
-            $personas_usuaria->saberes = $limpiar($validated['saberes'] ?? null);
+                // Guardar cambios de p_comunidad
+                $personas_usuaria->save();
 
-            $personas_usuaria->save();
+                // Actualizar relaciones
+                $personas_usuaria->difuciones()->sync($validated['difusion'] ?? []);
+                $personas_usuaria->sustentos()->sync($validated['sustento'] ?? []);
+                $personas_usuaria->noTrabajos()->sync($validated['no_trabaja'] ?? []);
+                $personas_usuaria->serviciosMedicos()->sync($validated['servicio_medico'] ?? []);
+                $personas_usuaria->personasDependen()->sync($validated['personas_dependen'] ?? []);
+            });
 
             return redirect()
                 ->route("personas-usuarias.show", $personas_usuaria->id)
@@ -374,8 +322,7 @@ class PComunidadController extends Controller
         ->get();
     }
 
-    private function getDatosShow($id)
-    {
+    private function getDatosShow($id) {
         $usuaria = $this->getUsuariaByID($id);
 
         if(!$usuaria) return null;
@@ -451,8 +398,7 @@ class PComunidadController extends Controller
         return compact('usuaria', 'actividades');
     }
 
-    private function getUsuariaByID($id)
-    {
+    private function getUsuariaByID($id) {
         return PComunidad::with([
             'difuciones',
             'sustentos',
@@ -534,8 +480,51 @@ class PComunidadController extends Controller
         );
     }
 
-    private function getMessages(): array
-    {
+    private function getValitadate($request, $messages, $datosUsuario, $esColoniaOtro, $esAlcaldiaOtros){
+        return $request->validate([
+                'nombre'  => ['required', 'string', 'max:40'],
+                'ap_pat'  => ['required', 'string', 'max:40'],
+                'ap_mat'  => ['nullable', 'string', 'max:40'],
+                'birth_date'   => ['nullable', 'date', 'before_or_equal:today'],
+                'genero'       => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'genero'))],
+                'estado_civil' => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'estado_civil'))],
+                'num_hijos'    => ['nullable', 'integer', 'min:0', 'max:255'],
+                'nv_escolar'   => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'nv_escolar'))],
+                'ocupacion'    => ['nullable', 'string', 'max:50'],
+
+                'direccion'    => ['nullable', 'string', 'max:200'],
+                'colonia_id'   => ['nullable', $esColoniaOtro ? Rule::in(['otro']) : Rule::exists(Colonia::class, 'id')],
+                'colonia_otro' => [Rule::requiredIf($esColoniaOtro), 'nullable', 'string', 'max:50'],
+                'alcaldia'     => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'alcaldia'))],
+                'alcaldia_otro' => [Rule::requiredIf($esAlcaldiaOtros), 'nullable', 'string', 'max:50'],
+                'telefono_casa'    => ['nullable', 'string', 'max:20'],
+                'telefono_celular' => ['nullable', 'string', 'max:20'],
+                'correo'           => ['nullable', 'email', 'max:100'],
+
+                'ingreso_mensual' => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'ingreso_mensual'))],
+                'tipo_hogar'      => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'tipo_hogar'))],
+                'tipo_vivienda'   => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'tipo_vivienda'))],
+                'habitantes_menos_18' => ['nullable', 'integer', 'min:0', 'max:255'],
+                'habitantes_mas_18'   => ['nullable', 'integer', 'min:0', 'max:255'],
+                'habitantes_mas_60'   => ['nullable', 'integer', 'min:0', 'max:255'],
+
+                'saberes' => ['nullable', 'string', 'max:255'],
+                'lider'   => ['nullable', 'boolean'],
+
+                'difusion'            => ['nullable', 'array'],
+                'difusion.*'          => ['integer', 'distinct', 'exists:difucion,id'],
+                'sustento'            => ['nullable', 'array'],
+                'sustento.*'          => ['integer', 'distinct', 'exists:sustento,id'],
+                'no_trabaja'          => ['nullable', 'array'],
+                'no_trabaja.*'        => ['integer', 'distinct', 'exists:no_trabaja,id'],
+                'servicio_medico'     => ['nullable', 'array'],
+                'servicio_medico.*'   => ['integer', 'distinct', 'exists:servicio_medico,id'],
+                'personas_dependen'   => ['nullable', 'array'],
+                'personas_dependen.*' => ['integer', 'distinct', 'exists:personas_dependen,id'],
+            ], $messages);
+    }
+
+    private function getMessages(): array {
         return [
             'nombre.required' => 'El nombre es obligatorio.',
             'nombre.max'      => 'El nombre no puede tener más de 40 caracteres.',

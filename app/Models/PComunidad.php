@@ -132,7 +132,7 @@ class PComunidad extends Model
 
     public function getAlcaldiaMostrarAttribute()
     {
-        if ($this->alcaldia === 'otros') {
+        if ($this->alcaldia === 'otro') {
             return $this->alcaldia_otro;
         }
 
