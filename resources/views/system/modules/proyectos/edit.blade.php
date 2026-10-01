@@ -119,6 +119,14 @@
                 <input type="checkbox" id="prioritario" name="prioritario" value="1" {{ old('prioritario', $proyecto->prioritario) ? 'checked' : '' }}>
                 <label for="prioritario">Destacado</label>
             </div>
+            <hr class="form-separator">
+            @include('system.parts.tag_picker', ['group' => 'colonias', 'label' => 'Colonias', 'placeholder' => 'Seleccionar…', 'options' => $colonias, 'selected' => $proyecto->colonias->pluck('id')->toArray()])
+
+            <hr class="form-separator">
+            @include('system.parts.tag_picker', ['group' => 'ejes', 'label' => 'Ejes', 'placeholder' => 'Seleccionar…', 'options' => $ejes, 'selected' => $proyecto->ejes->pluck('id')->toArray()])
+
+            <hr class="form-separator">
+            @include('system.parts.tag_picker', ['group' => 'problematicas', 'label' => 'Problemáticas', 'placeholder' => 'Seleccionar…', 'options' => $problematicas, 'selected' => $proyecto->problematicas->pluck('id')->toArray()])
         </div>
 
         <div class="form-actions">

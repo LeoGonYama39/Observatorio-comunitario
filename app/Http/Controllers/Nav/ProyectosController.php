@@ -101,34 +101,10 @@ class ProyectosController extends Controller
     public function store(Request $request)
     {
         $datosUsuario = new DatosUsuario();
-
         $limpiar = fn ($valor) => filled($valor) ? trim($valor) : null;
 
         try {
-            $validated = $request->validate([
-                'nombre'        => ['required', 'string', 'max:50'],
-                'estado'        => ['required', 'string', Rule::in($datosUsuario->getEnumValues('proyecto', 'estado'))],
-                'fecha_inicio'  => ['required', 'date'],
-                'fecha_fin'     => ['nullable', 'date', 'after_or_equal:fecha_inicio'],
-                'antecedentes'  => ['nullable', 'string'],
-                'objetivos'     => ['nullable', 'string'],
-                'alcance'       => ['nullable', 'string'],
-                'evaluacion'    => ['nullable', 'string'],
-                'repo'          => ['nullable', 'url', 'max:2048'],
-                'auditable'     => ['nullable', 'url', 'max:2048'],
-
-                'prioritario'   => ['nullable', 'boolean'],
-
-                'pobl_obj_low'  => ['nullable', 'integer', 'min:3', 'max:60'],
-                'pobl_obj_high' => ['nullable', 'integer', 'min:3', 'max:60', 'gte:pobl_obj_low'],
-
-                'colonias'      => ['nullable', 'array'],
-                'colonias.*'    => ['integer', 'distinct', 'exists:colonia,id'],
-                'ejes'          => ['nullable', 'array'],
-                'ejes.*'        => ['integer', 'distinct', 'exists:eje,id'],
-                'problematicas' => ['nullable', 'array'],
-                'problematicas.*' => ['integer', 'distinct', 'exists:problematicas,id'],
-            ], $this->getMessages());
+            $validated = $this->getValidate($request, $this->getMessages(), $datosUsuario);
 
             $proyecto = DB::transaction(function () use ($validated, $request, $limpiar) {
                 $proyecto = Proyecto::create([
@@ -206,14 +182,15 @@ class ProyectosController extends Controller
         $otros = $aux[1];
 
         $proyecto = Proyecto::find($id);
-        $estado = $datosUsuario->getEnumValues('proyecto', 'estado');
+        $datos = $this->getDropDownOptions($datosUsuario);
 
         $view = view(
-            "system.modules.proyectos.edit",compact(
-                'persona',
-                'otros',
-                'proyecto',
-                'estado'));
+            "system.modules.proyectos.edit",
+            array_merge(
+                compact('persona', 'otros', 'proyecto'),
+                $datos ?? ['datos' => null]
+            )
+        );
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -226,48 +203,38 @@ class ProyectosController extends Controller
         return $view;
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Proyecto $proyecto)
     {
         $datosUsuario = new DatosUsuario();
         $limpiar = fn ($valor) => filled($valor) ? trim($valor) : null;
 
         try {
-            $validated = $request->validate([
-                'nombre'        => ['required', 'string', 'max:50'],
-                'estado'        => ['required', 'string', Rule::in($datosUsuario->getEnumValues('proyecto', 'estado'))],
-                'fecha_inicio'  => ['required', 'date'],
-                'fecha_fin'     => ['nullable', 'date', 'after_or_equal:fecha_inicio'],
-                'antecedentes'  => ['nullable', 'string'],
-                'objetivos'     => ['nullable', 'string'],
-                'alcance'       => ['nullable', 'string'],
-                'evaluacion'    => ['nullable', 'string'],
-                'repo'          => ['nullable', 'url', 'max:2048'],
-                'auditable'     => ['nullable', 'url', 'max:2048'],
+            $validated = $this->getValidate($request, $this->getMessages(), $datosUsuario);
 
-                'prioritario'   => ['nullable', 'boolean'],
+            $proyecto = DB::transaction(function () use ($proyecto, $validated, $request, $limpiar) {
+                $proyecto->nombre = trim($validated['nombre']);
+                $proyecto->estado = trim($validated['estado']);
+                $proyecto->fecha_inicio = $validated['fecha_inicio'];
+                $proyecto->fecha_fin = $validated['fecha_fin'] ?? null;
+                $proyecto->antecedentes = $limpiar($validated['antecedentes'] ?? null);
+                $proyecto->objetivos = $limpiar($validated['objetivos'] ?? null);
+                $proyecto->alcance = $limpiar($validated['alcance'] ?? null);
+                $proyecto->evaluacion = $limpiar($validated['evaluacion'] ?? null);
+                $proyecto->repo = $limpiar($validated['repo'] ?? null);
+                $proyecto->auditable = $limpiar($validated['auditable'] ?? null);
+                $proyecto->prioritario = $request->boolean('prioritario');
+                $proyecto->pobl_obj_low = $validated['pobl_obj_low'] ?? null;
+                $proyecto->pobl_obj_high = $validated['pobl_obj_high'] ?? null;
 
-                'pobl_obj_low'  => ['nullable', 'integer', 'min:3', 'max:60'],
-                'pobl_obj_high' => ['nullable', 'integer', 'min:3', 'max:60', 'gte:pobl_obj_low'],
-            ], $this->getMessages());
+                $proyecto->save();
 
-            $proyecto->nombre = trim($validated['nombre']);
-            $proyecto->estado = trim($validated['estado']);
-            $proyecto->fecha_inicio = $validated['fecha_inicio'];
-            $proyecto->fecha_fin = $validated['fecha_fin'] ?? null;
-            $proyecto->antecedentes = $limpiar($validated['antecedentes'] ?? null);
-            $proyecto->objetivos = $limpiar($validated['objetivos'] ?? null);
-            $proyecto->alcance = $limpiar($validated['alcance'] ?? null);
-            $proyecto->evaluacion = $limpiar($validated['evaluacion'] ?? null);
-            $proyecto->repo = $limpiar($validated['repo'] ?? null);
-            $proyecto->auditable = $limpiar($validated['auditable'] ?? null);
-            $proyecto->prioritario = $request->boolean('prioritario');
-            $proyecto->pobl_obj_low = $validated['pobl_obj_low'] ?? null;
-            $proyecto->pobl_obj_high = $validated['pobl_obj_high'] ?? null;
+                // Tablas intermedias: sync() recibe directamente la lista de ids ya validada
+                $proyecto->colonias()->sync($validated['colonias'] ?? []);
+                $proyecto->ejes()->sync($validated['ejes'] ?? []);
+                $proyecto->problematicas()->sync($validated['problematicas'] ?? []);
 
-            $proyecto->save();
+                return $proyecto;
+            });
 
             return redirect()
                 ->route('proyectos.show', $proyecto->id)
@@ -281,9 +248,7 @@ class ProyectosController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(string $id)
     {
         {
@@ -516,5 +481,32 @@ class ProyectosController extends Controller
             'problematicas.*.distinct' => 'Una de las problemáticas seleccionadas está repetida',
             'problematicas.*.exists' => 'Una de las problemáticas seleccionadas no existe.',
         ];
+    }
+
+    private function getValidate($request, $messages, $datosUsuario) {
+        return $request->validate([
+            'nombre'        => ['required', 'string', 'max:50'],
+            'estado'        => ['required', 'string', Rule::in($datosUsuario->getEnumValues('proyecto', 'estado'))],
+            'fecha_inicio'  => ['required', 'date'],
+            'fecha_fin'     => ['nullable', 'date', 'after_or_equal:fecha_inicio'],
+            'antecedentes'  => ['nullable', 'string'],
+            'objetivos'     => ['nullable', 'string'],
+            'alcance'       => ['nullable', 'string'],
+            'evaluacion'    => ['nullable', 'string'],
+            'repo'          => ['nullable', 'url', 'max:2048'],
+            'auditable'     => ['nullable', 'url', 'max:2048'],
+
+            'prioritario'   => ['nullable', 'boolean'],
+
+            'pobl_obj_low'  => ['nullable', 'integer', 'min:3', 'max:60'],
+            'pobl_obj_high' => ['nullable', 'integer', 'min:3', 'max:60', 'gte:pobl_obj_low'],
+
+            'colonias'      => ['nullable', 'array'],
+            'colonias.*'    => ['integer', 'distinct', 'exists:colonia,id'],
+            'ejes'          => ['nullable', 'array'],
+            'ejes.*'        => ['integer', 'distinct', 'exists:eje,id'],
+            'problematicas' => ['nullable', 'array'],
+            'problematicas.*' => ['integer', 'distinct', 'exists:problematicas,id'],
+        ], $messages);
     }
 }
