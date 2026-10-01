@@ -12,6 +12,7 @@ use App\Models\Participacion;
 use App\Models\PCentro;
 use App\Models\PComunidad;
 use App\Models\PExterno;
+use App\Models\Proyectos\HistorialProyecto;
 use Illuminate\Http\Request;
 use App\Models\Proyectos\Proyecto;
 use Illuminate\Support\Facades\DB;
@@ -23,8 +24,8 @@ class ProyectosController extends Controller
     {
         return (new DatosUsuario())->getEnumValues('rol_proyecto_centro', 'rol');
     }
-    public function index(Request $request)
-    {
+
+    public function index(Request $request){
         $datosUsuario = new DatosUsuario();
         $aux = $datosUsuario->getDatosUsuario();
         $persona = $aux[0];
@@ -45,8 +46,7 @@ class ProyectosController extends Controller
         return $view;
     }
 
-    public function create(Request $request)
-    {
+    public function create(Request $request) {
         $datosUsuario = new DatosUsuario();
         $aux = $datosUsuario->getDatosUsuario();
         $persona = $aux[0];
@@ -73,8 +73,7 @@ class ProyectosController extends Controller
         return $view;
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $datosUsuario = new DatosUsuario();
         $limpiar = fn ($valor) => filled($valor) ? trim($valor) : null;
 
@@ -118,8 +117,7 @@ class ProyectosController extends Controller
         }
     }
 
-    public function show(Request $request, $id)
-    {
+    public function show(Request $request, $id) {
         $datosUsuario = new DatosUsuario();
         $aux = $datosUsuario->getDatosUsuario();
         $persona = $aux[0];
@@ -146,8 +144,7 @@ class ProyectosController extends Controller
         return $view;
     }
 
-    public function edit(Request $request, $id)
-    {
+    public function edit(Request $request, $id) {
         $datosUsuario = new DatosUsuario();
         $aux = $datosUsuario->getDatosUsuario();
         $persona = $aux[0];
@@ -175,8 +172,7 @@ class ProyectosController extends Controller
         return $view;
     }
 
-    public function update(Request $request, Proyecto $proyecto)
-    {
+    public function update(Request $request, Proyecto $proyecto) {
         $datosUsuario = new DatosUsuario();
         $limpiar = fn ($valor) => filled($valor) ? trim($valor) : null;
 
@@ -220,8 +216,7 @@ class ProyectosController extends Controller
         }
     }
 
-    public function destroy(string $id)
-    {
+    public function destroy(string $id) {
         {
             try {
                 $proyecto = Proyecto::findOrFail($id);
@@ -242,8 +237,7 @@ class ProyectosController extends Controller
         }
     }
 
-    public function edit_participacion(Request $request, Proyecto $proyecto)
-    {
+    public function edit_participacion(Request $request, Proyecto $proyecto) {
         $datosUsuario = new DatosUsuario();
         $aux = $datosUsuario->getDatosUsuario();
         $persona = $aux[0];
@@ -320,8 +314,7 @@ class ProyectosController extends Controller
         return $view;
     }
 
-    public function update_participacion(Request $request, Proyecto $proyecto)
-    {
+    public function update_participacion(Request $request, Proyecto $proyecto) {
         try {
             $validated = $this->getValidateParticipacion($request);
 
@@ -349,51 +342,76 @@ class ProyectosController extends Controller
         }
     }
 
-    /**
-     * Si el rol no es "otro", 'otros' se guarda como null aunque el campo
-     * oculto del navegador haya mandado algún texto viejo (defensa extra en el servidor).
-     */
-    private function prepararSync(array $roles): array
-    {
-        $resultado = [];
-        foreach ($roles as $id => $datos) {
-            $resultado[$id] = [
-                'rol'   => $datos['rol'],
-                'otros' => $datos['rol'] === 'otro' ? ($datos['otros'] ?? null) : null,
-            ];
+    public function create_historial(Request $request, $id) {
+        $datosUsuario = new DatosUsuario();
+
+        $aux = $datosUsuario->getDatosUsuario();
+        $persona = $aux[0];
+        $otros = $aux[1];
+
+        $proyecto = Proyecto::find($id);
+        $entidad = $proyecto;
+        $nombreEntidad = $proyecto?->nombre;
+        $nombreIndex = 'Proyectos';
+        $rutaIndex = route('proyectos.index');
+        $rutaShow = route('proyectos.show', $id);
+        $rutaStore = route('proyectos.historial.store', $id);
+
+        $view = view(
+            'system.parts.create_historial',
+            compact(
+                'persona',
+                'otros',
+                'entidad',
+                'nombreEntidad',
+                'nombreIndex',
+                'rutaIndex',
+                'rutaShow',
+                'rutaStore'
+            )
+        );
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
         }
-        return $resultado;
+
+        return $view;
     }
 
-    /**
-     * Lanza un ValidationException si alguna LLAVE del array (el id) no existe
-     * en la tabla del modelo indicado. Rule::exists valida VALORES, no llaves,
-     * así que aquí se hace manual.
-     */
-    private function validarIdsExisten(array $roles, string $modelo, string $etiqueta): void
-    {
-        if (empty($roles)) {
-            return;
-        }
+    public function store_historial(Request $request, Proyecto $proyecto) {
+        $datosUsuario = new DatosUsuario();    
+        try {
+            $validated = $datosUsuario->getValidateHistorial($request);
 
-        $ids = array_keys($roles);
-        $existentes = $modelo::whereIn('id', $ids)->pluck('id')->all();
-        $faltantes = array_diff($ids, $existentes);
+                HistorialProyecto::create([
+                    'proyecto_id'   => $proyecto->id,
+                    'fecha'         => $validated['fecha'],
+                    'comentario'    => $validated['comentario'],
+                ]);
 
-        if (!empty($faltantes)) {
-            throw \Illuminate\Validation\ValidationException::withMessages([
-                'roles' => "Uno de los elementos seleccionados de $etiqueta ya no existe. Recarga la página e inténtalo de nuevo.",
-            ]);
+            return redirect()
+                ->route('proyectos.show', $proyecto->id)
+                ->with('success', 'Registro de historial creado con éxito.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
         }
     }
 
     //--------------------------------
-    //          Function
+    //          Funciones
     //--------------------------------
 
     //Obtiene los datos para la tabla index
-    private function getDatosIndex()
-    {
+    private function getDatosIndex() {
         return Proyecto::with([
             'ejes.responsabilidades.area'
         ])
@@ -497,21 +515,20 @@ class ProyectosController extends Controller
     }
 
     private function getPExterno() {
-    return PExterno::with('participaciones')
-        ->whereHas('participaciones')
-        ->select(
-            'id',
-            'nombre',
-            'ap_pat',
-            'ap_mat',
-            'universidad',
-        )
-        ->orderBy('nombre')
-        ->get();
-}
+        return PExterno::with('participaciones')
+            ->whereHas('participaciones')
+            ->select(
+                'id',
+                'nombre',
+                'ap_pat',
+                'ap_mat',
+                'universidad',
+            )
+            ->orderBy('nombre')
+            ->get();
+    }
 
-    private function getPComunidad()
-    {
+    private function getPComunidad() {
         return PComunidad::select(
             'id',
             'nombre',
@@ -524,15 +541,14 @@ class ProyectosController extends Controller
             ->get();
     }
 
-    private function getInstitucion(){
+    private function getInstitucion() {
         return Institucion::select(
             'id',
             'nombre',
         )->orderBy('nombre')->get();
     }
 
-    private function getDropDownOptions($datosUsuario)
-    {
+    private function getDropDownOptions($datosUsuario) {
         $colonias = Colonia::select('id', 'nombre')->get();
         $ejes = Eje::select('id', 'nombre')->get();
         $problematicas = Problematica::select('id', 'nombre')->get();
@@ -546,8 +562,7 @@ class ProyectosController extends Controller
         );
     }
 
-    private function getMessages(): array
-    {
+    private function getMessages(): array {
         return [
             'nombre.required' => 'El nombre es obligatorio.',
             'nombre.string' => 'El nombre debe ser texto.',
@@ -630,8 +645,7 @@ class ProyectosController extends Controller
         ], $messages);
     }
 
-    private function getValidateParticipacion($request)
-    {
+    private function getValidateParticipacion($request) {
         $rolesValidos = $this->rolesValidos();
 
         return $request->validate([
@@ -671,5 +685,40 @@ class ProyectosController extends Controller
             'roles_institucion.*.otros.max'          => 'El campo "otro rol" no puede tener más de 30 caracteres.',
             'roles_institucion.*.otros.required_if'  => 'Especifica el rol cuando eliges "Otro".',
         ]);
+    }
+    /**
+     * Si el rol no es "otro", 'otros' se guarda como null aunque el campo
+     * oculto del navegador haya mandado algún texto viejo (defensa extra en el servidor).
+     */
+    private function prepararSync(array $roles): array {
+        $resultado = [];
+        foreach ($roles as $id => $datos) {
+            $resultado[$id] = [
+                'rol'   => $datos['rol'],
+                'otros' => $datos['rol'] === 'otro' ? ($datos['otros'] ?? null) : null,
+            ];
+        }
+        return $resultado;
+    }
+
+    /**
+     * Lanza un ValidationException si alguna LLAVE del array (el id) no existe
+     * en la tabla del modelo indicado. Rule::exists valida VALORES, no llaves,
+     * así que aquí se hace manual.
+     */
+    private function validarIdsExisten(array $roles, string $modelo, string $etiqueta): void {
+        if (empty($roles)) {
+            return;
+        }
+
+        $ids = array_keys($roles);
+        $existentes = $modelo::whereIn('id', $ids)->pluck('id')->all();
+        $faltantes = array_diff($ids, $existentes);
+
+        if (!empty($faltantes)) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'roles' => "Uno de los elementos seleccionados de $etiqueta ya no existe. Recarga la página e inténtalo de nuevo.",
+            ]);
+        }
     }
 }

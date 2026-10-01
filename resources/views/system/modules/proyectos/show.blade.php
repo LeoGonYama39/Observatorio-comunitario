@@ -282,13 +282,13 @@
   <h3>
     Historial
   </h3>
-  <button class="btn-outline btn-small">
+  <a class="btn-outline btn-small" href="{{ route('proyectos.historial.create', $proyecto->id) }}" data-url="{{ route('proyectos.historial.create', $proyecto->id) }}">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M12 5v14"/>
       <path d="M5 12h14"/>
     </svg>
     Nuevo reporte
-  </button>
+  </a>
 </div>
 <div class="timeline-card">
   <div class="timeline">

@@ -55,4 +55,17 @@ class DatosUsuario {
         return str_getcsv($coincidencia[1], ',', "'");
     }
 
+    //Este es igual para todos los de hsitorial, se agrega aquí
+    public function getValidateHistorial(Request $request) {
+        return $request->validate([
+            'fecha'         => ['required', 'date'],
+            'comentario'    => ['required', 'string'],
+        ], [
+            'fecha.required'        => 'La fecha es obligatoria.',
+            'fecha.date'            => 'La fecha no es válida.',
+            'comentario.required'   => 'El comentario es obligatorio.',
+            'comentario.string'     => 'El comentario tiene que ser texto.',
+        ]);
+    }
+
 }
