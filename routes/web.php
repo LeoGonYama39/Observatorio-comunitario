@@ -60,7 +60,8 @@ Route::middleware('auth:centro,externo')->group(function () {
 
     //Rutas para proyectos
     Route::resource('/sistema/proyectos', ProyectosController::class);
-    Route::get('/sistema/proyectos/{proyecto}/participacion', [ProyectosController::class, 'create_participacion'])->name('proyectos.create_participacion');
+    Route::get('/sistema/proyectos/{proyecto}/participantes', [ProyectosController::class, 'edit_participacion'])->name('proyectos.participantes.edit');
+    Route::put('/sistema/proyectos/{proyecto}/participantes', [ProyectosController::class, 'update_participacion'])->name('proyectos.participantes.update');
 
     //Para lo de areas y responsabilidades
     Route::patch('/areas/{area}/responsable', [AreasController::class, 'updateResponsableArea'])

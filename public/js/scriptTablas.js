@@ -32,16 +32,24 @@ function initTableSearch() {
 
 //// Vincular participantes a un proyecto (selección en tabla + tarjeta de rol)
 
-//Opciones de rol genéricas por ahora, luego se reemplazan por las reales de la BD.
-//Es función (no const) para que no pueda dar "ya declarado" si el script se carga dos veces.
+//Lee los roles reales desde data-roles-proyecto (impreso por Blade desde la BD,
+//no una lista quemada aquí, para no desincronizarse con el enum real)
 function getRolesProyectoOpciones() {
-    return [
-        { value: 'lider', label: 'Líder' },
-        { value: 'participante', label: 'Participante' },
-        { value: 'colaborador', label: 'Colaborador' },
-        { value: 'enlace', label: 'Enlace' },
-        { value: 'otro', label: 'Otro' },
-    ];
+    const container = document.querySelector('[data-roles-proyecto]');
+    if (!container) return [];
+
+    try {
+        return JSON.parse(container.dataset.rolesProyecto);
+    } catch (e) {
+        console.error('No se pudo leer data-roles-proyecto', e);
+        return [];
+    }
+}
+
+//Mismo formato que usa Blade: guiones bajos a espacios + primera letra mayúscula
+function formatRoleLabel(valor) {
+    const conEspacios = valor.replace(/_/g, ' ');
+    return conEspacios.charAt(0).toUpperCase() + conEspacios.slice(1);
 }
 
 //Click en una fila de cualquiera de las 4 tablas: selecciona o deselecciona
@@ -66,7 +74,7 @@ function addEntityCard(tipo, id, nombre, subtitle) {
     const otroFieldId = 'otro_field_' + tipo + '_' + id;
 
     const opcionesHtml = getRolesProyectoOpciones()
-        .map(op => '<option value="' + op.value + '">' + op.label + '</option>')
+        .map(valor => '<option value="' + valor + '">' + formatRoleLabel(valor) + '</option>')
         .join('');
 
     const card = document.createElement('div');
@@ -145,6 +153,4 @@ function filterEntityRows(input) {
         row.style.display = name.textContent.toLowerCase().includes(search) ? '' : 'none';
     });
 }
-
-
 
