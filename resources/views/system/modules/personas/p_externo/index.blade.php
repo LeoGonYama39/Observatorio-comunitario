@@ -84,12 +84,12 @@
         </thead>
         <tbody>
             @foreach ($externos as $externo)
-            <tr data-url="{{ route('personas-externo.show', $externo->id) }}" data-tipo="{{ $externo->tipo_categ }}">
+            <tr data-url="{{ route('personas-externo.show', $externo->id) }}" data-tipo="{{ $externo->ultima_participacion->tipo_categ ?? 'sin_participacion' }}">
                 <td>
                 <div class="person-name">
                     {{ $externo->nombre }} {{ $externo->ap_pat }} {{ $externo->ap_mat }}
                 </div>
-                <div class="person-role">{{ $externo->tipo_formateado }}</div>
+                <div class="person-role">{{ $externo->ultima_participacion->tipo_formateado ?? 'Sin participación'}}</div>
                 </td>
                 <td>
                     <span class="area-tag {{ $externo->universidad ? '' : 'empty' }}">

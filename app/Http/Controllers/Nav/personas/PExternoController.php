@@ -20,8 +20,7 @@ class PExternoController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $ultimaParticipacion = $this->queryUltimasParticipaciones();
-        $externos = $this->getDatosIndex($ultimaParticipacion);
+        $externos = $this->getDatosIndex();
 
         $view = view(
             "system.modules.personas.p_externo.index",
@@ -501,72 +500,18 @@ class PExternoController extends Controller
     //          Funciones
     //--------------------------------
 
-    //Regresa la tabla de "participaciones" pero únicamente con las participaciones más
-    //recientes de cada externo_id
-    private function queryUltimasParticipaciones()
-    {
-        $ultimaParticipacion = DB::query() //Objeto con el que creo querys en Laravel
-        ->fromSub(
-        //->fromSub($consulta, 'p'), o sea, agarra $consulta, la llama como p, y hace el where
-            DB::table("participaciones") //Indica a Laravel que se trabajará directo con la tabla, como el FROM participaciones del query
-            ->select(
-                "participaciones.*", //el SELECT, entiende participaciones.*
-                DB::raw('
-                    ROW_NUMBER() OVER (
-                    PARTITION BY externo_id
-                    ORDER BY anio DESC, temporada DESC
-                    ) AS rn
-                    ') //Pero Laravel no entiende algunas cosas, por eso el raw mete sql crudo
-            ),
-            "p"
-        )
-            ->where("rn", 1); //El where de la fromSub, agarra toda la consulta,
-        //lo pasa por el where y regresa ese resultado
-
-        return $ultimaParticipacion;
-    }
-
-    //Como referencia: el query en sql
-    /**
-     *
-     *
-     * SELECT *
-     * FROM (
-     *     SELECT
-     *         participaciones.*,
-     *         ROW_NUMBER() OVER (
-     *             PARTITION BY externo_id
-     *             ORDER BY anio DESC, temporada DESC
-     *         ) AS rn
-     *     FROM participaciones
-     * ) AS p
-     * WHERE rn = 1;
-     *
-     */
-
     //Obtiene los datos para la tabla index, con ayuda de queryUltimasParticipaciones
-    private function getDatosIndex($ultimaParticipacion)
+    private function getDatosIndex()
     {
-        $externos = PExterno::leftJoinSub(
-            $ultimaParticipacion, //Tabla a unir
-            "ultima_participacion", //Nombre de lo que se unirá, como AS
-            "ultima_participacion.externo_id", //FK a unir
-            "=", //Operador
-            "p_externo.id" //pk
-        )
-            ->select(
-                "p_externo.id",
-                "p_externo.nombre",
-                "p_externo.ap_pat",
-                "p_externo.ap_mat",
-                "p_externo.universidad",
-                "ultima_participacion.tipo",
-                "ultima_participacion.anio",
-                "ultima_participacion.temporada"
-            )
-            ->orderBy("p_externo.nombre")
+        return PExterno::select("id",
+                "nombre",
+                "ap_pat",
+                "ap_mat",
+                "universidad",)
+            ->orderBy("nombre")
             ->get();
-        return $externos;
+
+
     }
 
     private function getDatosShow($id)

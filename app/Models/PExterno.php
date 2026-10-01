@@ -61,31 +61,9 @@ class PExterno extends Authenticatable
 	];
 
     protected $appends = [
-        'tipo_categ',
-        'tipo_formateado',
         'ultima_participacion'
     ];
 
-    //Genera la etiqueta para el dato de la tabla, para filtrar con js
-    public function getTipoCategAttribute()
-    {
-        //Filtro para los que no tienen participaciones
-        if (!$this->tipo) return 'sin_participación';
-
-        //Filtro para los de las participaciones pasadas
-        $ahora = Carbon::now();
-        $anioActual = $ahora->year;
-        $mesActual = $ahora->month;
-
-        //Filtro anual
-        if($this->anio < $anioActual) return 'no_activo';
-
-        //Filtro de temporada
-        if ($this->temporada === 'primavera' && $mesActual > 5) return 'no_activo';
-
-        //Si la participación es activa
-        return $this->tipo;
-    }
 
     public function getUltimaParticipacionAttribute()
     {
@@ -93,13 +71,6 @@ class PExterno extends Authenticatable
             ->orderByDesc('anio')
             ->orderByDesc('temporada')
             ->first();
-    }
-
-    //Genera para la UI
-    public function getTipoFormateadoAttribute()
-    {
-        //Reescribir para los que tienen una participación activa
-        return ucfirst(str_replace('_', ' ', $this->tipo_categ));
     }
 
 	public function responsabilidad()

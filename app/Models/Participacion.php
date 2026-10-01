@@ -6,31 +6,10 @@
 
 namespace App\Models;
 
-use App\Models\Talleres\RolTallerExterno;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * Class Participacion
- *
- * @property int $id
- * @property int $externo_id
- * @property string $temporada
- * @property Carbon $anio
- * @property string|null $aport
- * @property string $tipo
- *
- * @property PExterno $p_externo
- * @property Collection|RolEventoExterno[] $rol_evento_externos
- * @property Collection|RolProyectoExterno[] $rol_proyecto_externos
- * @property Collection|RolTallerExterno[] $rol_taller_externos
- * @property Collection|SeguimientoExterno[] $seguimiento_externos
- * @property Collection|TalleristaExterno[] $tallerista_externos
- * @property Collection|TalleristaProcGrupExterno[] $tallerista_proc_grup_externos
- *
- * @package App\Models
- */
 class Participacion extends Model
 {
 	protected $table = 'participaciones';
@@ -49,7 +28,9 @@ class Participacion extends Model
 	];
 
     protected $appends = [
-        'activo',];
+        'activo',
+        'tipo_categ',
+        'tipo_formateado',];
 
     //Calcula si la participación es activa
     public function getActivoAttribute()
@@ -69,6 +50,18 @@ class Participacion extends Model
         return true;
     }
 
+    public function getTipoCategAttribute()
+    {
+        //Filtro para los que no tienen participaciones
+        if (!$this->tipo) return 'sin_participación';
+        return $this->activo ? $this->tipo : 'no_activo';
+    }
+
+    public function getTipoFormateadoAttribute()
+    {
+        //Reescribir para los que tienen una participación activa
+        return ucfirst(str_replace('_', ' ', $this->tipo_categ));
+    }
 
     public function externo()
 	{
