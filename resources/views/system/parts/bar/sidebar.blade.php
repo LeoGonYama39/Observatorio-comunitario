@@ -1,0 +1,219 @@
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <img src="{{ asset('assets/logo.png') }}" alt="Centro Ibero Meneses" />
+    </div>
+    <div class="nav-scroll">
+        <nav>
+            <a class="nav-item {{ request()->routeIs('areas.*') ? 'active' : '' }}" href="{{ route('areas.index') }}"
+               data-url="{{ route('areas.index') }}">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                    <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                    <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                    <rect x="14" y="14" width="7" height="7" rx="1.5" />
+                </svg>
+                Áreas
+            </a>
+            <a class="nav-item {{ request()->routeIs('ejes.*') ? 'active' : '' }}"
+               href="{{ route('ejes.index') }}" data-url="{{ route('ejes.index') }}">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                    <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                    <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                    <rect x="14" y="14" width="7" height="7" rx="1.5" />
+                </svg>
+                Ejes
+            </a>
+            <button
+                class="nav-item has-submenu {{ request()->routeIs('personas-centro.*') ||
+                request()->routeIs('personas-externo.*') ||
+                request()->routeIs('personas-usuarias.*')
+                    ? 'section-active parent-active'
+                    : '' }}">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+                Personas
+                <span class="active-dot">
+                </span>
+                <svg class="chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 6l6 6-6 6" />
+                </svg>
+            </button>
+            <div class="submenu">
+                <a href="{{ route('personas-centro.index') }}" data-url="{{ route('personas-centro.index') }}"
+                   class="sub-item {{ request()->routeIs('personas-centro.*') ? 'active' : '' }}">
+                    Centro
+                </a>
+                <a href="{{ route('personas-externo.index') }}" data-url="{{ route('personas-externo.index') }}"
+                   class="sub-item {{ request()->routeIs('personas-externo.*') ? 'active' : '' }}">
+                    Externas
+                </a>
+                <a href="{{ route('personas-usuarias.index') }}" data-url="{{ route('personas-usuarias.index') }}"
+                   class="sub-item {{ request()->routeIs('personas-usuarias.*') ? 'active' : '' }}">
+                    Usuarias
+                </a>
+            </div>
+            <a class="nav-item {{ request()->routeIs('proyectos.*') ? 'active' : '' }}"
+               href="{{ route('proyectos.index') }}" data-url="{{ route('proyectos.index') }}">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 11l3 3L22 4" />
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                </svg>
+                Proyectos
+            </a>
+            <button
+                class="nav-item has-submenu {{ request()->routeIs('a-juridicas.*') || request()->routeIs('a-familiares.*')
+                    ? 'section-active parent-active'
+                    : '' }}">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m14.5 8.5-9 9a2 2 0 0 1-2.8 0l-.2-.2a2 2 0 0 1 0-2.8l9-9" />
+                    <path d="m17.5 5.5 1 1" />
+                    <path d="m15 3 6 6" />
+                    <path d="M3 21h9" />
+                </svg>
+                Jurídica
+                <span class="active-dot">
+                </span>
+                <svg class="chevron" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 6l6 6-6 6" />
+                </svg>
+            </button>
+            <div class="submenu">
+                <a href="{{ route('a-juridicas.index') }}" data-url="{{ route('a-juridicas.index') }}"
+                   class="sub-item {{ request()->routeIs('a-juridicas.*') ? 'active' : '' }}">
+                    Asesorías jurídicas
+                </a>
+                <a href="{{ route('a-familiares.index') }}" data-url="{{ route('a-familiares.index') }}"
+                   class="sub-item {{ request()->routeIs('a-familiares.*') ? 'active' : '' }}">
+                    Asesorías familiares
+                </a>
+            </div>
+            <button
+                class="nav-item has-submenu {{ request()->routeIs('educ_basica.*') || request()->routeIs('educ_sup.*')
+                    ? 'section-active parent-active'
+                    : '' }}">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                </svg>
+                Educación
+                <span class="active-dot">
+                </span>
+                <svg class="chevron" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 6l6 6-6 6" />
+                </svg>
+            </button>
+            <div class="submenu">
+                <a href="{{ route('educ_basica.index') }}" data-url="{{ route('educ_basica.index') }}"
+                   class="sub-item {{ request()->routeIs('educ_basica.*') ? 'active' : '' }}">
+                    Educación básica
+                </a>
+                <a href="{{ route('educ_sup.index') }}" data-url="{{ route('educ_sup.index') }}"
+                   class="sub-item {{ request()->routeIs('educ_sup.*') ? 'active' : '' }}">
+                    Educación media-superior
+                </a>
+                @if (0 === 1)
+                    <a href="#" class="sub-item">
+                        Materias
+                    </a>
+                @endif
+            </div>
+            <button
+                class="nav-item has-submenu {{ request()->routeIs('aten_pers.*') || request()->routeIs('proc_grup.*') ? 'section-active parent-active' : '' }}">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M10 3a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0-1 1v1a2 2 0 0 1-4 0v-1a1 1 0 0 0-1-1H8a2 2 0 0 1 0-4h1a1 1 0 0 0 1-1Z" />
+                    <path d="M6 10H5a2 2 0 0 0-2 2v1a1 1 0 0 0 1 1v1a2 2 0 0 0 2 2h1" />
+                    <path d="M18 10h1a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1v1a2 2 0 0 1-2 2h-1" />
+                </svg>
+                Psicopedagogía
+                <span class="active-dot">
+                </span>
+                <svg class="chevron" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 6l6 6-6 6" />
+                </svg>
+            </button>
+            <div class="submenu">
+                <a href="{{ route('aten_pers.index') }}" data-url="{{ route('aten_pers.index') }}"
+                   class="sub-item {{ request()->routeIs('aten_pers.*') ? 'active' : '' }}">
+                    Atención individual
+                </a>
+                <a <a href="{{ route('proc_grup.index') }}" data-url="{{ route('proc_grup.index') }}"
+                      class="sub-item {{ request()->routeIs('proc_grup.*') ? 'active' : '' }}">
+                    Procesos grupales
+                </a>
+            </div>
+            <a class="nav-item {{ request()->routeIs('talleres.*') ? 'active' : '' }}"
+               href="{{ route('talleres.index') }}" data-url="{{ route('talleres.index') }}">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14.7 6.3a4 4 0 1 1-5.4 5.4L2 19v3h3l7.3-7.3" />
+                    <path d="M17.5 3.5 20.5 6.5" />
+                    <path d="M15 9l5-5" />
+                </svg>
+                Talleres
+            </a>
+            <a class="nav-item {{ request()->routeIs('eventos.*') ? 'active' : '' }}"
+               href="{{ route('eventos.index') }}" data-url="{{ route('eventos.index') }}">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="5" width="18" height="16" rx="2" />
+                    <path d="M16 3v4" />
+                    <path d="M8 3v4" />
+                    <path d="M3 10h18" />
+                    <circle cx="8.5" cy="14.5" r="1.2" fill="currentColor" stroke="none" />
+                </svg>
+                Eventos/Charlas
+            </a>
+            <a class="nav-item {{ request()->routeIs('colonias.*') ? 'active' : '' }}"
+               href="{{ route('colonias.index') }}" data-url="{{ route('colonias.index') }}">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 10.5 12 3l9 7.5" />
+                    <path d="M5 9.5V21h14V9.5" />
+                    <path d="M10 21v-6h4v6" />
+                </svg>
+                Colonias
+            </a>
+            <button class="nav-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Z" />
+                    <path d="M9 4v14" />
+                    <path d="M15 6v6" />
+                    <circle cx="15" cy="10" r="2.5" />
+                    <path d="M15 15.5c1.5-2 2.5-3.2 2.5-5" />
+                </svg>
+                Mapeos
+            </button>
+        </nav>
+    </div>
+    <div class="sidebar-logout">
+        <form method="POST" action="{{ route('logout') }}">
+            <button class="nav-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <path d="M16 17l5-5-5-5" />
+                    <path d="M21 12H9" />
+                </svg>
+                Cerrar sesión
+            </button>
+        </form>
+    </div>
+</aside>
