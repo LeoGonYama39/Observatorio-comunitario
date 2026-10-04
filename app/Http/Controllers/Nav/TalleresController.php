@@ -101,20 +101,60 @@ class TalleresController extends Controller
         return $view;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+    public function edit(Request $request, $id) {
+        $datosUsuario = new DatosUsuario();
+        $datos = $this->getDatosEdit($id, $datosUsuario);
+
+        $view = view("system.modules.talleres.edit",
+            array_merge(
+                $datos ?? ['taller' => null]));
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
+
+    public function update(Request $request, Taller $tallere) {
+        $datosUsuario = new DatosUsuario();
+        $limpiar = fn ($valor) => filled($valor) ? trim($valor) : null;
+
+        try {
+            $validated = $this->getValidate($request);
+
+            DB::transaction(function () use ($tallere, $validated, $request, $limpiar) {
+                $tallere->nombre = trim($validated['nombre']);
+                $tallere->estado = trim($validated['estado']);
+                $tallere->objetivos = $limpiar($validated['objetivos'] ?? null);
+                $tallere->alcance  = $limpiar($validated['alcance'] ?? null);
+                $tallere->evaluacion = $limpiar($validated['evaluacion'] ?? null);
+                $tallere->repo = $limpiar($validated['repo'] ?? null);
+                $tallere->auditable = $limpiar($validated['auditable'] ?? null);
+                $tallere->pobl_obj_low = $validated['pobl_obj_low'] ?? null;
+                $tallere->pobl_obj_high = $validated['pobl_obj_high'] ?? null;
+
+                $tallere->save();
+
+                // Tablas intermedias: sync() recibe directamente la lista de ids ya validada
+                $tallere->ejes()->sync($validated['ejes'] ?? []);
+            });
+
+            return redirect()
+                ->route('talleres.show', $tallere->id)
+                ->with('success', 'Cambio registrado con éxito.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -289,5 +329,15 @@ class TalleresController extends Controller
             'ejes.*.distinct' => 'Uno de los ejes seleccionadas está repetido',
             'ejes.*.exists' => 'Uno de los ejes seleccionados no existe.',
         ]);
+    }
+
+    private function getDatosEdit($id, $datosUsuario){
+        $taller = Taller::find($id);
+        if(!$taller) return null;
+
+        $ejes = Eje::select('id', 'nombre')->get();
+        $estado = $datosUsuario->getEnumValues('taller', 'estado');
+
+        return compact('ejes', 'estado', 'taller');
     }
 }
