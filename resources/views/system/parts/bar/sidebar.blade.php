@@ -153,7 +153,7 @@
                    class="sub-item {{ request()->routeIs('aten_pers.*') ? 'active' : '' }}">
                     Atención individual
                 </a>
-                <a <a href="{{ route('proc_grup.index') }}" data-url="{{ route('proc_grup.index') }}"
+                <a href="{{ route('proc_grup.index') }}" data-url="{{ route('proc_grup.index') }}"
                       class="sub-item {{ request()->routeIs('proc_grup.*') ? 'active' : '' }}">
                     Procesos grupales
                 </a>
