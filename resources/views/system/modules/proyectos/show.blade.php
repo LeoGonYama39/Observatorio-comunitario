@@ -329,51 +329,13 @@
                                 {{ $historia->comentario ?? '-' }}
                             </p>
                         </div>
-
-                        <dialog id="modalEliminarHistorial{{ $historia->id }}" class="confirm-modal"
-                                onclick="if (event.target === this) this.close()">
-                            <div class="confirm-modal-content">
-                                <div class="confirm-modal-header">
-                                    <div class="confirm-modal-icon">
-                                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-                                             stroke="currentColor"
-                                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M3 6h18"/>
-                                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                                            <path d="M10 11v6"/>
-                                            <path d="M14 11v6"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <h3>¿Eliminar registro del historial?</h3>
-                                        <p>Esta acción no se puede deshacer. Se eliminará el registro del
-                                            <strong>{{ $historia->fecha_formateada ?? 'historial' }}</strong>.</p>
-                                    </div>
-                                </div>
-                                <div class="confirm-modal-actions">
-                                    <button type="button" class="btn-outline"
-                                            onclick="document.getElementById('modalEliminarHistorial{{ $historia->id }}').close()">
-                                        Cancelar
-                                    </button>
-                                    <form action="{{ route('proyectos.historial.destroy', $historia->id) }}"
-                                          method="POST" style="margin: 0;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn-danger">
-                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                                                 stroke-width="1.8"
-                                                 stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M3 6h18"/>
-                                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                                                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                                            </svg>
-                                            Confirmar eliminación
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </dialog>
+                        @include('system.parts.alerts.confirm_delete', [
+                            'modalId' => 'modalEliminarHistorial' . $historia->id,
+                            'titulo' => '¿Eliminar registro del historial?',
+                            'mensaje' => 'Esta acción no se puede deshacer. Se eliminará el registro del :nombre.',
+                            'nombre' => $historia->fecha_formateada ?? 'historial',
+                            'ruta' => route('proyectos.historial.destroy', $historia->id),
+                        ])
                     @endforeach
                 @else
                     <div class="timeline-item">
@@ -388,47 +350,13 @@
                 @endif
             </div>
         </div>
-        <dialog id="modalEliminar" class="confirm-modal" onclick="if (event.target === this) this.close()">
-            <div class="confirm-modal-content">
-                <div class="confirm-modal-header">
-                    <div class="confirm-modal-icon">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 6h18"/>
-                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                            <path d="M10 11v6"/>
-                            <path d="M14 11v6"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3>¿Eliminar Proyecto?</h3>
-                        <p>Esta acción no se puede deshacer. Se eliminará el registro de
-                            <strong>{{ $proyecto->nombre }}</strong>.</p>
-                    </div>
-                </div>
-                <div class="confirm-modal-actions">
-                    <button type="button" class="btn-outline"
-                            onclick="document.getElementById('modalEliminar').close()">
-                        Cancelar
-                    </button>
-                    <form action="{{ route('proyectos.destroy', $proyecto->id) }}" method="POST"
-                          style="margin: 0;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn-danger">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
-                                 stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M3 6h18"/>
-                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                            </svg>
-                            Confirmar eliminación
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </dialog>
+        @include('system.parts.alerts.confirm_delete', [
+            'modalId' => 'modalEliminar',
+            'titulo' => '¿Eliminar Proyecto?',
+            'mensaje' => 'Esta acción no se puede deshacer. Se eliminará el proyecto :nombre.',
+            'nombre' => $proyecto->nombre,
+            'ruta' => route('proyectos.destroy', $proyecto->id),
+        ])
     @else
         @include('system.parts.alerts.not_found', ['route' => route('proyectos.index')])
     @endif
