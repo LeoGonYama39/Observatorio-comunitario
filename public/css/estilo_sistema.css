@@ -991,6 +991,7 @@
  .timeline-item {
      position: relative;
      padding-bottom: 26px;
+     padding-right: 30px;
 }
  .timeline-item:last-child {
      padding-bottom: 0;

@@ -189,7 +189,6 @@ class ProyectosController extends Controller
     }
 
     public function destroy(string $id) {
-        {
             try {
                 $proyecto = Proyecto::findOrFail($id);
                 $nombre = $proyecto->nombre;
@@ -207,7 +206,6 @@ class ProyectosController extends Controller
                     ->with('error', 'Ocurrió un error al intentar eliminar el registro: ' . $e->getMessage());
             }
         }
-    }
 
     public function edit_participacion(Request $request, Proyecto $proyecto) {
         $personasCentro = PCentro::all()->map(fn ($p) => (object) [
@@ -341,7 +339,7 @@ class ProyectosController extends Controller
     }
 
     public function store_historial(Request $request, Proyecto $proyecto) {
-        $datosUsuario = new DatosUsuario();    
+        $datosUsuario = new DatosUsuario();
         try {
             $validated = $datosUsuario->getValidateHistorial($request);
 
@@ -360,6 +358,24 @@ class ProyectosController extends Controller
             return back()
                 ->withInput()
                 ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
+        }
+    }
+
+    public function destroy_historial($proyecto, $id) {
+        try {
+            $historial = HistorialProyecto::findOrFail($id);
+            $historial->delete();
+
+            return redirect()
+                ->route('proyectos.show', $proyecto)
+                ->with('success', "Nota eliminada con éxito.");
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return redirect()
+                ->route('proyectos.show', $proyecto)
+                ->with('error', 'El registro que intentas eliminar no existe.');
+        } catch (\Throwable $e) {
+            return back()
+                ->with('error', 'Ocurrió un error al intentar eliminar el registro: ' . $e->getMessage());
         }
     }
 

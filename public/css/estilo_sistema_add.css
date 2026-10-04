@@ -484,3 +484,33 @@ dialog.confirm-modal::backdrop {
     background: var(--pearl);
 }
 
+/* ============ Botón borrar elemento del historial (timeline) ============ */
+
+.timeline-delete-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border: none;
+    border-radius: 50%;
+    background: none;
+    color: var(--steel);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity .12s ease, background .12s ease, color .12s ease;
+}
+.timeline-item:hover .timeline-delete-btn {
+    opacity: 1;
+}
+.timeline-delete-btn:hover {
+    color: #b3261e;
+    background: var(--pearl);
+}
+.timeline-delete-btn svg {
+    stroke: currentColor;
+}
+

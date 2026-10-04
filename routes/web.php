@@ -64,6 +64,7 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::put('/sistema/proyectos/{proyecto}/participantes', [ProyectosController::class, 'update_participacion'])->name('proyectos.participantes.update');
     Route::get('/sistema/proyectos/{proyecto}/historial', [ProyectosController::class, 'create_historial'])->name('proyectos.historial.create');
     Route::post('/sistema/proyectos/{proyecto}/historial', [ProyectosController::class, 'store_historial'])->name('proyectos.historial.store');
+    Route::delete('/sistema/proyectos/{proyecto}/historial/{id}', [ProyectosController::class, 'destroy_historial'])->name('proyectos.historial.destroy');
 
     //Para lo de areas y responsabilidades
     Route::patch('/areas/{area}/responsable', [AreasController::class, 'updateResponsableArea'])
