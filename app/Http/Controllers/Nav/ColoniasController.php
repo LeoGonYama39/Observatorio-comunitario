@@ -8,6 +8,7 @@ use App\Models\listas\Problematica;
 use Illuminate\Http\Request;
 use App\Models\Colonia;
 use App\Models\HistorialColonia;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
@@ -126,6 +127,80 @@ class ColoniasController extends Controller
         //
     }
 
+    public function create_historial(Request $request, $id) {
+        $colonia = Colonia::find($id);
+        $entidad = $colonia;
+        $nombreEntidad = $colonia?->nombre;
+        $nombreIndex = 'Colonias';
+        $rutaIndex = route('colonias.index');
+        $rutaShow = route('colonias.show', $id);
+        $rutaStore = route('colonias.historial.store', $id);
+
+        $view = view(
+            'system.parts.forms.create_historial',
+            compact(
+                'entidad',
+                'nombreEntidad',
+                'nombreIndex',
+                'rutaIndex',
+                'rutaShow',
+                'rutaStore'
+            )
+        );
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
+    }
+
+    public function store_historial(Request $request, Colonia $colonia) {
+        $datosUsuario = new DatosUsuario();
+        try {
+            $validated = $datosUsuario->getValidateHistorial($request);
+
+            HistorialColonia::create([
+                'colonia_id'   => $colonia->id,
+                'fecha'         => $validated['fecha'],
+                'comentario'    => $validated['comentario'],
+            ]);
+
+            return redirect()
+                ->route('colonias.show', $colonia->id)
+                ->with('success', 'Registro de historial creado con éxito.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
+        }
+    }
+
+    public function destroy_historial($id) {
+        try {
+            $historial = HistorialColonia::findOrFail($id);
+            $proyecto = $historial->colonia->id;
+            $historial->delete();
+
+            return redirect()
+                ->route('colonias.show', $proyecto)
+                ->with('success', "Nota eliminada con éxito.");
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return redirect()
+                ->route('colonias.index')
+                ->with('error', 'El registro que intentas eliminar no existe.');
+        } catch (\Throwable $e) {
+            return back()
+                ->with('error', 'Ocurrió un error al intentar eliminar el registro: ' . $e->getMessage());
+        }
+    }
 
     //////Funciones para búsquedas
 
@@ -206,7 +281,8 @@ class ColoniasController extends Controller
         )
         ->select(
             'fecha',
-            'comentario'
+            'comentario',
+            'id AS historial_id',
         )
         ->orderBy('fecha', 'desc')
         ->get();

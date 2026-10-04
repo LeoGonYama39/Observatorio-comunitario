@@ -48,7 +48,6 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::resource('/sistema/proc_grup', ProcGrupController::class);
     Route::resource('/sistema/talleres', TalleresController::class);
     Route::resource('/sistema/eventos', EventosController::class);
-    Route::resource('/sistema/colonias', ColoniasController::class);
 
     //Rutas para externos
     Route::resource('/sistema/personas-externo', PExternoController::class);
@@ -65,6 +64,12 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::get('/sistema/proyectos/{proyecto}/historial', [ProyectosController::class, 'create_historial'])->name('proyectos.historial.create');
     Route::post('/sistema/proyectos/{proyecto}/historial', [ProyectosController::class, 'store_historial'])->name('proyectos.historial.store');
     Route::delete('/sistema/proyectos/{id}/historial/', [ProyectosController::class, 'destroy_historial'])->name('proyectos.historial.destroy');
+
+    //Rutas para colonias
+    Route::resource('/sistema/colonias', ColoniasController::class);
+    Route::get('/sistema/colonias/{colonia}/historial', [ColoniasController::class, 'create_historial'])->name('colonias.historial.create');
+    Route::post('/sistema/colonias/{colonia}/historial', [ColoniasController::class, 'store_historial'])->name('colonias.historial.store');
+    Route::delete('/sistema/colonias/{id}/historial/', [ColoniasController::class, 'destroy_historial'])->name('colonias.historial.destroy');
 
     //Para lo de areas y responsabilidades
     Route::patch('/areas/{area}/responsable', [AreasController::class, 'updateResponsableArea'])

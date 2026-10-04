@@ -143,29 +143,50 @@
             <h3>
                 Historial
             </h3>
-            <button class="btn-outline btn-small">
+            <a class="btn-outline btn-small" href="{{ route('colonias.historial.create', $colonia->id) }}"
+               data-url="{{ route('colonias.historial.create', $colonia->id) }}">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.2"
                      stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 5v14"/>
                     <path d="M5 12h14"/>
                 </svg>
                 Nueva nota
-            </button>
+            </a>
         </div>
         <div class="timeline-card">
             <div class="timeline">
                 @if ($historial->isNotEmpty())
-                    @foreach ($historial as $historia)
+                    @foreach($historial as $historia)
                         <div class="timeline-item">
-                            <div class="timeline-dot">
-                            </div>
+                            <div class="timeline-dot"></div>
+
+                            <button type="button" class="timeline-delete-btn"
+                                    aria-label="Eliminar registro del historial"
+                                    onclick="document.getElementById('modalEliminarHistorial{{ $historia->historial_id }}').showModal()">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                                     stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 6h18"/>
+                                    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                                    <path d="M10 11v6"/>
+                                    <path d="M14 11v6"/>
+                                </svg>
+                            </button>
+
                             <div class="timeline-date">
-                                {{ $historia->fecha_formateada }}
+                                {{ $historia->fecha_formateada ?? '-' }}
                             </div>
                             <p class="timeline-text">
-                                {{ $historia->comentario }}
+                                {{ $historia->comentario ?? '-' }}
                             </p>
                         </div>
+                        @include('system.parts.alerts.confirm_delete', [
+                            'modalId' => 'modalEliminarHistorial' . $historia->historial_id,
+                            'titulo' => '¿Eliminar registro del historial?',
+                            'mensaje' => 'Esta acción no se puede deshacer. Se eliminará el registro del :nombre.',
+                            'nombre' => $historia->fecha_formateada ?? 'historial',
+                            'ruta' => route('colonias.historial.destroy', $historia->historial_id),
+                        ])
                     @endforeach
                 @else
                     <div class="timeline-item">
