@@ -46,7 +46,6 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::resource('/sistema/educ_sup', EducSupController::class);
     Route::resource('/sistema/aten_pers', AtenPersController::class);
     Route::resource('/sistema/proc_grup', ProcGrupController::class);
-    Route::resource('/sistema/talleres', TalleresController::class);
     Route::resource('/sistema/eventos', EventosController::class);
 
     //Rutas para externos
@@ -64,6 +63,11 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::get('/sistema/proyectos/{proyecto}/historial', [ProyectosController::class, 'create_historial'])->name('proyectos.historial.create');
     Route::post('/sistema/proyectos/{proyecto}/historial', [ProyectosController::class, 'store_historial'])->name('proyectos.historial.store');
     Route::delete('/sistema/proyectos/{id}/historial/', [ProyectosController::class, 'destroy_historial'])->name('proyectos.historial.destroy');
+
+    //Rutas para talleres
+    Route::resource('/sistema/talleres', TalleresController::class);
+    Route::get('/sistema/talleres/{taller}/participantes', [TalleresController::class, 'edit_participacion'])->name('talleres.participantes.edit');
+    Route::put('/sistema/talleres/{taller}/participantes', [TalleresController::class, 'update_participacion'])->name('talleres.participantes.update');
 
     //Rutas para colonias
     Route::resource('/sistema/colonias', ColoniasController::class);

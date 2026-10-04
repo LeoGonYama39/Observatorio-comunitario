@@ -1,19 +1,19 @@
 @extends('system.app')
 
-@section('title', 'Involucrados del proyecto')
+@section('title', 'Involucrados del taller')
 
 @section('content')
     <div class="breadcrumb">
-        <a href="{{ route('proyectos.index') }}" data-url="{{ route('proyectos.index') }}" class="return-index">
-            Proyectos
+        <a href="{{ route('talleres.index') }}" data-url="{{ route('talleres.index') }}" class="return-index">
+            Talleres
         </a>
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"
              stroke-linejoin="round">
             <path d="M9 6l6 6-6 6"/>
         </svg>
-        <a href="{{ route('proyectos.show', $proyecto->id) }}" data-url="{{ route('proyectos.show', $proyecto->id) }}"
+        <a href="{{ route('proyectos.show', $taller->id) }}" data-url="{{ route('proyectos.show', $taller->id) }}"
            class="return-index">
-            {{ $proyecto->nombre }}
+            {{ $taller->nombre }}
         </a>
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"
              stroke-linejoin="round">
@@ -26,11 +26,28 @@
 
     <div class="content-header">
         <div>
-            <h1>Involucrados del proyecto</h1>
+            <h1>Involucrados del taller</h1>
             <p>Selecciona a las personas o instituciones involucradas y asígnales un rol</p>
         </div>
     </div>
-    <form method="POST" action="{{ route('proyectos.participantes.update', $proyecto->id) }}">
+
+    @if (session('error'))
+        <div class="form-card" style="border-color:#b3261e; margin-bottom: 16px;">
+            <p style="color:#b3261e; margin:0;">{{ session('error') }}</p>
+        </div>
+    @endif
+
+    @if ($errors->any())
+        <div class="form-card" style="border-color:#b3261e; margin-bottom: 16px;">
+            <ul style="margin:0; padding-left: 18px; color:#b3261e;">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form method="POST" action="{{ route('talleres.participantes.update', $taller->id) }}">
         @csrf
         @method('PUT')
 
@@ -69,8 +86,8 @@
         </div>
 
         <div class="form-actions">
-            <a href="{{ route('proyectos.show', $proyecto->id) }}"
-               data-url="{{ route('proyectos.show', $proyecto->id) }}" class="btn-outline">Cancelar</a>
+            <a href="{{ route('talleres.show', $taller->id) }}"
+               data-url="{{ route('talleres.show', $taller->id) }}" class="btn-outline">Cancelar</a>
             <button type="submit" class="btn-new">Guardar participantes</button>
         </div>
     </form>
