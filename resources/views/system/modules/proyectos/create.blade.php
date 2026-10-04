@@ -29,8 +29,7 @@
             <div class="form-grid">
                 <div class="form-field">
                     <label>Nombre <span class="required">*</span></label>
-                    <input type="text" name="nombre" class="form-input" maxlength="50" value="{{ old('nombre') }}"
-                           required>
+                    <input type="text" name="nombre" class="form-input" maxlength="50" value="{{ old('nombre') }}">
                     @error('nombre') <span class="field-error">{{ $message }}</span> @enderror
                 </div>
 
@@ -38,8 +37,7 @@
 
                 <div class="form-field">
                     <label>Fecha de inicio <span class="required">*</span></label>
-                    <input type="date" name="fecha_inicio" class="form-input" value="{{ old('fecha_inicio') }}"
-                           required>
+                    <input type="date" name="fecha_inicio" class="form-input" value="{{ old('fecha_inicio') }}">
                     @error('fecha_inicio') <span class="field-error">{{ $message }}</span> @enderror
                 </div>
 
