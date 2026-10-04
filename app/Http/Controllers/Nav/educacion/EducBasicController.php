@@ -13,17 +13,9 @@ class EducBasicController extends Controller
 {
     public function index(Request $request)
     {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
         $inscripciones = $this->getDatosIndex();
 
-        $view = view("system.modules.educacion.educ_basica.index", compact(
-            'persona',
-            'otros',
-            'inscripciones'));
+        $view = view("system.modules.educacion.educ_basica.index", compact('inscripciones'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -54,20 +46,9 @@ class EducBasicController extends Controller
 
     public function show(Request $request, $id)
     {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
         $datos = $this->getDatosShow($id);
 
-        $view = view(
-            'system.modules.educacion.educ_basica.show',
-            array_merge(
-                compact('persona', 'otros'),
-                $datos ?? ['inscripcion' => null]
-            )
-        );
+        $view = view('system.modules.educacion.educ_basica.show', array_merge($datos ?? ['inscripcion' => null]));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -155,8 +136,7 @@ class EducBasicController extends Controller
             ->values();
     }
 
-    private function getDatosShow($id)
-    {
+    private function getDatosShow($id) {
         $inscripcion = InscripcionEducativa::with([
             'comunidad:id,nombre,ap_pat,ap_mat,birth_date,genero,colonia_id,colonia_otro',
             'comunidad.colonia:id,nombre',

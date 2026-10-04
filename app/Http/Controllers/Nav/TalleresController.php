@@ -9,19 +9,10 @@ use App\Models\Talleres\Taller;
 
 class TalleresController extends Controller
 {
-    public function index(Request $request)
-    {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
+    public function index(Request $request) {
         $talleres = $this->getDatosIndex();
 
-        $view = view("system.modules.talleres.index", compact(
-            'persona',
-            'otros',
-            'talleres'));
+        $view = view("system.modules.talleres.index", compact('talleres'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -34,17 +25,8 @@ class TalleresController extends Controller
         return $view;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(Request $request)
-    {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
-        $view = view("system.modules.talleres.create", compact('persona', 'otros'));
+    public function create(Request $request) {
+        $view = view("system.modules.talleres.create");
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -65,22 +47,12 @@ class TalleresController extends Controller
         //
     }
 
-    public function show(Request $request, $id)
-    {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
+    public function show(Request $request, $id) {
         $datos = $this->getDatosShow($id);
 
         $view = view(
             "system.modules.talleres.show",
-            array_merge(
-                compact('persona', 'otros'),
-                $datos ?? ['taller' => null]
-            )
-        );
+            array_merge($datos ?? ['taller' => null]));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();

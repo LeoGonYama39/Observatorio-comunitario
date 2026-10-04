@@ -26,14 +26,9 @@ class ProyectosController extends Controller
     }
 
     public function index(Request $request){
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
         $proyectos = $this->getDatosIndex();
 
-        $view = view("system.modules.proyectos.index",compact('persona', 'otros', 'proyectos'));
+        $view = view("system.modules.proyectos.index",compact('proyectos'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -48,19 +43,11 @@ class ProyectosController extends Controller
 
     public function create(Request $request) {
         $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
         $datos = $this->getDropDownOptions($datosUsuario);
 
         $view = view(
             "system.modules.proyectos.create",
-            array_merge(
-                compact('persona', 'otros'),
-                $datos ?? ['datos' => null]
-            )
-        );
+            array_merge($datos ?? ['datos' => null]));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -118,20 +105,11 @@ class ProyectosController extends Controller
     }
 
     public function show(Request $request, $id) {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
         $datos = $this->getDatosShow($id);
 
         $view = view(
             "system.modules.proyectos.show",
-            array_merge(
-                compact('persona', 'otros'),
-                $datos ?? ['proyecto' => null]
-            )
-        );
+            array_merge($datos ?? ['proyecto' => null]));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -146,20 +124,14 @@ class ProyectosController extends Controller
 
     public function edit(Request $request, $id) {
         $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
         $proyecto = Proyecto::find($id);
         $datos = $this->getDropDownOptions($datosUsuario);
 
         $view = view(
             "system.modules.proyectos.edit",
             array_merge(
-                compact('persona', 'otros', 'proyecto'),
-                $datos ?? ['datos' => null]
-            )
-        );
+                compact('proyecto'),
+                $datos ?? ['datos' => null]));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -238,11 +210,6 @@ class ProyectosController extends Controller
     }
 
     public function edit_participacion(Request $request, Proyecto $proyecto) {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
         $personasCentro = PCentro::all()->map(fn ($p) => (object) [
             'id' => $p->id,
             'nombre' => trim("$p->nombre $p->ap_pat $p->ap_mat"),
@@ -298,8 +265,6 @@ class ProyectosController extends Controller
             'personasComunidad',
             'instituciones',
             'seleccionados',
-            'persona',
-            'otros',
             'rolesOpciones'
         ));
 
@@ -343,12 +308,6 @@ class ProyectosController extends Controller
     }
 
     public function create_historial(Request $request, $id) {
-        $datosUsuario = new DatosUsuario();
-
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
         $proyecto = Proyecto::find($id);
         $entidad = $proyecto;
         $nombreEntidad = $proyecto?->nombre;
@@ -360,8 +319,6 @@ class ProyectosController extends Controller
         $view = view(
             'system.parts.create_historial',
             compact(
-                'persona',
-                'otros',
                 'entidad',
                 'nombreEntidad',
                 'nombreIndex',

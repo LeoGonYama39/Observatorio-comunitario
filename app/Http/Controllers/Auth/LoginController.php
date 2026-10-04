@@ -45,23 +45,6 @@ class LoginController extends Controller {
         return redirect('/login');
     }
 
-    public function abrirMenu() {
-        $otros = new \stdClass();
-
-        if (Auth::guard('centro')->check()) {
-            $persona = Auth::guard('centro')->user();
-            $otros->tipo = 'centro';
-        } elseif (Auth::guard('externo')->check()) {
-            $persona = Auth::guard('externo')->user();
-            $otros->tipo = 'externo';
-        } else {
-            return redirect()->route('login');
-        }
-
-        $otros->initNombre = strtoupper(substr($persona->nombre, 0, 1));
-        $otros->initApPat = strtoupper(substr($persona->ap_pat, 0, 1));
-
-        return view('system.menu', compact('persona', 'otros'));
-    }
+    public function abrirMenu() {return view('system.menu');}
 
 }

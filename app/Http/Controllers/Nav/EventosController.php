@@ -9,14 +9,8 @@ use Illuminate\Http\Request;
 
 class EventosController extends Controller
 {
-    public function index(Request $request)
-    {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
-        $view = view("system.modules.eventos.index", compact('persona', 'otros'));
+    public function index(Request $request) {
+        $view = view("system.modules.eventos.index");
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -45,14 +39,8 @@ class EventosController extends Controller
         //
     }
 
-    public function show(Request $request)
-    {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
-        $view = view("system.modules.eventos.show", compact('persona', 'otros'));
+    public function show(Request $request) {
+        $view = view("system.modules.eventos.show");
 
         if ($request->ajax()) {
             $sections = $view->renderSections();

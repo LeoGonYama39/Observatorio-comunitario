@@ -13,14 +13,9 @@ class PCentroController extends Controller
 {
     public function index(Request $request)
     {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
         $centros = $this->getDatosIndex();
 
-        $view = view("system.modules.personas.p_centro.index", compact('persona', 'otros', 'centros'));
+        $view = view("system.modules.personas.p_centro.index", compact('centros'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -37,13 +32,9 @@ class PCentroController extends Controller
     public function create(Request $request)
     {
         $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
         $opCargo = $datosUsuario->getEnumValues('p_centro', 'cargo');
 
-        $view = view("system.modules.personas.p_centro.create", compact('persona', 'otros', 'opCargo'));
+        $view = view("system.modules.personas.p_centro.create", compact('opCargo'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -57,8 +48,7 @@ class PCentroController extends Controller
     }
 
 
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $datosUsuario = new DatosUsuario();
         $opCargo = $datosUsuario->getEnumValues('p_centro', 'cargo');
 
@@ -117,14 +107,9 @@ class PCentroController extends Controller
 
     public function show(Request $request, $id)
     {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
         $centro = $this->getDatosShow($id);
 
-        $view = view("system.modules.personas.p_centro.show", compact('persona', 'otros', 'centro'));
+        $view = view("system.modules.personas.p_centro.show", compact('centro'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -141,15 +126,10 @@ class PCentroController extends Controller
     public function edit(Request $request, $id)
     {
         $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
         $opCargo = $datosUsuario->getEnumValues('p_centro', 'cargo');
-
         $centro = $this->getDatosShow($id);
 
-        $view = view("system.modules.personas.p_centro.edit", compact('persona', 'otros', 'centro', 'opCargo'));
+        $view = view("system.modules.personas.p_centro.edit", compact('centro', 'opCargo'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();

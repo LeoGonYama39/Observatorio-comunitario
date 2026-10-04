@@ -12,22 +12,11 @@ use Illuminate\Http\JsonResponse;
 
 class AreasController extends Controller
 {
-    public function index(Request $request)
-    {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
+    public function index(Request $request) {
         $datos = $this->getDatosIndex();
 
-        $view = view(
-            "system.modules.areas.index",
-            array_merge(
-                compact('persona', 'otros'),
-                $datos ?? ['areas' => null]
-            )
-        );
+        $view = view("system.modules.areas.index",
+            array_merge($datos ?? ['areas' => null]));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -40,8 +29,7 @@ class AreasController extends Controller
         return $view;
     }
 
-    public function updateResponsableArea(Request $request, Area $area): JsonResponse
-    {
+    public function updateResponsableArea(Request $request, Area $area): JsonResponse {
         $validated = $request->validate([
             'responsable_id' => ['required', 'exists:p_centro,id'],
         ]);

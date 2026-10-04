@@ -9,26 +9,34 @@ use Illuminate\Support\Facades\DB;
 
 class DatosUsuario {
 
-    public function getDatosUsuario() {
+    public function getDatosUsuario()
+{
+    if (Auth::guard('centro')->check()) {
+        $persona = Auth::guard('centro')->user();
+        $tipo = 'centro';
+
+    } elseif (Auth::guard('externo')->check()) {
+        $persona = Auth::guard('externo')->user();
+        $tipo = 'externo';
+
+    } else {
+        return [
+            null,
+            null,
+        ];
+    }
 
     $otros = new \stdClass();
-    $aux = [];
 
-        if (Auth::guard("centro")->check()) {
-            $persona = Auth::guard("centro")->user();
-            $otros->tipo = "centro";
-        } elseif (Auth::guard("externo")->check()) {
-            $persona = Auth::guard("externo")->user();
-            $otros->tipo = "externo";
-        }
+    $otros->tipo = $tipo;
+    $otros->initNombre = strtoupper(substr($persona->nombre, 0, 1));
+    $otros->initApPat = strtoupper(substr($persona->ap_pat, 0, 1));
 
-        $otros->initNombre = strtoupper(substr($persona->nombre, 0, 1));
-        $otros->initApPat = strtoupper(substr($persona->ap_pat, 0, 1));
-
-        $aux[0] = $persona;
-        $aux[1] = $otros;
-        return $aux;
-    }
+    return [
+        $persona,
+        $otros,
+    ];
+}
 
     public function getEnumValues($tabla, $columna)
     {
@@ -61,10 +69,10 @@ class DatosUsuario {
             'fecha'         => ['required', 'date'],
             'comentario'    => ['required', 'string'],
         ], [
-            'fecha.required'        => 'La fecha es obligatoria.',
-            'fecha.date'            => 'La fecha no es válida.',
-            'comentario.required'   => 'El comentario es obligatorio.',
-            'comentario.string'     => 'El comentario tiene que ser texto.',
+            'fecha.required'        => 'La fecha es obligatoria',
+            'fecha.date'            => 'La fecha no es válida',
+            'comentario.required'   => 'El comentario es obligatorio',
+            'comentario.string'     => 'El comentario tiene que ser texto',
         ]);
     }
 

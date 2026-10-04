@@ -31,13 +31,13 @@
     <div class="form-grid">
       <div class="form-field">
         <label>Nombre <span class="required">*</span></label>
-        <input type="text" name="nombre" class="form-input" value="{{ old('nombre') }}" required>
+        <input type="text" name="nombre" class="form-input" value="{{ old('nombre') }}">
         @error('nombre') <span class="field-error">{{ $message }}</span> @enderror
       </div>
 
       <div class="form-field">
         <label>Apellido paterno <span class="required">*</span></label>
-        <input type="text" name="ap_pat" class="form-input" value="{{ old('ap_pat') }}" required>
+        <input type="text" name="ap_pat" class="form-input" value="{{ old('ap_pat') }}">
         @error('ap_pat') <span class="field-error">{{ $message }}</span> @enderror
       </div>
 

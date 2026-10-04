@@ -41,7 +41,7 @@
                         <label>
                             Fecha <span class="required">*</span>
                         </label>
-                        <input type="date" name="fecha" class="form-input" value="{{ old('fecha') }}" required>
+                        <input type="date" name="fecha" class="form-input" value="{{ old('fecha') }}">
                         @error('fecha')<span class="field-error">{{ $message }}</span>@enderror
                     </div>
 
@@ -49,7 +49,7 @@
                         <label>
                             Comentario <span class="required">*</span>
                         </label>
-                        <textarea name="comentario" class="form-textarea textarea-large" rows="5" required>{{ old('comentario') }}</textarea>
+                        <textarea name="comentario" class="form-textarea textarea-large" rows="5">{{ old('comentario') }}</textarea>
                         @error('comentario')<span class="field-error">{{ $message }}</span>@enderror
                     </div>
                 </div>

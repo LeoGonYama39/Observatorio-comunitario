@@ -11,16 +11,10 @@ use Illuminate\Support\Facades\DB;
 
 class EjesController extends Controller
 {
-    public function index(Request $request)
-    {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
+    public function index(Request $request) {
         $ejes = $this->getDatosIndex();
 
-        $view = view("system.modules.ejes.index", compact('persona', 'otros', 'ejes'));
+        $view = view("system.modules.ejes.index", compact('ejes'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -33,16 +27,10 @@ class EjesController extends Controller
         return $view;
     }
 
-    public function create(Request $request)
-    {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
+    public function create(Request $request) {
         $responsabilidades = $this->getResponsabilidades();
 
-        $view = view("system.modules.ejes.create", compact('persona', 'otros', 'responsabilidades'));
+        $view = view("system.modules.ejes.create", compact('responsabilidades'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -55,8 +43,7 @@ class EjesController extends Controller
         return $view;
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         try {
             $validated = $this->getValidated($request, $this->getMessages());
 
@@ -83,19 +70,10 @@ class EjesController extends Controller
     }
 
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Request $request, $id)
-    {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
+    public function show(Request $request, $id) {
         $eje = $this->getDatosShow($id);
 
-        $view = view("system.modules.ejes.show", compact('persona', 'otros', 'eje'));
+        $view = view("system.modules.ejes.show", compact('eje'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -108,20 +86,11 @@ class EjesController extends Controller
         return $view;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Request $request, $id)
-    {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
+    public function edit(Request $request, $id) {
         $eje = $this->getDatosShow($id);
         $responsabilidades = $this->getResponsabilidades();
 
-        $view = view("system.modules.ejes.edit", compact('persona', 'otros', 'eje', 'responsabilidades'));
+        $view = view("system.modules.ejes.edit", compact('eje', 'responsabilidades'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -134,11 +103,8 @@ class EjesController extends Controller
         return $view;
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Eje $eje)
-    {
+
+    public function update(Request $request, Eje $eje) {
         try {
             $validated = $this->getValidated($request, $this->getMessages());
 
@@ -160,8 +126,7 @@ class EjesController extends Controller
         }
     }
 
-    public function destroy(string $id)
-    {
+    public function destroy(string $id) {
         try {
             $eje = Eje::findOrFail($id);
             $ejeNombre = trim($eje->nombre);

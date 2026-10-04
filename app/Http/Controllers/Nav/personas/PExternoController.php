@@ -13,19 +13,10 @@ use Illuminate\Validation\Rule;
 
 class PExternoController extends Controller
 {
-    public function index(Request $request)
-    {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
+    public function index(Request $request) {
         $externos = $this->getDatosIndex();
 
-        $view = view(
-            "system.modules.personas.p_externo.index",
-            compact("persona", "otros", "externos")
-        );
+        $view = view("system.modules.personas.p_externo.index", compact("externos"));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -38,22 +29,11 @@ class PExternoController extends Controller
         return $view;
     }
 
-    public function create(Request $request)
-    {
+    public function create(Request $request) {
         $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
         $datos = $this->getDropDownOptions($datosUsuario);
 
-        $view = view(
-            "system.modules.personas.p_externo.create",
-            array_merge(
-                compact("persona", "otros"),
-                $datos ?? ["datos" => null]
-            )
-        );
+        $view = view("system.modules.personas.p_externo.create", array_merge($datos ?? ["datos" => null]));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -66,8 +46,7 @@ class PExternoController extends Controller
         return $view;
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $datosUsuario = new DatosUsuario();
         $opTemporada = $datosUsuario->getEnumValues(
             "participaciones",
@@ -177,22 +156,10 @@ class PExternoController extends Controller
         }
     }
 
-    public function show(Request $request, $id)
-    {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
+    public function show(Request $request, $id) {
         $datos = $this->getDatosShow($id);
 
-        $view = view(
-            "system.modules.personas.p_externo.show",
-            array_merge(
-                compact("persona", "otros"),
-                $datos ?? ["externo" => null]
-            )
-        );
+        $view = view("system.modules.personas.p_externo.show", array_merge($datos ?? ["externo" => null]));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -205,22 +172,10 @@ class PExternoController extends Controller
         return $view;
     }
 
-    public function edit(Request $request, $id)
-    {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
+    public function edit(Request $request, $id) {
         $datos = $this->getDatosEdit($id);
 
-        $view = view(
-            "system.modules.personas.p_externo.edit",
-            array_merge(
-                compact("persona", "otros"),
-                $datos ?? ["externo" => null]
-            )
-        );
+        $view = view("system.modules.personas.p_externo.edit", array_merge($datos ?? ["externo" => null]));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -233,8 +188,7 @@ class PExternoController extends Controller
         return $view;
     }
 
-    public function update(Request $request, PExterno $personas_externo)
-    {
+    public function update(Request $request, PExterno $personas_externo) {
         try {
             $messages = $this->getMessages();
             $validated = $request->validate(
@@ -281,8 +235,7 @@ class PExternoController extends Controller
         }
     }
 
-    public function destroy(string $id)
-    {
+    public function destroy(string $id) {
         try {
             $externo = PExterno::findOrFail($id);
             $nombreCompleto = trim(
@@ -313,22 +266,12 @@ class PExternoController extends Controller
         }
     }
 
-    public function create_participacion(Request $request, $id)
-    {
+    public function create_participacion(Request $request, $id) {
         $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
         $datos = $this->getDatosCreateParticipacion($id, $datosUsuario);
 
-        $view = view(
-            "system.modules.personas.p_externo.create_participacion",
-            array_merge(
-                compact("persona", "otros"),
-                $datos ?? ["externo" => null]
-            )
-        );
+        $view = view("system.modules.personas.p_externo.create_participacion", 
+                array_merge($datos ?? ["externo" => null]));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -341,8 +284,7 @@ class PExternoController extends Controller
         return $view;
     }
 
-    public function store_participacion(Request $request, PExterno $externo)
-    {
+    public function store_participacion(Request $request, PExterno $externo) {
         $datosUsuario = new DatosUsuario();
         $opTemporada = $datosUsuario->getEnumValues("participaciones","temporada");
         $opTipo = $datosUsuario->getEnumValues("participaciones", "tipo");
@@ -395,24 +337,13 @@ class PExternoController extends Controller
         }
     }
 
-    public function edit_participacion( Request $request, $participacion)
-    {
+    public function edit_participacion( Request $request, $participacion) {
         $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
         $participacion = Participacion::find($participacion);
-
         $datos = $this->getDropDownOptions($datosUsuario);
 
-        $view = view(
-            "system.modules.personas.p_externo.edit_participacion",
-            array_merge(
-                compact("persona", "otros", 'participacion'),
-                $datos ?? ["datos" => null]
-            )
-        );
+        $view = view("system.modules.personas.p_externo.edit_participacion",
+            array_merge($datos ?? ["datos" => null]));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -425,8 +356,7 @@ class PExternoController extends Controller
         return $view;
     }
 
-    public function update_participacion(Request $request, Participacion $participacion)
-    {
+    public function update_participacion(Request $request, Participacion $participacion) {
         $datosUsuario = new DatosUsuario();
         $opTemporada = $datosUsuario->getEnumValues("participaciones", "temporada");
         $opTipo = $datosUsuario->getEnumValues("participaciones", "tipo");
@@ -474,8 +404,7 @@ class PExternoController extends Controller
         }
     }
 
-    public function destroy_participacion(Participacion $participacion)
-    {
+    public function destroy_participacion(Participacion $participacion) {
         try {
             $idOld = $participacion->externo->id;
             $participacion->delete();

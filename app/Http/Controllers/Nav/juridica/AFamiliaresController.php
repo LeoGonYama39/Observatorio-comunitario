@@ -10,12 +10,7 @@ class AFamiliaresController extends Controller
 {
     public function index(Request $request)
     {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
-        $view = view("system.modules.juridica.asesorias-familiares.index", compact('persona', 'otros'));
+        $view = view("system.modules.juridica.asesorias-familiares.index");
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -46,12 +41,7 @@ class AFamiliaresController extends Controller
 
     public function show(Request $request, $id)
     {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
-        $view = view("system.modules.juridica.asesorias-familiares.show", compact('persona', 'otros'));
+        $view = view("system.modules.juridica.asesorias-familiares.show");
 
         if ($request->ajax()) {
             $sections = $view->renderSections();

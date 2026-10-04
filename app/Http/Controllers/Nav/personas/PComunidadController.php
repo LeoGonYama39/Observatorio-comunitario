@@ -19,14 +19,9 @@ class PComunidadController extends Controller
 {
     public function index(Request $request)
     {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
         $usuarias = $this->getDatosIndex();
 
-        $view = view("system.modules.personas.p_comunidad.index", compact('persona', 'otros', 'usuarias'));
+        $view = view("system.modules.personas.p_comunidad.index", compact('usuarias'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -42,19 +37,9 @@ class PComunidadController extends Controller
     public function create(Request $request)
     {
         $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
         $datos = $this->getDropDownOptions($datosUsuario);
 
-        $view = view(
-            "system.modules.personas.p_comunidad.create",
-            array_merge(
-                compact('persona', 'otros'),
-                $datos ?? ['datos' => null]
-            )
-        );
+        $view = view("system.modules.personas.p_comunidad.create",array_merge($datos ?? ['datos' => null]));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -67,8 +52,7 @@ class PComunidadController extends Controller
         return $view;
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $datosUsuario = new DatosUsuario();
 
         // "Otro" en colonia/alcaldía: el campo de texto solo cuenta (y es obligatorio) en ese caso
@@ -137,20 +121,9 @@ class PComunidadController extends Controller
 
     public function show(Request $request, $id)
     {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
         $datos = $this->getDatosShow($id);
 
-        $view = view(
-            "system.modules.personas.p_comunidad.show",
-            array_merge(
-                compact('persona', 'otros'),
-                $datos ?? ['usuaria' => null]
-            )
-        );
+        $view = view("system.modules.personas.p_comunidad.show", array_merge($datos ?? ['usuaria' => null]));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -163,27 +136,15 @@ class PComunidadController extends Controller
         return $view;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Request $request, $id)
-    {
+
+    public function edit(Request $request, $id) {
         $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
 
         $usuaria = $this->getUsuariaByID($id);
         $datos = null;
         if($usuaria) $datos = $this->getDropDownOptions($datosUsuario);
 
-        $view = view(
-            "system.modules.personas.p_comunidad.edit",
-            array_merge(
-                compact('persona', 'otros', 'usuaria'),
-                $datos ?? ['datos' => null]
-            )
-        );
+        $view = view("system.modules.personas.p_comunidad.edit", array_merge($datos ?? ['datos' => null]));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -196,8 +157,7 @@ class PComunidadController extends Controller
         return $view;
     }
 
-    public function update(Request $request, PComunidad $personas_usuaria)
-    {
+    public function update(Request $request, PComunidad $personas_usuaria) {
         $datosUsuario = new DatosUsuario();
 
         $esColoniaOtro   = $request->input('colonia_id') === 'otro';
@@ -275,8 +235,7 @@ class PComunidadController extends Controller
         }
     }
 
-    public function destroy(string $id)
-    {
+    public function destroy(string $id) {
         {
             try {
                 $usuaria = PComunidad::findOrFail($id);

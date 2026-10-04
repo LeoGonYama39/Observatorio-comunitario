@@ -12,17 +12,9 @@ class EducSupController extends Controller
 {
     public function index(Request $request)
     {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
         $inscripciones = $this->getDatosIndex();
 
-        $view = view("system.modules.educacion.educ_sup.index", compact(
-            'persona',
-            'otros',
-            'inscripciones'));
+        $view = view("system.modules.educacion.educ_sup.index", compact('inscripciones'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -53,20 +45,9 @@ class EducSupController extends Controller
 
     public function show(Request $request, $id)
     {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
         $datos = $this->getDatosShow($id);
 
-        $view = view(
-            'system.modules.educacion.educ_sup.show',
-            array_merge(
-                compact('persona', 'otros'),
-                $datos ?? ['inscripcion' => null]
-            )
-        );
+        $view = view('system.modules.educacion.educ_sup.show', array_merge($datos ?? ['inscripcion' => null]));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();

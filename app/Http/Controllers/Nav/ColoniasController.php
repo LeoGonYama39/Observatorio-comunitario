@@ -14,13 +14,9 @@ class ColoniasController extends Controller
     public function index(Request $request)
     {
         $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
         $colonias = $this->getDatosIndex();
 
-        $view = view("system.modules.colonias.index", compact('persona', 'otros', 'colonias'));
+        $view = view("system.modules.colonias.index", compact('colonias'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -51,11 +47,6 @@ class ColoniasController extends Controller
 
     public function show(Request $request, $id)
     {
-        $datosUsuario = new DatosUsuario();
-        $aux = $datosUsuario->getDatosUsuario();
-        $persona = $aux[0];
-        $otros = $aux[1];
-
         $datos = $this->getDatosShow($id);
 
         $colonia = $datos['colonia'];
@@ -63,7 +54,7 @@ class ColoniasController extends Controller
         $proyectos = $datos['proyectos'];
         $historial = $datos['historial'];
 
-        $view = view("system.modules.colonias.show", compact('persona', 'otros', 'colonia', 'problematicas', 'proyectos', 'historial'));
+        $view = view("system.modules.colonias.show", compact('colonia', 'problematicas', 'proyectos', 'historial'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
