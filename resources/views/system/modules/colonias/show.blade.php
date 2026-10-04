@@ -4,7 +4,7 @@
 
 @section('content')
 
-    @if ($colonia)
+    @if($colonia)
         <div class="breadcrumb">
             <a href="{{ route('colonias.index') }}" data-url="{{ route('colonias.index') }}" class="return-index">
                 Colonias
@@ -17,6 +17,7 @@
                 {{ $colonia->nombre }}
             </span>
         </div>
+        @include('system.parts.alerts.alerts')
         <div class="content-header">
             <div>
                 <h1>
@@ -27,14 +28,15 @@
                 </p>
             </div>
             <div class="header-actions">
-                <button class="btn-outline">
+                <a href="{{ route('colonias.edit', $colonia->id) }}"
+                   data-url="{{ route('colonias.edit', $colonia->id) }}" class="btn-outline">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
                          stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 20h9"/>
                         <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>
                     </svg>
                     Editar
-                </button>
+                </a>
             </div>
         </div>
         <div class="info-card">

@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Nav;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sup\DatosUsuario;
+use App\Models\listas\Problematica;
 use Illuminate\Http\Request;
 use App\Models\Colonia;
 use App\Models\HistorialColonia;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class ColoniasController extends Controller
 {
@@ -70,17 +72,50 @@ class ColoniasController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request, $id)
     {
-        //
+        $colonia = Colonia::find($id);
+        $problematicas = Problematica::select('id', 'nombre')->get();
+
+        $view = view("system.modules.colonias.edit", compact('colonia', 'problematicas'));
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        //
+    public function update(Request $request, Colonia $colonia) {
+        try {
+            $validated = $this->getValidate($request);
+
+            DB::transaction(function () use ($colonia, $validated, $request) {
+                $colonia->viviendas = $validated['viviendas'];
+                $colonia->adultos = $validated['adultos'];
+                $colonia->ninos = $validated['ninos'];
+                $colonia->save();
+
+                $colonia->problematicas()->sync($validated['problematicas'] ?? []);
+            });
+
+            return redirect()
+                ->route('colonias.show', $colonia->id)
+                ->with('success', 'Cambio registrado con éxito.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -127,8 +162,8 @@ class ColoniasController extends Controller
 
     private function getDatosShow($id){
         $colonia = Colonia::select(
-            'id', 
-            'nombre', 
+            'id',
+            'nombre',
             'adultos',
             'ninos',
             'viviendas',)
@@ -183,4 +218,34 @@ class ColoniasController extends Controller
             'historial' => $historial,
         ];
     }
+
+    private function getValidate($request) {
+        return $request->validate([
+            'viviendas'    => ['required', 'integer', 'min:0', 'max:16777215'],
+            'adultos'    => ['required', 'integer', 'min:0', 'max:16777215'],
+            'ninos'    => ['required', 'integer', 'min:0', 'max:16777215'],
+
+            'problematicas' => ['nullable', 'array'],
+            'problematicas.*' => ['integer', 'distinct', 'exists:problematicas,id'],
+        ],[
+            'viviendas.integer' => 'El número de viviendas debe ser un número entero positivo.',
+            'viviendas.min'     => 'El número de viviendas no puede ser negativo.',
+            'viviendas.max'     => 'El número de viviendas no puede ser más de 16,777,215.',
+
+            'adultos.integer' => 'El número de adultos debe ser un número entero positivo.',
+            'adultos.min'     => 'El número de adultos no puede ser negativo.',
+            'adultos.max'     => 'El número de adultos no puede ser más de 16,777,215.',
+
+            'ninos.integer' => 'El número de niños debe ser un número entero positivo.',
+            'ninos.min'     => 'El número de niños no puede ser negativo.',
+            'ninos.max'     => 'El número de niños no puede ser más de 16,777,215.',
+
+            'problematicas.array' => 'Las problemáticas seleccionadas no son válidas.',
+            'problematicas.*.integer' => 'Una de las problemáticas seleccionadas no es válida.',
+            'problematicas.*.distinct' => 'Una de las problemáticas seleccionadas está repetida',
+            'problematicas.*.exists' => 'Una de las problemáticas seleccionadas no existe.',
+        ]);
+    }
 }
+
+

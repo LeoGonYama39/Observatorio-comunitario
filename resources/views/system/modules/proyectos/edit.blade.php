@@ -1,6 +1,6 @@
 @extends('system.app')
 
-@section('title', 'Nuevo proyecto')
+@section('title', 'Editar proyecto')
 
 @section('content')
     @if($proyecto)
@@ -24,7 +24,7 @@
     Editar registro
   </span>
         </div>
-
+        @include('system.parts.alerts.alerts')
         <div class="content-header">
             <div>
                 <h1>Editar proyecto</h1>
