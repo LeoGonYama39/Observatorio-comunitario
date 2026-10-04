@@ -108,9 +108,9 @@
         </div>
 
         <div class="form-actions">
-            <a href="{{ route('talleres.index') }}" data-url="{{ route('talleres.index') }}"
+            <a href="{{ route('talleres.show', $taller->id) }}" data-url="{{ route('talleres.show', $taller->id) }}"
                class="btn-outline">Cancelar</a>
-            <button type="submit" class="btn-new">Registrar</button>
+            <button type="submit" class="btn-new">Registrar cambios</button>
         </div>
     </form>
     @else
