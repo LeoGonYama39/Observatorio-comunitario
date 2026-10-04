@@ -315,7 +315,7 @@ class ProyectosController extends Controller
         $rutaStore = route('proyectos.historial.store', $id);
 
         $view = view(
-            'system.parts.create_historial',
+            'system.parts.forms.create_historial',
             compact(
                 'entidad',
                 'nombreEntidad',
@@ -361,9 +361,10 @@ class ProyectosController extends Controller
         }
     }
 
-    public function destroy_historial($proyecto, $id) {
+    public function destroy_historial($id) {
         try {
             $historial = HistorialProyecto::findOrFail($id);
+            $proyecto = $historial->proyecto->id;
             $historial->delete();
 
             return redirect()
@@ -371,7 +372,7 @@ class ProyectosController extends Controller
                 ->with('success', "Nota eliminada con éxito.");
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return redirect()
-                ->route('proyectos.show', $proyecto)
+                ->route('proyectos.index')
                 ->with('error', 'El registro que intentas eliminar no existe.');
         } catch (\Throwable $e) {
             return back()

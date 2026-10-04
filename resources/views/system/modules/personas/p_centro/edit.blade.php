@@ -11,21 +11,22 @@
             </a>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"
                  stroke-linejoin="round">
-                <path d="M9 6l6 6-6 6" />
+                <path d="M9 6l6 6-6 6"/>
             </svg>
-            <a href="{{ route('personas-centro.show', $centro->id) }}" data-url="{{ route('personas-centro.show', $centro->id) }}"
+            <a href="{{ route('personas-centro.show', $centro->id) }}"
+               data-url="{{ route('personas-centro.show', $centro->id) }}"
                class="return-index">
                 {{ $centro->nombre }} {{ $centro->ap_pat }} {{ $centro->ap_mat }}
             </a>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"
                  stroke-linejoin="round">
-                <path d="M9 6l6 6-6 6" />
+                <path d="M9 6l6 6-6 6"/>
             </svg>
             <span class="current">
                 Editar registro
             </span>
         </div>
-        @include('system.parts.alerts')
+        @include('system.parts.alerts.alerts')
         <div class="content-header">
             <div>
                 <h1>Editar registro</h1>
@@ -83,7 +84,7 @@
                             </select>
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2"
                                  stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M6 9l6 6 6-6" />
+                                <path d="M6 9l6 6 6-6"/>
                             </svg>
                         </div>
                         @error('cargo')
@@ -118,8 +119,8 @@
                                         <svg id="eye-icon-form" width="18" height="18" viewBox="0 0 24 24"
                                              fill="none" stroke-width="1.8" stroke-linecap="round"
                                              stroke-linejoin="round">
-                                            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
-                                            <circle cx="12" cy="12" r="3" />
+                                            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/>
+                                            <circle cx="12" cy="12" r="3"/>
                                         </svg>
                                     </button>
                                 </div>
@@ -131,12 +132,14 @@
                     </div>
 
                     <div class="form-checkbox-row">
-                        <input type="checkbox" id="eliminar_acceso" name="eliminar_acceso" value="1" onchange="toggleEliminarAcceso(this)">
+                        <input type="checkbox" id="eliminar_acceso" name="eliminar_acceso" value="1"
+                               onchange="toggleEliminarAcceso(this)">
                         <label for="eliminar_acceso">Eliminar acceso al sistema</label>
                     </div>
                 @else
                     <div class="form-checkbox-row">
-                        <input type="checkbox" id="crear_acceso" name="crear_acceso" value="1" onchange="toggleAccesoFields(this)" {{ old('crear_acceso') ? 'checked' : '' }}>
+                        <input type="checkbox" id="crear_acceso" name="crear_acceso" value="1"
+                               onchange="toggleAccesoFields(this)" {{ old('crear_acceso') ? 'checked' : '' }}>
                         <label for="crear_acceso">Crear acceso al sistema</label>
                     </div>
 
@@ -159,8 +162,8 @@
                                         <svg id="eye-icon-form" width="18" height="18" viewBox="0 0 24 24"
                                              fill="none" stroke-width="1.8" stroke-linecap="round"
                                              stroke-linejoin="round">
-                                            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
-                                            <circle cx="12" cy="12" r="3" />
+                                            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/>
+                                            <circle cx="12" cy="12" r="3"/>
                                         </svg>
                                     </button>
                                 </div>
@@ -180,6 +183,6 @@
             </div>
         </form>
     @else
-        @include('system.parts.not_found', ['route' => route('personas-centro.index')])
+        @include('system.parts.alerts.not_found', ['route' => route('personas-centro.index')])
     @endif
 @endsection

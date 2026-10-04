@@ -3,102 +3,104 @@
 @section('title', 'Personas de externas')
 
 @section('content')
-    @include('system.parts.alerts')
+    @include('system.parts.alerts.alerts')
     <div class="content-header">
-    <div>
-        <h1>Personas Externas</h1>
-        <p>
-            Servicio social, prácticas profesionales, voluntariado y proyectos de
-            inversión
-        </p>
-    </div>
-        <a href="{{ route('personas-externo.create') }}" data-url="{{ route('personas-externo.create') }}" class="btn-new">
-        <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke-width="2.2"
-            stroke-linecap="round"
-            stroke-linejoin="round">
-            <path d="M12 5v14" />
-            <path d="M5 12h14" />
-        </svg>
-        Nuevo registro
+        <div>
+            <h1>Personas Externas</h1>
+            <p>
+                Servicio social, prácticas profesionales, voluntariado y proyectos de
+                inversión
+            </p>
+        </div>
+        <a href="{{ route('personas-externo.create') }}" data-url="{{ route('personas-externo.create') }}"
+           class="btn-new">
+            <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+                <path d="M12 5v14"/>
+                <path d="M5 12h14"/>
+            </svg>
+            Nuevo registro
         </a>
     </div>
 
     <div class="table-toolbar">
-    <div class="table-search">
-        <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-        >
-            <circle cx="11" cy="11" r="7" />
-            <path d="m21 21-4.3-4.3" />
-        </svg>
-        <input type="text" placeholder="Buscar por nombre…" />
-    </div>
+        <div class="table-search">
+            <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+            >
+                <circle cx="11" cy="11" r="7"/>
+                <path d="m21 21-4.3-4.3"/>
+            </svg>
+            <input type="text" placeholder="Buscar por nombre…"/>
+        </div>
 
-    <button class="btn-filter">
-        <svg
-            width="15"
-            height="15"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-        >
-            <path d="M4 6h16" />
-            <path d="M7 12h10" />
-            <path d="M10 18h4" />
-        </svg>
-        Filtro
-        <svg
-            width="13"
-            height="13"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-        >
-            <path d="M6 9l6 6 6-6" />
-        </svg>
-    </button>
+        <button class="btn-filter">
+            <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+            >
+                <path d="M4 6h16"/>
+                <path d="M7 12h10"/>
+                <path d="M10 18h4"/>
+            </svg>
+            Filtro
+            <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+            >
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </button>
     </div>
 
     <div class="table-card">
-    <table>
-        <thead>
+        <table>
+            <thead>
             <tr>
                 <th>Nombre</th>
                 <th>Universidad</th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             @foreach ($externos as $externo)
-            <tr data-url="{{ route('personas-externo.show', $externo->id) }}" data-tipo="{{ $externo->ultima_participacion->tipo_categ ?? 'sin_participacion' }}">
-                <td>
-                <div class="person-name">
-                    {{ $externo->nombre }} {{ $externo->ap_pat }} {{ $externo->ap_mat }}
-                </div>
-                <div class="person-role">{{ $externo->ultima_participacion->tipo_formateado ?? 'Sin participación'}}</div>
-                </td>
-                <td>
+                <tr data-url="{{ route('personas-externo.show', $externo->id) }}"
+                    data-tipo="{{ $externo->ultima_participacion->tipo_categ ?? 'sin_participacion' }}">
+                    <td>
+                        <div class="person-name">
+                            {{ $externo->nombre }} {{ $externo->ap_pat }} {{ $externo->ap_mat }}
+                        </div>
+                        <div class="person-role">{{ $externo->ultima_participacion->tipo_formateado ?? 'Sin participación'}}</div>
+                    </td>
+                    <td>
                     <span class="area-tag {{ $externo->universidad ? '' : 'empty' }}">
                         {{ $externo->universidad ?? '—' }}
                     </span>
-                </td>
-            </tr>
+                    </td>
+                </tr>
             @endforeach
-        </tbody>
-    </table>
+            </tbody>
+        </table>
     </div>
 @endsection

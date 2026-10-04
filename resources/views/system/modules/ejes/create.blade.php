@@ -7,7 +7,8 @@
         <a href="{{ route('ejes.index') }}" data-url="{{ route('ejes.index') }}" class="return-index">
             Ejes
         </a>
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"
+             stroke-linejoin="round">
             <path d="M9 6l6 6-6 6"/>
         </svg>
         <span class="current">
@@ -15,7 +16,7 @@
   </span>
     </div>
 
-    @include('system.parts.alerts')
+    @include('system.parts.alerts.alerts')
 
     <div class="content-header">
         <div>
@@ -33,10 +34,11 @@
             <div class="form-grid">
                 <div class="form-field">
                     <label>Nombre <span class="required">*</span></label>
-                    <input type="text" name="nombre" class="form-input" maxlength="50" value="{{ old('nombre') }}" required>
+                    <input type="text" name="nombre" class="form-input" maxlength="50" value="{{ old('nombre') }}"
+                           required>
                     @error('nombre') <span class="field-error">{{ $message }}</span> @enderror
                 </div>
-                @include('system.parts.tag_picker', ['group' => 'responsabilidades', 'label' => 'Responsabilidades a cargo del eje', 'placeholder' => 'Seleccionar…', 'options' => $responsabilidades])
+                @include('system.parts.forms.tag_picker', ['group' => 'responsabilidades', 'label' => 'Responsabilidades a cargo del eje', 'placeholder' => 'Seleccionar…', 'options' => $responsabilidades])
 
             </div>
         </div>

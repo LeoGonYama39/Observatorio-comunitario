@@ -7,13 +7,16 @@
         <a href="{{ route('proyectos.index') }}" data-url="{{ route('proyectos.index') }}" class="return-index">
             Proyectos
         </a>
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"
+             stroke-linejoin="round">
             <path d="M9 6l6 6-6 6"/>
         </svg>
-        <a href="{{ route('proyectos.show', $proyecto->id) }}" data-url="{{ route('proyectos.show', $proyecto->id) }}" class="return-index">
+        <a href="{{ route('proyectos.show', $proyecto->id) }}" data-url="{{ route('proyectos.show', $proyecto->id) }}"
+           class="return-index">
             {{ $proyecto->nombre }}
         </a>
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"
+             stroke-linejoin="round">
             <path d="M9 6l6 6-6 6"/>
         </svg>
         <span class="current">
@@ -49,7 +52,7 @@
         @method('PUT')
 
         <div class="entity-picker-grid" data-roles-proyecto="{{ json_encode($rolesOpciones) }}">
-            @include('system.parts.entity_picker', [
+            @include('system.parts.forms.entity_picker', [
                     'tipo' => 'centro',
                     'label' => 'Personas del Centro',
                     'options' => $personasCentro,
@@ -57,7 +60,7 @@
                     'roles' => $rolesOpciones,
                 ])
 
-            @include('system.parts.entity_picker', [
+            @include('system.parts.forms.entity_picker', [
                 'tipo' => 'externo',
                 'label' => 'Personas Externas',
                 'options' => $personasExterno,
@@ -65,7 +68,7 @@
                 'roles' => $rolesOpciones,
             ])
 
-            @include('system.parts.entity_picker', [
+            @include('system.parts.forms.entity_picker', [
                 'tipo' => 'comunidad',
                 'label' => 'Personas de la Comunidad',
                 'options' => $personasComunidad,
@@ -73,7 +76,7 @@
                 'roles' => $rolesOpciones,
             ])
 
-            @include('system.parts.entity_picker', [
+            @include('system.parts.forms.entity_picker', [
                 'tipo' => 'institucion',
                 'label' => 'Instituciones',
                 'options' => $instituciones,
@@ -83,7 +86,8 @@
         </div>
 
         <div class="form-actions">
-            <a href="{{ route('proyectos.show', $proyecto->id) }}" data-url="{{ route('proyectos.show', $proyecto->id) }}" class="btn-outline">Cancelar</a>
+            <a href="{{ route('proyectos.show', $proyecto->id) }}"
+               data-url="{{ route('proyectos.show', $proyecto->id) }}" class="btn-outline">Cancelar</a>
             <button type="submit" class="btn-new">Guardar participantes</button>
         </div>
     </form>

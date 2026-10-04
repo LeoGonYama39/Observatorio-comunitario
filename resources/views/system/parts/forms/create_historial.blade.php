@@ -9,21 +9,21 @@
                 {{ $nombreIndex }}
             </a>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M9 6l6 6-6 6" />
+                 stroke-linejoin="round">
+                <path d="M9 6l6 6-6 6"/>
             </svg>
             <a href="{{ $rutaShow }}" data-url="{{ $rutaShow }}" class="return-index">
                 {{ $nombreEntidad }}
             </a>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M9 6l6 6-6 6" />
+                 stroke-linejoin="round">
+                <path d="M9 6l6 6-6 6"/>
             </svg>
             <span class="current">
                 Registro nuevo de historial
             </span>
         </div>
-        @include('system.parts.alerts')
+        @include('system.parts.alerts.alerts')
         <div class="content-header">
             <div>
                 <h1>Nuevo registro de historial</h1>
@@ -49,7 +49,8 @@
                         <label>
                             Comentario <span class="required">*</span>
                         </label>
-                        <textarea name="comentario" class="form-textarea textarea-large" rows="5">{{ old('comentario') }}</textarea>
+                        <textarea name="comentario" class="form-textarea textarea-large"
+                                  rows="5">{{ old('comentario') }}</textarea>
                         @error('comentario')<span class="field-error">{{ $message }}</span>@enderror
                     </div>
                 </div>
@@ -65,6 +66,6 @@
             </div>
         </form>
     @else
-        @include('system.parts.not_found', ['route' => $rutaIndex,])
+        @include('system.parts.alerts.not_found', ['route' => $rutaIndex,])
     @endif
 @endsection

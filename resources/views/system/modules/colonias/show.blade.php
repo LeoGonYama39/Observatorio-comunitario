@@ -11,7 +11,7 @@
             </a>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"
                  stroke-linejoin="round">
-                <path d="M9 6l6 6-6 6" />
+                <path d="M9 6l6 6-6 6"/>
             </svg>
             <span class="current">
                 {{ $colonia->nombre }}
@@ -30,8 +30,8 @@
                 <button class="btn-outline">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
                          stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 20h9" />
-                        <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                        <path d="M12 20h9"/>
+                        <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>
                     </svg>
                     Editar
                 </button>
@@ -89,9 +89,9 @@
                 <h3>
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
                          stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 9v4" />
-                        <path d="M12 17h.01" />
-                        <path d="M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h16a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" />
+                        <path d="M12 9v4"/>
+                        <path d="M12 17h.01"/>
+                        <path d="M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h16a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/>
                     </svg>
                     Problemáticas
                 </h3>
@@ -113,8 +113,8 @@
                 <h3>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
                          stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M9 11l3 3L22 4" />
-                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                        <path d="M9 11l3 3L22 4"/>
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
                     </svg>
                     Proyectos
                 </h3>
@@ -144,8 +144,8 @@
             <button class="btn-outline btn-small">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.2"
                      stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 5v14" />
-                    <path d="M5 12h14" />
+                    <path d="M12 5v14"/>
+                    <path d="M5 12h14"/>
                 </svg>
                 Nueva nota
             </button>
@@ -180,6 +180,6 @@
             </div>
         </div>
     @else
-        @include('system.parts.not_found', ['route' => route('colonias.index')])
+        @include('system.parts.alerts.not_found', ['route' => route('colonias.index')])
     @endif
 @endsection

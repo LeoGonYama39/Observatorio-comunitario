@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
 
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>
-      @yield('title', 'Centro Ibero Meneses')
+        @yield('title', 'Centro Ibero Meneses')
     </title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,26 +15,26 @@
     <link rel="stylesheet" href="{{ asset('css/estilo_sistema.css') }}">
     <link rel="stylesheet" href="{{ asset('css/estilo_sistema_add.css') }}">
 
-  </head>
+</head>
 
-  <body>
+<body>
 
-    @include('system.parts.sidebar')
+@include('system.parts.bar.sidebar')
 
-    <div class="main-area">
+<div class="main-area">
 
-      @include('system.parts.topbar')
+    @include('system.parts.bar.topbar')
 
-      <main class="content" id="mainContent">
+    <main class="content" id="mainContent">
         @yield('content')
-      </main>
+    </main>
 
-    </div>
+</div>
 
-    <div class="sidebar-backdrop" id="sidebarBackdrop">
-    </div>
-    <script src="{{ asset('js/scriptTablas.js') }}"></script>
-    <script src="{{ asset('js/SidebarControll.js') }}"></script>
-    <script src="{{ asset('js/ScriptVarios.js') }}"></script>
-  </body>
+<div class="sidebar-backdrop" id="sidebarBackdrop">
+</div>
+<script src="{{ asset('js/scriptTablas.js') }}"></script>
+<script src="{{ asset('js/SidebarControll.js') }}"></script>
+<script src="{{ asset('js/ScriptVarios.js') }}"></script>
+</body>
 </html>
