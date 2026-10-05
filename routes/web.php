@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Nav\AreasController;
 use App\Http\Controllers\Nav\EjesController;
+use App\Http\Controllers\Nav\TalleresGenController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Nav\personas\PCentroController;
@@ -68,6 +69,9 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::resource('/sistema/talleres', TalleresController::class);
     Route::get('/sistema/talleres/{taller}/participantes', [TalleresController::class, 'edit_participacion'])->name('talleres.participantes.edit');
     Route::put('/sistema/talleres/{taller}/participantes', [TalleresController::class, 'update_participacion'])->name('talleres.participantes.update');
+    Route::get('/sistema/talleres/{taller}/gen', [TalleresGenController::class, 'create_gen'])->name('talleres.gen.create');
+    Route::post('/sistema/talleres/{taller}/gen', [TalleresGenController::class, 'store_gen'])->name('talleres.gen.store');
+    Route::delete('/sistema/talleres/{taller}/gen', [TalleresGenController::class, 'delete_gen'])->name('talleres.gen.destroy');
 
     //Rutas para colonias
     Route::resource('/sistema/colonias', ColoniasController::class);

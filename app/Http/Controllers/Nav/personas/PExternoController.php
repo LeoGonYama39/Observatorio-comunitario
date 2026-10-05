@@ -270,7 +270,7 @@ class PExternoController extends Controller
         $datosUsuario = new DatosUsuario();
         $datos = $this->getDatosCreateParticipacion($id, $datosUsuario);
 
-        $view = view("system.modules.personas.p_externo.create_participacion", 
+        $view = view("system.modules.personas.p_externo.create_participacion",
                 array_merge($datos ?? ["externo" => null]));
 
         if ($request->ajax()) {
@@ -337,13 +337,13 @@ class PExternoController extends Controller
         }
     }
 
-    public function edit_participacion( Request $request, $participacion) {
+    public function edit_participacion(Request $request, $participacion) {
         $datosUsuario = new DatosUsuario();
         $participacion = Participacion::find($participacion);
         $datos = $this->getDropDownOptions($datosUsuario);
 
         $view = view("system.modules.personas.p_externo.edit_participacion",
-            array_merge($datos ?? ["datos" => null]));
+            array_merge(compact('participacion'), $datos ?? ["datos" => null]));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();

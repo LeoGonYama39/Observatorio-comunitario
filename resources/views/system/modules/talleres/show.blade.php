@@ -210,14 +210,15 @@
             <h3>
                 Grupos
             </h3>
-            <button class="btn-outline btn-small">
+            <a class="btn-outline btn-small" href="{{ route('talleres.gen.create', $taller->id) }}"
+               data-url="{{ route('talleres.gen.create', $taller->id) }}">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.2"
                      stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 5v14" />
                     <path d="M5 12h14" />
                 </svg>
                 Nuevo grupo
-            </button>
+            </a>
         </div>
         @if ($generaciones->isNotEmpty())
             <div class="generations-list">
@@ -394,7 +395,7 @@
                         'titulo' => '¿Eliminar generación?',
                         'mensaje' => 'Esta acción no se puede deshacer. Se eliminará la generación de :nombre junto con su lista de participantes y talleristas.',
                         'nombre' => ucfirst($generacion->temporada) . ' ' . $generacion->anio,
-                        'ruta' => '#',
+                        'ruta' => route('talleres.gen.destroy', $generacion->id),
                     ])
                 @endforeach
             </div>
