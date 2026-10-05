@@ -67,7 +67,7 @@
                             {{ $inscripcion['ap_mat'] }}
                         </div>
                         <div class="person-role">
-                            {{ $inscripcion['estado'] }}
+                            {{ ucfirst($inscripcion['estado']) }}
                         </div>
                     </td>
                     <td class="area-tag">
