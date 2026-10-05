@@ -79,7 +79,7 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::post('/sistema/colonias/{colonia}/historial', [ColoniasController::class, 'store_historial'])->name('colonias.historial.store');
     Route::delete('/sistema/colonias/{id}/historial/', [ColoniasController::class, 'destroy_historial'])->name('colonias.historial.destroy');
 
-    //Para lo de areas y responsabilidades
+    //Para lo de áreas y responsabilidades
     Route::patch('/areas/{area}/responsable', [AreasController::class, 'updateResponsableArea'])
     ->name('areas.updateResponsable');
     Route::patch('/responsabilidades/{responsabilidad}/responsable', [AreasController::class, 'updateResponsableResponsabilidad'])
