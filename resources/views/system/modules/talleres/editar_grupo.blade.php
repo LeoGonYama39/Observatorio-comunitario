@@ -5,7 +5,7 @@
 @section('content')
     @if($grupo)
         @php
-            $inscritos = $grupo->grupos()
+            $inscritos = $grupo->grupo()
                 ->get()
                 ->mapWithKeys(fn ($persona) => [
                     $persona->id => $persona->pivot->baja,
@@ -53,7 +53,7 @@
         </div>
     @endif
 
-    <form method="POST" action="#">
+    <form method="POST" action="{{ route('talleres.grupo.update', $grupo->id) }}">
         @csrf
         @method('PUT')
 

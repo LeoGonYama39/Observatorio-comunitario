@@ -86,7 +86,7 @@ class TallerGen extends Model
 
     public function getMetricasAttribute()
     {
-        $participantes = $this->grupos;
+        $participantes = $this->grupo;
         $total = $participantes->count();
 
         $genero = [
@@ -193,7 +193,7 @@ class TallerGen extends Model
         );
     }
 
-    public function grupos()
+    public function grupo()
     {
         return $this->belongsToMany(
             PComunidad::class,

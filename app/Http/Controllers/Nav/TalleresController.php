@@ -206,7 +206,7 @@ class TalleresController extends Controller
             'generaciones.talleristasCentro',
             'generaciones.talleristasComunidad',
             'generaciones.talleristasExternos.externo',
-            'generaciones.grupos.colonia',
+            'generaciones.grupo.colonia',
             'instituciones',
             'rolesCentro',
             'rolesComunidad',

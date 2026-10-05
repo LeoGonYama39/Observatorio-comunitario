@@ -101,26 +101,73 @@ class TalleresGenController extends Controller
         return $view;
     }
 
+    public function update_grupo(Request $request, TallerGen $grupo)
+    {
+        try {
+            $validated = $this->getValidateGen($request);
+
+            DB::transaction(function () use ($validated, $request, $grupo) {
+                $grupo->anio = $validated['anio'];
+                $grupo->temporada = $validated['temporada'];
+                $grupo->evaluacion = $validated['evaluacion'] ?? null;
+                $grupo->save();
+
+                $idsGrupo = $request->input('grupo', []);
+                $bajas = $request->input('baja', []);
+
+                $sync = [];
+                foreach ($idsGrupo as $comunidadId) {
+                    $sync[$comunidadId] = ['baja' => isset($bajas[$comunidadId]) ? 1 : 0];
+                }
+
+                $grupo->grupo()->sync($sync);
+            });
+
+            return redirect()
+                ->route('talleres.show', $grupo->taller->id)
+                ->with('success', 'Grupo actualizado con éxito.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
+        }
+    }
+
     //----------------------------------------------------
     //              Funciones
     //----------------------------------------------------
 
     private function getValidateGen(Request $request) {
         $datosUsuario = new DatosUsuario();
-        $opTemporada = $datosUsuario->getEnumValues("taller_gen","temporada");
+        $opTemporada = $datosUsuario->getEnumValues("taller_gen", "temporada");
 
         return $request->validate([
-                "temporada"     => ["required", "string", Rule::in($opTemporada),],
-                "anio"          => ["required", "digits:4", "integer", "min:1901", "max:2155",],
-                'evaluacion'    => ['nullable', 'string'],
-            ],[
-                "temporada.required"        => "La temporada es obligatoria",
-                "temporada.in"              => "La temporada seleccionada no es válida",
-                "anio.required"             => "El año es obligatorio",
-                "anio.digits"               => "El año debe tener 4 dígitos",
-                "anio.min"                  => "El año debe ser mayor o igual a 1901",
-                "anio.max"                  => "El año debe ser menor o igual a 2155",
-                'evaluacion.string'         => 'La evaluación debe ser texto.',
+            "temporada"     => ["required", "string", Rule::in($opTemporada)],
+            "anio"          => ["required", "digits:4", "integer", "min:1901", "max:2155"],
+            'evaluacion'    => ['nullable', 'string'],
+
+            'grupo'         => ['nullable', 'array'],
+            'grupo.*'       => ['integer', 'distinct', 'exists:p_comunidad,id'],
+
+            'baja'          => ['nullable', 'array'],
+            'baja.*'        => ['boolean'],
+        ],[
+            "temporada.required"        => "La temporada es obligatoria",
+            "temporada.in"              => "La temporada seleccionada no es válida",
+            "anio.required"             => "El año es obligatorio",
+            "anio.digits"               => "El año debe tener 4 dígitos",
+            "anio.min"                  => "El año debe ser mayor o igual a 1901",
+            "anio.max"                  => "El año debe ser menor o igual a 2155",
+            'evaluacion.string'         => 'La evaluación debe ser texto.',
+
+            'grupo.array'       => 'La lista de participantes no es válida.',
+            'grupo.*.integer'   => 'Uno de los participantes seleccionados no es válido.',
+            'grupo.*.distinct'  => 'Hay participantes repetidos en la lista.',
+            'grupo.*.exists'    => 'Uno de los participantes seleccionados ya no existe.',
+            'baja.array'        => 'El estado de baja enviado no es válido.',
+            'baja.*.boolean'    => 'El estado de baja de alguno de los participantes no es válido.',
         ]);
     }
 
