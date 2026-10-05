@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Nav\AreasController;
 use App\Http\Controllers\Nav\EjesController;
+use App\Http\Controllers\Nav\ParticipantesController;
 use App\Http\Controllers\Nav\TalleresGenController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
@@ -59,16 +60,16 @@ Route::middleware('auth:centro,externo')->group(function () {
 
     //Rutas para proyectos
     Route::resource('/sistema/proyectos', ProyectosController::class);
-    Route::get('/sistema/proyectos/{proyecto}/participantes', [ProyectosController::class, 'edit_participacion'])->name('proyectos.participantes.edit');
-    Route::put('/sistema/proyectos/{proyecto}/participantes', [ProyectosController::class, 'update_participacion'])->name('proyectos.participantes.update');
+    Route::get('/sistema/proyectos/{proyecto}/participantes', [ParticipantesController::class, 'edit_proyecto'])->name('proyectos.participantes.edit');
+    Route::put('/sistema/proyectos/{proyecto}/participantes', [ParticipantesController::class, 'update_proyecto'])->name('proyectos.participantes.update');
     Route::get('/sistema/proyectos/{proyecto}/historial', [ProyectosController::class, 'create_historial'])->name('proyectos.historial.create');
     Route::post('/sistema/proyectos/{proyecto}/historial', [ProyectosController::class, 'store_historial'])->name('proyectos.historial.store');
     Route::delete('/sistema/proyectos/{id}/historial/', [ProyectosController::class, 'destroy_historial'])->name('proyectos.historial.destroy');
 
     //Rutas para talleres
     Route::resource('/sistema/talleres', TalleresController::class);
-    Route::get('/sistema/talleres/{taller}/participantes', [TalleresController::class, 'edit_participacion'])->name('talleres.participantes.edit');
-    Route::put('/sistema/talleres/{taller}/participantes', [TalleresController::class, 'update_participacion'])->name('talleres.participantes.update');
+    Route::get('/sistema/talleres/{taller}/participantes', [ParticipantesController::class, 'edit_taller'])->name('talleres.participantes.edit');
+    Route::put('/sistema/talleres/{taller}/participantes', [ParticipantesController::class, 'update_taller'])->name('talleres.participantes.update');
     Route::get('/sistema/talleres/{taller}/gen', [TalleresGenController::class, 'create_gen'])->name('talleres.gen.create');
     Route::post('/sistema/talleres/{taller}/gen', [TalleresGenController::class, 'store_gen'])->name('talleres.gen.store');
     Route::delete('/sistema/talleres/{taller}/gen', [TalleresGenController::class, 'delete_gen'])->name('talleres.gen.destroy');
