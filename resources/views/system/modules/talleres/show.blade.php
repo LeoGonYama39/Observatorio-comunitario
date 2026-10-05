@@ -236,42 +236,6 @@
                                 {{ $generacion->activo ? 'En curso' : 'Finalizada' }}
                             </span>
                         </div>
-
-                        {{-- Pendiente: conectar rutas reales. Por ahora solo son los botones. --}}
-                        <div class="header-actions" style="margin: 10px 0 0;">
-                            <a href="#" class="btn-outline btn-small">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                                    <circle cx="9" cy="7" r="4" />
-                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                                </svg>
-                                Editar grupo
-                            </a>
-                            <a href="#" class="btn-outline btn-small">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M14.7 6.3a4 4 0 1 1-5.4 5.4L2 19v3h3l7.3-7.3" />
-                                    <path d="M17.5 3.5 20.5 6.5" />
-                                    <path d="M15 9l5-5" />
-                                </svg>
-                                Editar talleristas
-                            </a>
-                            <button type="button" class="btn-danger btn-small"
-                                    onclick="document.getElementById('modalEliminarGeneracion{{ $generacion->id }}').showModal()">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M3 6h18" />
-                                    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                                    <path d="M10 11v6" />
-                                    <path d="M14 11v6" />
-                                </svg>
-                                Borrar
-                            </button>
-                        </div>
-
                         <div class="attendees">
                             <span class="mini-label">
                                 Impartido por
@@ -388,6 +352,41 @@
                                     -
                                 </p>
                             @endif
+                        </div>
+                        <div class="header-actions" style="margin: 10px 0 0;">
+                            <a href="{{ route('talleres.grupo.edit', $generacion->id) }}"
+                               data-url="{{ route('talleres.grupo.edit', $generacion->id) }}" class="btn-outline btn-small">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                    <circle cx="9" cy="7" r="4" />
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                </svg>
+                                Editar grupo
+                            </a>
+                            <a href="#"
+                               data-url="#" class="btn-outline btn-small">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14.7 6.3a4 4 0 1 1-5.4 5.4L2 19v3h3l7.3-7.3" />
+                                    <path d="M17.5 3.5 20.5 6.5" />
+                                    <path d="M15 9l5-5" />
+                                </svg>
+                                Editar talleristas
+                            </a>
+                            <button type="button" class="btn-danger btn-small"
+                                    onclick="document.getElementById('modalEliminarGeneracion{{ $generacion->id }}').showModal()">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 6h18" />
+                                    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                                    <path d="M10 11v6" />
+                                    <path d="M14 11v6" />
+                                </svg>
+                                Borrar
+                            </button>
                         </div>
                     </div>
                     @include('system.parts.alerts.confirm_delete', [

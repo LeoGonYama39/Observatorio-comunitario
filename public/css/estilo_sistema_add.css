@@ -514,3 +514,30 @@ dialog.confirm-modal::backdrop {
     stroke: currentColor;
 }
 
+/* ============ TARJETA DE ALUMNO PARA GRUPOS EN TALLERES ============ */
+
+.alumno-card {
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+.alumno-card .entity-info {
+    flex: 1;
+    min-width: 140px;
+}
+.baja-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--graphite);
+    cursor: pointer;
+    white-space: nowrap;
+}
+.baja-toggle input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--ink);
+}

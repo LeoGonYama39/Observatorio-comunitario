@@ -35,6 +35,7 @@
 </div>
 <script src="{{ asset('js/scriptTablas.js') }}"></script>
 <script src="{{ asset('js/SidebarControll.js') }}"></script>
+<script src="{{ asset('js/scriptListaAlumnos.js') }}"></script>
 <script src="{{ asset('js/ScriptVarios.js') }}"></script>
 </body>
 </html>

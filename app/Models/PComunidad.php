@@ -125,7 +125,7 @@ class PComunidad extends Model
     public function getColoniaMostrarAttribute()
     {
         if ($this->colonia !== null) {
-            return $this->colonia;
+            return $this->colonia->nombre;
         }
         return $this->colonia_otro;
     }

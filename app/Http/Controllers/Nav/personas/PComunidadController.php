@@ -144,7 +144,10 @@ class PComunidadController extends Controller
         $datos = null;
         if($usuaria) $datos = $this->getDropDownOptions($datosUsuario);
 
-        $view = view("system.modules.personas.p_comunidad.edit", array_merge($datos ?? ['datos' => null]));
+        $view = view("system.modules.personas.p_comunidad.edit",
+            array_merge(
+                compact('usuaria'),
+                $datos ?? ['datos' => null]));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -168,7 +171,7 @@ class PComunidadController extends Controller
 
         try {
             $validated = $this->getValitadate($request, $this->getMessages(), $datosUsuario, $esColoniaOtro, $esAlcaldiaOtros);
-            
+
             DB::transaction(function () use ($personas_usuaria, $validated, $request, $esColoniaOtro, $esAlcaldiaOtros, $limpiar) {
                 $personas_usuaria->nombre = trim($validated['nombre']);
                 $personas_usuaria->ap_pat = trim($validated['ap_pat']);

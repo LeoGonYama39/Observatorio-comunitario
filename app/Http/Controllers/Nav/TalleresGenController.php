@@ -82,6 +82,25 @@ class TalleresGenController extends Controller
         }
     }
 
+    public function edit_grupo(Request $request, int $grupo) {
+        $datosUsuario = new DatosUsuario();
+        $grupo = TallerGen::find($grupo);
+        $opTemporada = $datosUsuario->getEnumValues("taller_gen","temporada");
+        $usuarias = $this->getUsuarias();
+
+        $view = view("system.modules.talleres.editar_grupo", compact("grupo", "opTemporada", 'usuarias'));
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
+    }
+
     //----------------------------------------------------
     //              Funciones
     //----------------------------------------------------
@@ -104,4 +123,18 @@ class TalleresGenController extends Controller
                 'evaluacion.string'         => 'La evaluación debe ser texto.',
         ]);
     }
+
+    private function getUsuarias(){
+        return PComunidad::select(
+                'id',
+                'nombre',
+                'ap_pat',
+                'ap_mat',
+                'colonia_otro',
+                'colonia_id',
+            )
+            ->orderBy('nombre')
+            ->get();
+    }
+
 }
