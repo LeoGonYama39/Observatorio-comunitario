@@ -114,7 +114,7 @@
             </div>
 
             <div class="form-actions">
-                <a href="{{ route('personas-externo.index') }}" data-url="{{ route('personas-externo.index') }}"
+                <a href="{{ route('personas-externo.show', $externo->id) }}" data-url="{{ route('personas-externo.show', $externo->id) }}"
                    class="btn-outline">Cancelar</a>
                 <button type="submit" class="btn-new">Guardar cambios</button>
             </div>

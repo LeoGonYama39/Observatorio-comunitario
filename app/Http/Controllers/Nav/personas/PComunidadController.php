@@ -360,8 +360,10 @@ class PComunidadController extends Controller
         return compact('usuaria', 'actividades');
     }
 
-    private function getUsuariaByID($id) {
+    private function getUsuariaByID($id)
+    {
         return PComunidad::with([
+            'colonia',
             'difuciones',
             'sustentos',
             'noTrabajos',
@@ -371,12 +373,6 @@ class PComunidadController extends Controller
             'talleresComoParticipante.taller',
             'talleresComoTallerista.taller',
         ])
-            ->leftJoin(
-                'colonia',
-                'p_comunidad.colonia_id',
-                '=',
-                'colonia.id'
-            )
             ->select(
                 'p_comunidad.id',
                 'p_comunidad.nombre',
@@ -387,6 +383,7 @@ class PComunidadController extends Controller
                 'p_comunidad.num_hijos',
                 'p_comunidad.ocupacion',
                 'p_comunidad.direccion',
+                'p_comunidad.colonia_id',
                 'p_comunidad.colonia_otro',
                 'p_comunidad.alcaldia',
                 'p_comunidad.alcaldia_otro',
@@ -403,8 +400,6 @@ class PComunidadController extends Controller
                 'p_comunidad.telefono_casa',
                 'p_comunidad.lider',
                 'p_comunidad.saberes',
-                'colonia.nombre AS colonia',
-                'colonia.id AS colonia_id',
             )
             ->where('p_comunidad.id', $id)
             ->first();

@@ -254,7 +254,7 @@
             </div>
 
             <div class="form-actions">
-                <a href="{{ route('personas-usuarias.index') }}" data-url="{{ route('personas-usuarias.index') }}"
+                <a href="{{ route('personas-usuarias.show', $usuaria->id) }}" data-url="{{ route('personas-usuarias.show', $usuaria->id) }}"
                    class="btn-outline">Cancelar</a>
                 <button type="submit" class="btn-new">Registrar cambio</button>
             </div>

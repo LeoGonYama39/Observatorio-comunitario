@@ -54,7 +54,7 @@
             </div>
 
             <div class="form-actions">
-                <a href="{{ route('ejes.index') }}" data-url="{{ route('ejes.index') }}"
+                <a href="{{ route('ejes.show', $eje->id) }}" data-url="{{ route('ejes.show', $eje->id) }}"
                    class="btn-outline">Cancelar</a>
                 <button type="submit" class="btn-new">Registrar cambio</button>
             </div>
