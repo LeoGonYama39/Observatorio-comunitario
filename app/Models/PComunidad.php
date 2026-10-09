@@ -81,17 +81,17 @@ class PComunidad extends Model
 	];
 
 	protected $fillable = [
-		'nombre',
-		'ap_pat',
+		'nombre',       //[NN]
+		'ap_pat',       //[NN]
 		'ap_mat',
-		'genero',
-		'birth_date',
+		'genero',       //[NN]
+		'birth_date',   //[NN]
 		'estado_civil',
 		'num_hijos',
 		'nv_escolar',
 		'ocupacion',
 		'direccion',
-		'colonia_id',
+		'colonia_id',   //[NN]
 		'colonia_otro',
 		'alcaldia',
 		'alcaldia_otro',
@@ -105,7 +105,9 @@ class PComunidad extends Model
 		'habitantes_mas_18',
 		'habitantes_mas_60',
 		'lider',
-		'saberes'
+		'saberes',
+        'temporada',    //[NN]
+        'anio'          //[NN]
 	];
 
     protected $appends = [

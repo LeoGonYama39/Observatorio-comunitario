@@ -62,7 +62,18 @@
             @method('PUT')
 
             <div class="form-card">
+                <h3 class="form-section-title">Registro de periodo</h3>
+                <div class="form-grid">
+                    @include('system.parts.forms.enum_select', ['name' => 'temporada', 'label' => 'Temporada', 'options' => $opTemporada, 'obligatorio' => true, 'old_option' => $usuaria->temporada])
 
+                    <div class="form-field">
+                        <label>Año <span class="required">*</span></label>
+                        <input type="number" name="anio" class="form-input" value="{{ old('anio', $usuaria->anio) }}">
+                        @error('anio') <span class="field-error">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+
+                <hr class="form-separator">
                 <h3 class="form-section-title">Datos personales</h3>
                 <div class="form-grid">
                     <div class="form-field">
@@ -87,13 +98,13 @@
                     </div>
 
                     <div class="form-field">
-                        <label>Fecha de nacimiento</label>
+                        <label>Fecha de nacimiento <span class="required">*</span></label>
                         <input type="date" name="birth_date" class="form-input"
                                value="{{ old('birth_date', $usuaria->birth_date?->format('Y-m-d')) }}">
                         @error('birth_date') <span class="field-error">{{ $message }}</span> @enderror
                     </div>
 
-                    @include('system.parts.forms.enum_select', ['name' => 'genero', 'label' => 'Género', 'options' => $generos, 'old_option' => $usuaria->genero])
+                    @include('system.parts.forms.enum_select', ['name' => 'genero', 'label' => 'Género', 'options' => $generos, 'old_option' => $usuaria->genero, 'obligatorio' => true])
                     @include('system.parts.forms.enum_select', ['name' => 'estado_civil', 'label' => 'Estado civil', 'options' => $estadoCivil, 'old_option' => $usuaria->estado_civil])
 
                     <div class="form-field">
@@ -125,7 +136,7 @@
                     </div>
 
                     <div class="form-field">
-                        <label>Colonia</label>
+                        <label>Colonia <span class="required">*</span></label>
                         <div class="select-shell">
                             <select name="colonia_id" class="form-select"
                                     onchange="toggleOtroField(this, 'colonia_otro_field', 'otro')">

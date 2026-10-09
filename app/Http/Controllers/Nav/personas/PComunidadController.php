@@ -95,6 +95,9 @@ class PComunidadController extends Controller
 
                     'lider'   => $request->boolean('lider'),
                     'saberes' => $limpiar($validated['saberes'] ?? null),
+
+                    'anio'    => $validated['anio'],
+                    'temporada' => $validated['temporada'],
                 ]);
 
                 // Tablas intermedias: sync() recibe directamente la lista de ids ya validada
@@ -210,6 +213,9 @@ class PComunidadController extends Controller
 
                 $personas_usuaria->lider = $request->boolean('lider');
                 $personas_usuaria->saberes = $limpiar($validated['saberes'] ?? null);
+
+                $personas_usuaria->anio = $validated['anio'];
+                $personas_usuaria->temporada = $validated['temporada'];
 
                 // Guardar cambios de p_comunidad
                 $personas_usuaria->save();
@@ -400,6 +406,8 @@ class PComunidadController extends Controller
                 'p_comunidad.telefono_casa',
                 'p_comunidad.lider',
                 'p_comunidad.saberes',
+                'p_comunidad.temporada',
+                'p_comunidad.anio',
             )
             ->where('p_comunidad.id', $id)
             ->first();
@@ -419,6 +427,7 @@ class PComunidadController extends Controller
         $serviciosMedicos = ServicioMedico::select('id', 'nombre')->get();
         $personasDependen = PersonasDependen::select('id', 'nombre')->get();
         $colonias = Colonia::select('id', 'nombre')->get();
+        $opTemporada = $datosUsuario->getEnumValues('p_comunidad', 'temporada');
 
         return compact(
             'generos',
@@ -433,7 +442,8 @@ class PComunidadController extends Controller
             'noTrabaja',
             'serviciosMedicos',
             'personasDependen',
-            'colonias'
+            'colonias',
+            'opTemporada',
         );
     }
 
@@ -442,15 +452,15 @@ class PComunidadController extends Controller
                 'nombre'  => ['required', 'string', 'max:40'],
                 'ap_pat'  => ['required', 'string', 'max:40'],
                 'ap_mat'  => ['nullable', 'string', 'max:40'],
-                'birth_date'   => ['nullable', 'date', 'before_or_equal:today'],
-                'genero'       => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'genero'))],
+                'birth_date'   => ['required', 'date', 'before_or_equal:today'],
+                'genero'       => ['required', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'genero'))],
                 'estado_civil' => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'estado_civil'))],
                 'num_hijos'    => ['nullable', 'integer', 'min:0', 'max:255'],
                 'nv_escolar'   => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'nv_escolar'))],
                 'ocupacion'    => ['nullable', 'string', 'max:50'],
 
                 'direccion'    => ['nullable', 'string', 'max:200'],
-                'colonia_id'   => ['nullable', $esColoniaOtro ? Rule::in(['otro']) : Rule::exists(Colonia::class, 'id')],
+                'colonia_id'   => ['required', $esColoniaOtro ? Rule::in(['otro']) : Rule::exists(Colonia::class, 'id')],
                 'colonia_otro' => [Rule::requiredIf($esColoniaOtro), 'nullable', 'string', 'max:50'],
                 'alcaldia'     => ['nullable', 'string', Rule::in($datosUsuario->getEnumValues('p_comunidad', 'alcaldia'))],
                 'alcaldia_otro' => [Rule::requiredIf($esAlcaldiaOtros), 'nullable', 'string', 'max:50'],
@@ -467,6 +477,9 @@ class PComunidadController extends Controller
 
                 'saberes' => ['nullable', 'string', 'max:255'],
                 'lider'   => ['nullable', 'boolean'],
+
+                "temporada" => ["required", "string", Rule::in($datosUsuario->getEnumValues('p_comunidad', 'temporada')),],
+                "anio" => ["required", "digits:4", "integer", "min:1901", "max:2155",],
 
                 'difusion'            => ['nullable', 'array'],
                 'difusion.*'          => ['integer', 'distinct', 'exists:difucion,id'],
@@ -488,8 +501,10 @@ class PComunidadController extends Controller
             'ap_pat.required' => 'El apellido paterno es obligatorio.',
             'ap_pat.max'      => 'El apellido paterno no puede tener más de 40 caracteres.',
             'ap_mat.max'      => 'El apellido materno no puede tener más de 40 caracteres.',
+            'birth_date.required' => 'La fecha de nacimiento es obligatoria.',
             'birth_date.date' => 'La fecha de nacimiento no es válida.',
             'birth_date.before_or_equal' => 'La fecha de nacimiento no puede ser futura.',
+            'genero.required' => 'El género es obligatorio.',
             'genero.in'       => 'El género seleccionado no es válido.',
             'estado_civil.in' => 'El estado civil seleccionado no es válido.',
             'num_hijos.integer' => 'El número de hijos debe ser un número entero.',
@@ -499,6 +514,7 @@ class PComunidadController extends Controller
             'ocupacion.max'   => 'La ocupación no puede tener más de 50 caracteres.',
 
             'direccion.max'   => 'La dirección no puede tener más de 200 caracteres.',
+            'colonia_id.required' => 'La colonia es obligatoria.',
             'colonia_id.exists' => 'La colonia seleccionada no es válida.',
             'colonia_id.in'     => 'La colonia seleccionada no es válida.',
             'colonia_otro.required' => 'Especifica el nombre de la colonia.',
@@ -525,6 +541,14 @@ class PComunidadController extends Controller
             'habitantes_mas_60.max'       => 'Los habitantes mayores de 60 no pueden ser más de 255.',
 
             'saberes.max' => 'El directorio de saberes no puede tener más de 255 caracteres.',
+
+            "temporada.required"        => "La temporada es obligatoria",
+            "temporada.in"              => "La temporada seleccionada no es válida",
+            "anio.required"             => "El año es obligatorio",
+            "anio.digits"               => "El año debe tener 4 dígitos",
+            "anio.integer"               => "El año debe ser un número entero",
+            "anio.min"                  => "El año debe ser mayor o igual a 1901",
+            "anio.max"                  => "El año debe ser menor o igual a 2155",
 
             'difusion.array'      => 'La difusión enviada no es válida.',
             'difusion.*.exists'   => 'Una de las opciones de difusión no es válida.',

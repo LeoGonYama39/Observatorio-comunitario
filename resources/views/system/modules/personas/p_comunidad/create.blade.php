@@ -59,12 +59,12 @@
                 </div>
 
                 <div class="form-field">
-                    <label>Fecha de nacimiento</label>
+                    <label>Fecha de nacimiento <span class="required">*</span></label>
                     <input type="date" name="birth_date" class="form-input" value="{{ old('birth_date') }}">
                     @error('birth_date') <span class="field-error">{{ $message }}</span> @enderror
                 </div>
 
-                @include('system.parts.forms.enum_select', ['name' => 'genero', 'label' => 'Género', 'options' => $generos])
+                @include('system.parts.forms.enum_select', ['name' => 'genero', 'label' => 'Género', 'options' => $generos, 'obligatorio' => true])
                 @include('system.parts.forms.enum_select', ['name' => 'estado_civil', 'label' => 'Estado civil', 'options' => $estadoCivil])
 
                 <div class="form-field">
@@ -86,6 +86,20 @@
 
             <hr class="form-separator">
 
+            <h3 class="form-section-title">Registro de periodo</h3>
+
+            <div class="form-grid">
+                @include('system.parts.forms.enum_select', ['name' => 'temporada', 'label' => 'Temporada', 'options' => $opTemporada, 'obligatorio' => true])
+
+                <div class="form-field">
+                    <label>Año <span class="required">*</span></label>
+                    <input type="number" name="anio" class="form-input" value="{{ old('anio') }}">
+                    @error('anio') <span class="field-error">{{ $message }}</span> @enderror
+                </div>
+            </div>
+
+            <hr class="form-separator">
+
             <h3 class="form-section-title">Domicilio y contacto</h3>
             <div class="form-grid">
                 <div class="form-field full-width">
@@ -96,7 +110,7 @@
                 </div>
 
                 <div class="form-field">
-                    <label>Colonia</label>
+                    <label>Colonia <span class="required">*</span></label>
                     <div class="select-shell">
                         <select name="colonia_id" class="form-select"
                                 onchange="toggleOtroField(this, 'colonia_otro_field', 'otro')">
@@ -115,7 +129,7 @@
                 </div>
 
                 <div class="form-field" id="colonia_otro_field" {{ old('colonia_id') === 'otro' ? '' : 'hidden' }}>
-                    <label>Especificar colonia</label>
+                    <label>Especificar colonia <span class="required">*</span></label>
                     <input type="text" name="colonia_otro" class="form-input" maxlength="50"
                            value="{{ old('colonia_otro') }}">
                     @error('colonia_otro') <span class="field-error">{{ $message }}</span> @enderror

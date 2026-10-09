@@ -65,6 +65,12 @@
                     </div>
                 </div>
                 <div class="info-field">
+                    <label>Registro de periodo</label>
+                    <div class="value">
+                        <strong>{{ ucfirst($usuaria->temporada) }} {{ $usuaria->anio }}</strong>
+                    </div>
+                </div>
+                <div class="info-field">
                     <label>Edad</label>
                     <div class="value {{ $usuaria->edad ? '' : 'empty' }}">
                         {{ $usuaria->edad ? $usuaria->edad . ' años' : '-' }}
