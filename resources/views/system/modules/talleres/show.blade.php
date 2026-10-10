@@ -365,8 +365,8 @@
                                 </svg>
                                 Editar grupo
                             </a>
-                            <a href="#"
-                               data-url="#" class="btn-outline btn-small">
+                            <a href="{{ route('talleres.talleristas.edit', $generacion->id) }}"
+                               data-url="{{ route('talleres.talleristas.edit', $generacion->id) }}" class="btn-outline btn-small">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
                                      stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M14.7 6.3a4 4 0 1 1-5.4 5.4L2 19v3h3l7.3-7.3" />

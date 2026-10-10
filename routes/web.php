@@ -75,6 +75,8 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::delete('/sistema/talleres/{taller}/gen', [TalleresGenController::class, 'delete_gen'])->name('talleres.gen.destroy');
     Route::get('/sistema/talleres/{grupo}/grupo', [TalleresGenController::class, 'edit_grupo'])->name('talleres.grupo.edit');
     Route::put('/sistema/talleres/{grupo}/grupo', [TalleresGenController::class, 'update_grupo'])->name('talleres.grupo.update');
+    Route::get('/sistema/talleres/{grupo}/talleristas', [ParticipantesController::class, 'edit_talleristas'])->name('talleres.talleristas.edit');
+    Route::put('/sistema/talleres/{grupo}/talleristar', [ParticipantesController::class, 'update_talleristas'])->name('talleres.talleristas.update');
 
     //Rutas para colonias
     Route::resource('/sistema/colonias', ColoniasController::class);

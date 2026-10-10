@@ -11,6 +11,7 @@ use App\Models\PCentro;
 use App\Models\PComunidad;
 use App\Models\PExterno;
 use App\Models\Proyectos\Proyecto;
+use App\Models\Talleres\TallerGen;
 use Illuminate\Http\Request;
 use App\Models\Talleres\Taller;
 use Illuminate\Support\Facades\DB;
@@ -120,6 +121,80 @@ class ParticipantesController extends Controller {
     public function update_proyecto(Request $request, Proyecto $proyecto)
     {
         return $this->update($request, $proyecto, 'proyectos.show');
+    }
+
+    public function edit_talleristas(Request $request, TallerGen $grupo)
+    {
+        $personasCentro = PCentro::all()->map(fn ($p) => (object) [
+            'id' => $p->id,
+            'nombre' => trim("$p->nombre $p->ap_pat $p->ap_mat"),
+            'subtitle' => $p->cargo ? ucfirst(str_replace('_', ' ', $p->cargo)) : null,
+        ]);
+
+        $personasComunidad = PComunidad::all()->map(fn ($p) => (object) [
+            'id' => $p->id,
+            'nombre' => trim("$p->nombre $p->ap_pat $p->ap_mat"),
+            'subtitle' => $p->colonia_otro ?? ($p->colonia->nombre ?? null),
+        ]);
+
+        $personasExterno = PExterno::all()->map(function ($externo) {
+            $participacion = $externo->ultima_participacion;
+            if (!$participacion) {
+                return null; // externo sin ninguna participación: no se puede vincular a un proyecto
+            }
+
+            return (object) [
+                'id' => $participacion->id, // id de la participación, no del externo
+                'nombre' => trim("$externo->nombre $externo->ap_pat $externo->ap_mat"),
+                'subtitle' => $externo->universidad,
+            ];
+        })->filter()->values();
+
+        $seleccionados = [
+            'centro'    => $grupo->talleristasCentro()->get()
+                ->mapWithKeys(fn ($p) => [$p->id => []])->toArray(),
+
+            'comunidad' => $grupo->talleristasComunidad()->get()
+                ->mapWithKeys(fn ($p) => [$p->id => []])->toArray(),
+
+            'externo'   => $grupo->talleristasExternos()->get()
+                ->mapWithKeys(fn ($part) => [
+                    $part->externo_id => ['participacion_id' => $part->id],
+                ])->toArray(),
+        ];
+
+
+        $view = view('system.modules.talleres.edit_talleristas', compact(
+            'grupo',
+            'personasCentro',
+            'personasComunidad',
+            'personasExterno',
+        ));
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
+    }
+
+    public function update_talleristas(Request $request, TallerGen $grupo)
+    {
+        $view = view('system.modules.talleres.edit_talleristas');
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
     }
 
     public function update_taller(Request $request, Taller $taller)

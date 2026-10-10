@@ -33,13 +33,15 @@ function initTableSearch() {
 //// Vincular participantes a un proyecto (selección en tabla + tarjeta de rol)
 
 //Lee los roles reales desde data-roles-proyecto (impreso por Blade desde la BD,
-//no una lista quemada aquí, para no desincronizarse con el enum real)
+//no una lista quemada aquí, para no desincronizarse con el enum real).
+//Normaliza a arreglo plano de valores, sea que el JSON venga como array o como objeto.
 function getRolesProyectoOpciones() {
     const container = document.querySelector('[data-roles-proyecto]');
     if (!container) return [];
 
     try {
-        return JSON.parse(container.dataset.rolesProyecto);
+        const datos = JSON.parse(container.dataset.rolesProyecto);
+        return Array.isArray(datos) ? datos : Object.values(datos);
     } catch (e) {
         console.error('No se pudo leer data-roles-proyecto', e);
         return [];
@@ -56,6 +58,13 @@ function formatRoleLabel(valor) {
 function toggleEntitySelection(row) {
     const tipo = row.dataset.tipo;
     const id = row.dataset.id;
+    // Solo existe en la tabla de externos: la participación a usar si se
+    // selecciona esta fila DESDE CERO (persona nueva, o re-agregada a propósito)
+    const participacionId = row.dataset.participacionId;
+    // La bandera vive una sola vez en el contenedor del picker (la imprime el partial
+    // según si recibió $roles), no repetida en el onclick de cada fila
+    const picker = row.closest('.entity-picker');
+    const conRoles = !picker || picker.dataset.conRoles !== '0';
     const container = document.getElementById('selected-' + tipo);
     const existing = container.querySelector('[data-card-id="' + id + '"]');
 
@@ -64,22 +73,45 @@ function toggleEntitySelection(row) {
         row.classList.remove('row-selected');
     } else {
         row.classList.add('row-selected');
-        addEntityCard(tipo, id, row.dataset.nombre, row.dataset.subtitle || '');
+        addEntityCard(tipo, id, row.dataset.nombre, row.dataset.subtitle || '', participacionId, conRoles);
     }
 }
 
 //Crea la tarjeta con el dropdown de rol y el campo "otro" (oculto hasta elegir "Otro")
-function addEntityCard(tipo, id, nombre, subtitle) {
+function addEntityCard(tipo, id, nombre, subtitle, participacionId, conRoles = true) {
     const container = document.getElementById('selected-' + tipo);
     const otroFieldId = 'otro_field_' + tipo + '_' + id;
-
-    const opcionesHtml = getRolesProyectoOpciones()
-        .map(valor => '<option value="' + valor + '">' + formatRoleLabel(valor) + '</option>')
-        .join('');
 
     const card = document.createElement('div');
     card.className = 'selected-entity-card';
     card.setAttribute('data-card-id', id);
+
+    // Con roles: dropdown + campo "otro". Sin roles (ej. talleristas): solo un hidden tipo[]
+    // para que el id viaje en el POST (sin ningún input, la tarjeta no mandaría nada).
+    let detalleHtml;
+    if (conRoles) {
+        const opcionesHtml = getRolesProyectoOpciones()
+            .map(valor => '<option value="' + valor + '">' + formatRoleLabel(valor) + '</option>')
+            .join('');
+
+        detalleHtml =
+            '<div class="entity-rol-group">' +
+            '<div class="select-shell">' +
+            '<select class="form-select" required name="roles_' + tipo + '[' + id + '][rol]" ' +
+            'onchange="onEntityRolChange(this, \'' + otroFieldId + '\')">' +
+            '<option value="">Seleccionar rol…</option>' +
+            opcionesHtml +
+            '</select>' +
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+            '<path d="M6 9l6 6 6-6"/>' +
+            '</svg>' +
+            '</div>' +
+            '<input type="text" class="form-input" id="' + otroFieldId + '" ' +
+            'name="roles_' + tipo + '[' + id + '][otros]" placeholder="Especificar otro rol" maxlength="30" hidden>' +
+            '</div>';
+    } else {
+        detalleHtml = '<input type="hidden" name="' + tipo + '[]" value="' + id + '">';
+    }
 
     card.innerHTML =
         '<div class="entity-card-head">' +
@@ -94,20 +126,10 @@ function addEntityCard(tipo, id, nombre, subtitle) {
         '</svg>' +
         '</button>' +
         '</div>' +
-        '<div class="entity-rol-group">' +
-        '<div class="select-shell">' +
-        '<select class="form-select" required name="roles_' + tipo + '[' + id + '][rol]" ' +
-        'onchange="onEntityRolChange(this, \'' + otroFieldId + '\')">' +
-        '<option value="">Seleccionar rol…</option>' +
-        opcionesHtml +
-        '</select>' +
-        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
-        '<path d="M6 9l6 6 6-6"/>' +
-        '</svg>' +
-        '</div>' +
-        '<input type="text" class="form-input" id="' + otroFieldId + '" ' +
-        'name="roles_' + tipo + '[' + id + '][otros]" placeholder="Especificar otro rol" maxlength="30" hidden>' +
-        '</div>';
+        detalleHtml +
+        (participacionId
+            ? '<input type="hidden" name="roles_' + tipo + '[' + id + '][participacion_id]" value="' + participacionId + '">'
+            : '');
 
     //textContent (no innerHTML) para que un nombre con caracteres raros no rompa ni inyecte HTML
     card.querySelector('.person-name').textContent = nombre;
@@ -153,4 +175,3 @@ function filterEntityRows(input) {
         row.style.display = name.textContent.toLowerCase().includes(search) ? '' : 'none';
     });
 }
-

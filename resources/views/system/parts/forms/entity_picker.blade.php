@@ -10,7 +10,7 @@
     $roles = $roles ?? [];
 @endphp
 
-<div class="entity-picker">
+<div class="entity-picker" data-con-roles="{{ empty($roles) ? '0' : '1' }}">
     <h3 class="form-section-title">{{ $label }}</h3>
 
     <div class="table-search">
@@ -29,6 +29,7 @@
                     <tr class="selectable-row {{ array_key_exists($option->id, $selected) ? 'row-selected' : '' }}"
                         data-tipo="{{ $tipo }}" data-id="{{ $option->id }}"
                         data-nombre="{{ $option->nombre }}" data-subtitle="{{ $option->subtitle ?? '' }}"
+                        @if(isset($option->participacion_id)) data-participacion-id="{{ $option->participacion_id }}" @endif
                         onclick="toggleEntitySelection(this)">
                         <td class="select-check-cell">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -70,23 +71,31 @@
                         </svg>
                     </button>
                 </div>
-                <div class="entity-rol-group">
-                    <div class="select-shell">
-                        <select class="form-select" required name="roles_{{ $tipo }}[{{ $id }}][rol]"
-                                onchange="onEntityRolChange(this, 'otro_field_{{ $tipo }}_{{ $id }}')">
-                            <option value="">Seleccionar rol…</option>
-                            @foreach($roles as $valor)
-                                <option value="{{ $valor }}" {{ $pivot['rol'] === $valor ? 'selected' : '' }}>{{ ucfirst(str_replace('_', ' ', $valor)) }}</option>
-                            @endforeach
-                        </select>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M6 9l6 6 6-6"/>
-                        </svg>
+                @if(!empty($roles))
+                    <div class="entity-rol-group">
+                        <div class="select-shell">
+                            <select class="form-select" required name="roles_{{ $tipo }}[{{ $id }}][rol]"
+                                    onchange="onEntityRolChange(this, 'otro_field_{{ $tipo }}_{{ $id }}')">
+                                <option value="">Seleccionar rol…</option>
+                                @foreach($roles as $valor)
+                                    <option value="{{ $valor }}" {{ ($pivot['rol'] ?? null) === $valor ? 'selected' : '' }}>{{ ucfirst(str_replace('_', ' ', $valor)) }}</option>
+                                @endforeach
+                            </select>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M6 9l6 6 6-6"/>
+                            </svg>
+                        </div>
+                        <input type="text" class="form-input" id="otro_field_{{ $tipo }}_{{ $id }}"
+                               name="roles_{{ $tipo }}[{{ $id }}][otros]" placeholder="Especificar otro rol" maxlength="30"
+                               value="{{ $pivot['otros'] ?? '' }}" {{ ($pivot['rol'] ?? '') === 'otro' ? '' : 'hidden' }}>
                     </div>
-                    <input type="text" class="form-input" id="otro_field_{{ $tipo }}_{{ $id }}"
-                           name="roles_{{ $tipo }}[{{ $id }}][otros]" placeholder="Especificar otro rol" maxlength="30"
-                           value="{{ $pivot['otros'] ?? '' }}" {{ ($pivot['rol'] ?? '') === 'otro' ? '' : 'hidden' }}>
-                </div>
+                @else
+                    {{-- Sin roles (ej. talleristas): sin ningún input la tarjeta no mandaría nada en el POST --}}
+                    <input type="hidden" name="{{ $tipo }}[]" value="{{ $id }}">
+                @endif
+                @if(isset($pivot['participacion_id']))
+                    <input type="hidden" name="roles_{{ $tipo }}[{{ $id }}][participacion_id]" value="{{ $pivot['participacion_id'] }}">
+                @endif
             </div>
         @endforeach
     </div>
