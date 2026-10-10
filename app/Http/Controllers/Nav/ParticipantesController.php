@@ -64,17 +64,26 @@ class ParticipantesController extends Controller {
         ]);
 
         $personasExterno = PExterno::all()->map(function ($externo) {
-            $participacion = $externo->ultima_participacion;
-            if (!$participacion) {
-                return null; // externo sin ninguna participación: no se puede vincular a un proyecto
+            $participacionReciente = $externo->ultima_participacion;
+            if (!$participacionReciente) {
+                return null; // sin ninguna participación, no se puede vincular a un proyecto
             }
 
             return (object) [
-                'id' => $participacion->id, // id de la participación, no del externo
+                'id' => $externo->id, // id del EXTERNO, ya no de la participación
                 'nombre' => trim("$externo->nombre $externo->ap_pat $externo->ap_mat"),
                 'subtitle' => $externo->universidad,
+                'participacion_id' => $participacionReciente->id,
             ];
         })->filter()->values();
+
+        $seleccionadosExterno = $entidad->rolesExternos()->get()->mapWithKeys(fn ($participacion) => [
+            $participacion->externo_id => [
+                'rol' => $participacion->pivot->rol,
+                'otros' => $participacion->pivot->otros,
+                'participacion_id' => $participacion->id,
+            ],
+        ])->toArray();
 
         $seleccionados = [
             'centro'      => $entidad->rolesCentro()->get()->mapWithKeys(fn ($p) => [
@@ -86,9 +95,7 @@ class ParticipantesController extends Controller {
             'institucion' => $entidad->instituciones()->get()->mapWithKeys(fn ($i) => [
                 $i->id => ['rol' => $i->pivot->rol, 'otros' => $i->pivot->otros],
             ])->toArray(),
-            'externo'     => $entidad->rolesExternos()->get()->mapWithKeys(fn ($part) => [
-                $part->id => ['rol' => $part->pivot->rol, 'otros' => $part->pivot->otros],
-            ])->toArray(),
+            'externo'     => $seleccionadosExterno,
         ];
 
         $rolesOpciones = $this->rolesValidos($entidad);
@@ -213,12 +220,6 @@ class ParticipantesController extends Controller {
             );
 
             $this->validarIdsExisten(
-                $validated['roles_externo'] ?? [],
-                Participacion::class,
-                'externo (participación)'
-            );
-
-            $this->validarIdsExisten(
                 $validated['roles_comunidad'] ?? [],
                 PComunidad::class,
                 'comunidad'
@@ -238,7 +239,7 @@ class ParticipantesController extends Controller {
                 );
 
                 $entidad->rolesExternos()->sync(
-                    $this->prepararSync(
+                    $this->prepararSyncExterno(
                         $request->input('roles_externo', [])
                     )
                 );
@@ -314,6 +315,18 @@ class ParticipantesController extends Controller {
         }
     }
 
+    private function prepararSyncExterno(array $rolesExterno): array
+    {
+        $resultado = [];
+        foreach ($rolesExterno as $datos) {
+            $resultado[$datos['participacion_id']] = [
+                'rol'   => $datos['rol'],
+                'otros' => $datos['rol'] === 'otro' ? ($datos['otros'] ?? null) : null,
+            ];
+        }
+        return $resultado;
+    }
+
     private function getValidateParticipacion($request, $entidad) {
         $rolesValidos = $this->rolesValidos($entidad);
 
@@ -322,9 +335,10 @@ class ParticipantesController extends Controller {
             'roles_centro.*.rol'          => ['required', 'string', Rule::in($rolesValidos)],
             'roles_centro.*.otros'        => ['nullable', 'string', 'max:30', 'required_if:roles_centro.*.rol,otro'],
 
-            'roles_externo'               => ['nullable', 'array'],
-            'roles_externo.*.rol'         => ['required', 'string', Rule::in($rolesValidos)],
-            'roles_externo.*.otros'       => ['nullable', 'string', 'max:30', 'required_if:roles_externo.*.rol,otro'],
+            'roles_externo'                     => ['nullable', 'array'],
+            'roles_externo.*.rol'               => ['required', 'string', Rule::in($rolesValidos)],
+            'roles_externo.*.otros'             => ['nullable', 'string', 'max:30', 'required_if:roles_externo.*.rol,otro'],
+            'roles_externo.*.participacion_id'  => ['required', 'integer', 'exists:participaciones,id'],
 
             'roles_comunidad'             => ['nullable', 'array'],
             'roles_comunidad.*.rol'       => ['required', 'string', Rule::in($rolesValidos)],
@@ -343,6 +357,8 @@ class ParticipantesController extends Controller {
             'roles_externo.*.rol.in'             => 'Uno de los roles seleccionados de personas externas no es válido.',
             'roles_externo.*.otros.max'          => 'El campo "otro rol" no puede tener más de 30 caracteres.',
             'roles_externo.*.otros.required_if'  => 'Especifica el rol cuando eliges "Otro".',
+            'roles_externo.*.participacion_id.required' => 'Falta la participación a vincular de alguna persona externa.',
+            'roles_externo.*.participacion_id.exists'   => 'Una de las participaciones seleccionadas ya no existe.',
 
             'roles_comunidad.*.rol.required'       => 'Falta elegir un rol para alguno de los seleccionados de la Comunidad.',
             'roles_comunidad.*.rol.in'             => 'Uno de los roles seleccionados de la Comunidad no es válido.',
