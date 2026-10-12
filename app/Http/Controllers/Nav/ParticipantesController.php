@@ -51,7 +51,10 @@ class ParticipantesController extends Controller {
             'subtitle' => $p->cargo ? ucfirst(str_replace('_', ' ', $p->cargo)) : null,
         ]);
 
-        $personasComunidad = PComunidad::all()->map(fn ($p) => (object) [
+        $personasComunidad = PComunidad::with('colonia')
+        ->where('lider', true)
+        ->get()
+        ->map(fn ($p) => (object) [
             'id' => $p->id,
             'nombre' => trim("$p->nombre $p->ap_pat $p->ap_mat"),
             'subtitle' => $p->colonia_otro ?? ($p->colonia->nombre ?? null),
@@ -138,7 +141,10 @@ class ParticipantesController extends Controller {
             'subtitle' => $p->cargo ? ucfirst(str_replace('_', ' ', $p->cargo)) : null,
         ]);
 
-        $personasComunidad = PComunidad::all()->map(fn ($p) => (object) [
+        $personasComunidad = PComunidad::with('colonia')
+        ->whereNotNull('saberes')
+        ->get()
+        ->map(fn ($p) => (object) [
             'id' => $p->id,
             'nombre' => trim("$p->nombre $p->ap_pat $p->ap_mat"),
             'subtitle' => $p->colonia_otro ?? ($p->colonia->nombre ?? null),
@@ -200,67 +206,24 @@ class ParticipantesController extends Controller {
     public function update_talleristas(Request $request, TallerGen $grupo)
     {
         try {
-            $validated = $this->getValidateParticipacion($request, $entidad);
+            $validated = $this->getValidateTalleristas($request);
 
-            $this->validarIdsExisten(
-                $validated['roles_centro'] ?? [],
-                PCentro::class,
-                'centro'
-            );
-
-            $this->validarIdsExisten(
-                $validated['roles_comunidad'] ?? [],
-                PComunidad::class,
-                'comunidad'
-            );
-
-            $this->validarIdsExisten(
-                $validated['roles_institucion'] ?? [],
-                Institucion::class,
-                'institución'
-            );
-
-            DB::transaction(function () use ($request, $entidad) {
-                $entidad->rolesCentro()->sync(
-                    $this->prepararSync(
-                        $request->input('roles_centro', [])
-                    )
-                );
-
-                $entidad->rolesExternos()->sync(
-                    $this->prepararSyncExterno(
-                        $request->input('roles_externo', [])
-                    )
-                );
-
-                $entidad->rolesComunidad()->sync(
-                    $this->prepararSync(
-                        $request->input('roles_comunidad', [])
-                    )
-                );
-
-                $entidad->instituciones()->sync(
-                    $this->prepararSync(
-                        $request->input('roles_institucion', [])
-                    )
-                );
+            DB::transaction(function () use ($validated, $grupo) {
+                $grupo->talleristasCentro()->sync($validated['centro'] ?? []);
+                $grupo->talleristasComunidad()->sync($validated['comunidad'] ?? []);
+                $participacionIds = collect($validated['roles_externo'] ?? [])->pluck('participacion_id')->all();
+                $grupo->talleristasExternos()->sync($participacionIds);
             });
 
             return redirect()
-                ->route($rutaShow, $entidad->id)
-                ->with('success', 'Involucrados actualizados con éxito.');
-
+                ->route('talleres.show', $grupo->taller->id)
+                ->with('success', 'Talleristas actualizados con éxito.');
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;
-
         } catch (\Throwable $e) {
             return back()
                 ->withInput()
-                ->with(
-                    'error',
-                    'Ocurrió un error al guardar en la base de datos: ' .
-                    $e->getMessage()
-                );
+                ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
         }
     }
 
@@ -387,7 +350,7 @@ class ParticipantesController extends Controller {
         return $resultado;
     }
 
-    private function getValidateParticipacion($request, $entidad) {
+    private function getValidateParticipacion(Request $request, $entidad) {
         $rolesValidos = $this->rolesValidos($entidad);
 
         return $request->validate([

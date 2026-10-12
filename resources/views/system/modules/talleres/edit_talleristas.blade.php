@@ -54,7 +54,7 @@
 
         @include('system.parts.forms.entity_picker', [
         'tipo' => 'comunidad',
-        'label' => 'Personas de la Comunidad',
+        'label' => 'Directorio de saberes',
         'options' => $personasComunidad,
         'selected' => $seleccionados['comunidad'],
         ])

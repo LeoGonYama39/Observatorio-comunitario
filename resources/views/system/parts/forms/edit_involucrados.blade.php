@@ -57,7 +57,7 @@
 
             @include('system.parts.forms.entity_picker', [
                 'tipo' => 'comunidad',
-                'label' => 'Personas de la Comunidad',
+                'label' => 'Líderes comunitarios',
                 'options' => $personasComunidad,
                 'selected' => $seleccionados['comunidad'],
                 'roles' => $rolesOpciones,
