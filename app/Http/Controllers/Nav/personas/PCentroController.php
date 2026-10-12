@@ -105,7 +105,7 @@ class PCentroController extends Controller
     }
 
 
-    public function show(Request $request, $id)
+    public function show(Request $request, int $id)
     {
         $centro = $this->getDatosShow($id);
 
@@ -123,7 +123,7 @@ class PCentroController extends Controller
     }
 
 
-    public function edit(Request $request, $id)
+    public function edit(Request $request, int $id)
     {
         $datosUsuario = new DatosUsuario();
         $opCargo = $datosUsuario->getEnumValues('p_centro', 'cargo');
@@ -252,7 +252,7 @@ class PCentroController extends Controller
     }
 
     //Obtiene los datos para ficha show
-    private function getDatosShow($id)
+    private function getDatosShow(int $id)
     {
         return PCentro::with([
             'areas:id,nombre,centro_id',

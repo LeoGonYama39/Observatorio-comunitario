@@ -144,7 +144,7 @@ class PExternoController extends Controller
         return $view;
     }
 
-    public function edit(Request $request, $id) {
+    public function edit(Request $request, int $id) {
         $datos = $this->getDatosEdit($id);
 
         $view = view("system.modules.personas.p_externo.edit", array_merge($datos ?? ["externo" => null]));
@@ -162,20 +162,26 @@ class PExternoController extends Controller
 
     public function update(Request $request, PExterno $personas_externo) {
         try {
+            // ¿En qué estado queda el acceso al sistema después de este update?
+            $teniaAcceso = !is_null($personas_externo->usuario);
+            $eliminarAcceso = $request->boolean('eliminar_acceso');
+            $crearAcceso = $request->boolean('crear_acceso');
+            $accesoActivo = !$eliminarAcceso && (($teniaAcceso || $crearAcceso));
+
             $messages = $this->getMessages();
             $validated = $request->validate(
                 [
                     "nombre" => ["required", "string", "max:40"],
                     "ap_pat" => ["required", "string", "max:40"],
                     "ap_mat" => ["nullable", "string", "max:40"],
-                    "responsabilidad_id" => [
-                        "nullable",
-                        "exists:responsabilidad,id",
-                    ],
+                    "responsabilidad_id" => [ "nullable", "exists:responsabilidad,id"],
                     "universidad" => ["nullable", "string", "max:100"],
                     "correo" => ["nullable", "string", "max:100"],
                     "matricula" => ["nullable", "string", "max:30"],
                     "carrera" => ["nullable", "string", "max:50"],
+
+                    'usuario' => [Rule::requiredIf($accesoActivo), 'nullable', 'string', 'max:20', Rule::unique('p_externo', 'usuario')->ignore($personas_externo->id)],
+                    'password' => [Rule::requiredIf($accesoActivo && !$teniaAcceso), 'nullable', 'string', 'min:6', 'max:255',],
                 ],
                 $messages
             );
@@ -188,6 +194,18 @@ class PExternoController extends Controller
             $personas_externo->correo = !empty($validated["correo"]) ? trim($validated["correo"]) : null;
             $personas_externo->matricula = !empty($validated["matricula"])  ? trim($validated["matricula"]) : null;
             $personas_externo->carrera = !empty($validated["carrera"]) ? trim($validated["carrera"]) : null;
+
+            if (!$accesoActivo) {
+                $personas_externo->usuario = null;
+                $personas_externo->password = null;
+                $personas_externo->remember_token = null;
+            } else {
+                $personas_externo->usuario = trim($validated['usuario']);
+
+                if (!empty($validated['password'])) {
+                    $personas_externo->password = Hash::make($validated['password']);
+                }
+            }
 
             $personas_externo->save();
 

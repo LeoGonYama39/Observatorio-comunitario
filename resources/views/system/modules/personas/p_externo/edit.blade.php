@@ -111,6 +111,87 @@
                         @error('responsabilidad_id') <span class="field-error">{{ $message }}</span> @enderror
                     </div>
                 </div>
+                <hr class="form-separator">
+
+                <h3 class="form-section-title">Acceso al sistema</h3>
+
+                @if ($externo->usuario)
+                    <div class="acceso-fields" id="accesoExistenteFields">
+                        <div class="form-grid">
+                            <div class="form-field">
+                                <label>Usuario<span class="required">*</span></label>
+                                <input type="text" name="usuario" class="form-input"
+                                       value="{{ old('usuario', $externo->usuario) }}">
+                                @error('usuario')
+                                <span class="field-error">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div class="form-field">
+                                <label>Nueva contraseña</label>
+                                <div class="input-shell">
+                                    <input type="password" name="password" id="password_field"
+                                           placeholder="Dejar en blanco para no cambiarla">
+                                    <button type="button" class="toggle-pass" onclick="togglePasswordField()"
+                                            aria-label="Mostrar contraseña">
+                                        <svg id="eye-icon-form" width="18" height="18" viewBox="0 0 24 24"
+                                             fill="none" stroke-width="1.8" stroke-linecap="round"
+                                             stroke-linejoin="round">
+                                            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/>
+                                            <circle cx="12" cy="12" r="3"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                @error('password')
+                                <span class="field-error">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-checkbox-row">
+                        <input type="checkbox" id="eliminar_acceso" name="eliminar_acceso" value="1"
+                               onchange="toggleEliminarAcceso(this)">
+                        <label for="eliminar_acceso">Eliminar acceso al sistema</label>
+                    </div>
+                @else
+                    <div class="form-checkbox-row">
+                        <input type="checkbox" id="crear_acceso" name="crear_acceso" value="1"
+                               onchange="toggleAccesoFields(this)" {{ old('crear_acceso') ? 'checked' : '' }}>
+                        <label for="crear_acceso">Crear acceso al sistema</label>
+                    </div>
+
+                    <div class="acceso-fields" id="accesoFields" {{ old('crear_acceso') ? '' : 'hidden' }}>
+                        <div class="form-grid">
+                            <div class="form-field">
+                                <label>Usuario <span class="required">*</span></label>
+                                <input type="text" name="usuario" class="form-input" value="{{ old('usuario') }}">
+                                @error('usuario')
+                                <span class="field-error">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div class="form-field">
+                                <label>Contraseña <span class="required">*</span></label>
+                                <div class="input-shell">
+                                    <input type="password" name="password" id="password_field">
+                                    <button type="button" class="toggle-pass" onclick="togglePasswordField()"
+                                            aria-label="Mostrar contraseña">
+                                        <svg id="eye-icon-form" width="18" height="18" viewBox="0 0 24 24"
+                                             fill="none" stroke-width="1.8" stroke-linecap="round"
+                                             stroke-linejoin="round">
+                                            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/>
+                                            <circle cx="12" cy="12" r="3"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                @error('password')
+                                <span class="field-error">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
 
             <div class="form-actions">
