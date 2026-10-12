@@ -27,7 +27,7 @@ class LoginController extends Controller {
 
         if (Auth::guard('externo')->attempt($credentials, $remember)) {
             $request->session()->regenerate();
-            return redirect()->intended('/menu');
+            return redirect()->intended('/sistema/proyectos');
         }
 
         return back()->withErrors([

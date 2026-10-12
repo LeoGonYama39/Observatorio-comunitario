@@ -4,6 +4,7 @@
     </div>
     <div class="nav-scroll">
         <nav>
+            @if ($otros->tipo === 'centro')
             <a class="nav-item {{ request()->routeIs('areas.*') ? 'active' : '' }}" href="{{ route('areas.index') }}"
                data-url="{{ route('areas.index') }}">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
@@ -69,6 +70,7 @@
                     Usuarias
                 </a>
             </div>
+            @endif
             <a class="nav-item {{ request()->routeIs('proyectos.*') ? 'active' : '' }}"
                href="{{ route('proyectos.index') }}" data-url="{{ route('proyectos.index') }}">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
@@ -78,6 +80,7 @@
                 </svg>
                 Proyectos
             </a>
+            @if ($otros->tipo === 'centro')
             <button
                 class="nav-item has-submenu {{ request()->routeIs('a-juridicas.*') || request()->routeIs('a-familiares.*')
                     ? 'section-active parent-active'
@@ -209,6 +212,7 @@
                 </svg>
                 Mapeos
             </button>
+            @endif
         </nav>
     </div>
     <div class="sidebar-logout">

@@ -26,14 +26,9 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [LoginController::class, 'store']);
 });
 
-// Para usuarios con inicio de sesión
-Route::middleware('auth:centro,externo')->group(function () {
-    Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
+// Rutas solo para los del centro (con acceso al sistema)
+Route::middleware('auth:centro')->group(function () {
     Route::get('/menu', [LoginController::class, 'abrirMenu'])->name('dashboard');
-    Route::get('/',  function () {return redirect()->route('dashboard');});
-
-    //Vistas del sistema con get (y asignación del nombre) para index
-    Route::get('/sistema', function () {return redirect()->route('personas-centro.index');});
 
     //Con las generadas por Laravel
     Route::resource('/sistema/areas', AreasController::class)->only(['index']);
@@ -41,7 +36,6 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::resource('/sistema/personas-centro', PCentroController::class);
     Route::resource('/sistema/personas-externo', PExternoController::class);
     Route::resource('/sistema/personas-usuarias', PComunidadController::class);
-    Route::resource('/sistema/proyectos', ProyectosController::class);
     Route::resource('/sistema/a-juridicas', AJuridicasController::class);
     Route::resource('/sistema/a-familiares', AFamiliaresController::class);
     Route::resource('/sistema/educ_basica', EducBasicController::class);
@@ -58,13 +52,8 @@ Route::middleware('auth:centro,externo')->group(function () {
     Route::put('/sistema/participacion/{participacion}', [PExternoController::class, 'update_participacion'])->name('personas-externo.update_participacion');
     Route::delete('/sistema/participacion/{participacion}', [PExternoController::class, 'destroy_participacion'])->name('personas-externo.destroy_participacion');
 
-    //Rutas para proyectos
-    Route::resource('/sistema/proyectos', ProyectosController::class);
-    Route::get('/sistema/proyectos/{proyecto}/participantes', [ParticipantesController::class, 'edit_proyecto'])->name('proyectos.participantes.edit');
-    Route::put('/sistema/proyectos/{proyecto}/participantes', [ParticipantesController::class, 'update_proyecto'])->name('proyectos.participantes.update');
-    Route::get('/sistema/proyectos/{proyecto}/historial', [ProyectosController::class, 'create_historial'])->name('proyectos.historial.create');
-    Route::post('/sistema/proyectos/{proyecto}/historial', [ProyectosController::class, 'store_historial'])->name('proyectos.historial.store');
-    Route::delete('/sistema/proyectos/{id}/historial/', [ProyectosController::class, 'destroy_historial'])->name('proyectos.historial.destroy');
+    //Rutas para proyectos, exclusivas para usuarios del centro
+    Route::resource('/sistema/proyectos', ProyectosController::class)->except(['index', 'show']);
 
     //Rutas para talleres
     Route::resource('/sistema/talleres', TalleresController::class);
@@ -91,7 +80,22 @@ Route::middleware('auth:centro,externo')->group(function () {
     ->name('responsabilidades.updateResponsable');
 });
 
+// Rutas para usuarios del centro y externos (con acceso al sistema)
+Route::middleware('auth:centro,externo')->group(function () {
+    Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
+    Route::get('/',  function () {return redirect()->route('dashboard');});
 
+    //Vistas del sistema con get (y asignación del nombre) para index
+    Route::get('/sistema', function () {return redirect()->route('proyectos.index');});
+
+    //Rutas para proyectos
+    Route::resource('/sistema/proyectos', ProyectosController::class)->only(['index', 'show']);
+    Route::get('/sistema/proyectos/{proyecto}/participantes', [ParticipantesController::class, 'edit_proyecto'])->name('proyectos.participantes.edit');
+    Route::put('/sistema/proyectos/{proyecto}/participantes', [ParticipantesController::class, 'update_proyecto'])->name('proyectos.participantes.update');
+    Route::get('/sistema/proyectos/{proyecto}/historial', [ProyectosController::class, 'create_historial'])->name('proyectos.historial.create');
+    Route::post('/sistema/proyectos/{proyecto}/historial', [ProyectosController::class, 'store_historial'])->name('proyectos.historial.store');
+    Route::delete('/sistema/proyectos/{id}/historial/', [ProyectosController::class, 'destroy_historial'])->name('proyectos.historial.destroy');
+});
 
 
 
