@@ -19,13 +19,6 @@
          stroke-linejoin="round">
         <path d="M9 6l6 6-6 6"/>
     </svg>
-    <a href="{{ route('talleres.show', $grupo->taller->id) }}" data-url="{{ route('talleres.show', $grupo->taller->id) }}" class="return-index">
-        {{ ucfirst($grupo->temporada) }} {{ $grupo->anio }}
-    </a>
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"
-         stroke-linejoin="round">
-        <path d="M9 6l6 6-6 6"/>
-    </svg>
     <span class="current">
             Talleristas
     </span>
@@ -49,21 +42,21 @@
         'tipo' => 'centro',
         'label' => 'Personas del Centro',
         'options' => $personasCentro,
-        //'selected' => $seleccionados['centro'],
+        'selected' => $seleccionados['centro'],
         ])
 
         @include('system.parts.forms.entity_picker', [
         'tipo' => 'externo',
         'label' => 'Personas Externas',
         'options' => $personasExterno,
-        //'selected' => $seleccionados['externo'],
+        'selected' => $seleccionados['externo'],
         ])
 
         @include('system.parts.forms.entity_picker', [
         'tipo' => 'comunidad',
         'label' => 'Personas de la Comunidad',
         'options' => $personasComunidad,
-        //'selected' => $seleccionados['comunidad'],
+        'selected' => $seleccionados['comunidad'],
         ])
     </div>
     <div class="form-actions">

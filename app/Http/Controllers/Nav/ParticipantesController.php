@@ -144,16 +144,23 @@ class ParticipantesController extends Controller {
             'subtitle' => $p->colonia_otro ?? ($p->colonia->nombre ?? null),
         ]);
 
+        $instituciones = Institucion::all()->map(fn ($i) => (object) [
+            'id' => $i->id,
+            'nombre' => $i->nombre,
+            'subtitle' => null,
+        ]);
+
         $personasExterno = PExterno::all()->map(function ($externo) {
-            $participacion = $externo->ultima_participacion;
-            if (!$participacion) {
-                return null; // externo sin ninguna participación: no se puede vincular a un proyecto
+            $participacionReciente = $externo->ultima_participacion;
+            if (!$participacionReciente) {
+                return null; // sin ninguna participación, no se puede vincular a un proyecto
             }
 
             return (object) [
-                'id' => $participacion->id, // id de la participación, no del externo
+                'id' => $externo->id, // id del EXTERNO, ya no de la participación
                 'nombre' => trim("$externo->nombre $externo->ap_pat $externo->ap_mat"),
                 'subtitle' => $externo->universidad,
+                'participacion_id' => $participacionReciente->id,
             ];
         })->filter()->values();
 
@@ -176,6 +183,7 @@ class ParticipantesController extends Controller {
             'personasCentro',
             'personasComunidad',
             'personasExterno',
+            'seleccionados',
         ));
 
         if ($request->ajax()) {
@@ -191,17 +199,69 @@ class ParticipantesController extends Controller {
 
     public function update_talleristas(Request $request, TallerGen $grupo)
     {
-        $view = view('system.modules.talleres.edit_talleristas');
+        try {
+            $validated = $this->getValidateParticipacion($request, $entidad);
 
-        if ($request->ajax()) {
-            $sections = $view->renderSections();
-            return response()->json([
-                'content' => $sections['content'],
-                'title' => $sections['title'],
-            ]);
+            $this->validarIdsExisten(
+                $validated['roles_centro'] ?? [],
+                PCentro::class,
+                'centro'
+            );
+
+            $this->validarIdsExisten(
+                $validated['roles_comunidad'] ?? [],
+                PComunidad::class,
+                'comunidad'
+            );
+
+            $this->validarIdsExisten(
+                $validated['roles_institucion'] ?? [],
+                Institucion::class,
+                'institución'
+            );
+
+            DB::transaction(function () use ($request, $entidad) {
+                $entidad->rolesCentro()->sync(
+                    $this->prepararSync(
+                        $request->input('roles_centro', [])
+                    )
+                );
+
+                $entidad->rolesExternos()->sync(
+                    $this->prepararSyncExterno(
+                        $request->input('roles_externo', [])
+                    )
+                );
+
+                $entidad->rolesComunidad()->sync(
+                    $this->prepararSync(
+                        $request->input('roles_comunidad', [])
+                    )
+                );
+
+                $entidad->instituciones()->sync(
+                    $this->prepararSync(
+                        $request->input('roles_institucion', [])
+                    )
+                );
+            });
+
+            return redirect()
+                ->route($rutaShow, $entidad->id)
+                ->with('success', 'Involucrados actualizados con éxito.');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+
+        } catch (\Throwable $e) {
+            return back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Ocurrió un error al guardar en la base de datos: ' .
+                    $e->getMessage()
+                );
         }
-
-        return $view;
     }
 
     public function update_taller(Request $request, Taller $taller)
@@ -369,6 +429,41 @@ class ParticipantesController extends Controller {
             'roles_institucion.*.rol.in'             => 'Uno de los roles seleccionados de instituciones no es válido.',
             'roles_institucion.*.otros.max'          => 'El campo "otro rol" no puede tener más de 30 caracteres.',
             'roles_institucion.*.otros.required_if'  => 'Especifica el rol cuando eliges "Otro".',
+        ]);
+    }
+
+    private function getValidateTalleristas(Request $request) {
+        return $request->validate([
+            'centro'        => ['nullable', 'array'],
+            'centro.*'      => ['integer', 'distinct', 'exists:p_centro,id'],
+
+            'comunidad'     => ['nullable', 'array'],
+            'comunidad.*'   => ['integer', 'distinct', 'exists:p_comunidad,id'],
+
+            'externo'       => ['nullable', 'array'],
+            'externo.*'     => ['integer', 'distinct', 'exists:p_externo,id'],
+            'roles_externo' => ['nullable', 'array'],
+            'roles_externo.*.participacion_id' => ['required', 'integer', 'distinct', 'exists:participaciones,id'],
+        ], [
+            'centro.array'          => 'La lista de personas del Centro no es válida.',
+            'centro.*.integer'      => 'Una de las personas del Centro seleccionadas no es válida.',
+            'centro.*.distinct'     => 'Hay personas del Centro repetidas.',
+            'centro.*.exists'       => 'Una de las personas del Centro seleccionadas ya no existe.',
+
+            'comunidad.array'       => 'La lista de personas de la Comunidad no es válida.',
+            'comunidad.*.integer'   => 'Una de las personas de la Comunidad seleccionadas no es válida.',
+            'comunidad.*.distinct'  => 'Hay personas de la Comunidad repetidas.',
+            'comunidad.*.exists'    => 'Una de las personas de la Comunidad seleccionadas ya no existe.',
+
+            'externo.array'         => 'La lista de personas externas no es válida.',
+            'externo.*.integer'     => 'Una de las personas externas seleccionadas no es válida.',
+            'externo.*.distinct'    => 'Hay personas externas repetidas.',
+            'externo.*.exists'      => 'Una de las personas externas seleccionadas ya no existe.',
+
+            'roles_externo.*.participacion_id.required' => 'Falta la participación a vincular de alguna persona externa.',
+            'roles_externo.*.participacion_id.integer'  => 'Una de las participaciones seleccionadas no es válida.',
+            'roles_externo.*.participacion_id.distinct' => 'Hay participaciones repetidas.',
+            'roles_externo.*.participacion_id.exists'   => 'Una de las participaciones seleccionadas ya no existe.',
         ]);
     }
 
