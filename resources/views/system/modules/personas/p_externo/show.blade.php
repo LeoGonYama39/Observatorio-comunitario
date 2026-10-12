@@ -59,66 +59,66 @@
                 Información general
             </h3>
             <div class="info-grid">
-                @if ($externo->correo)
                     <div class="info-field">
                         <label>
                             Correo
                         </label>
-                        <div class="value">
-                            {{ $externo->correo }}
+                        <div class="value {{ $externo->correo ? '' : 'empty' }}">
+                            {{ $externo->correo ?? '-'}}
                         </div>
                     </div>
-                @endif
-                @if ($participaciones->isNotEmpty())
                     <div class="info-field">
                         <label>
                             Rol actual
                         </label>
                         <div class="value">
-                            {{ $participaciones[0]->activo ? ucfirst(str_replace('_', ' ', $participaciones[0]->tipo)) : 'No activo' }}
+                            {{ $participaciones->isNotEmpty() && $participaciones[0]->activo ? ucfirst(str_replace('_', ' ', $participaciones[0]->tipo)) : 'No activo' }}
                         </div>
                     </div>
-                @endif
-                @if ($externo->universidad)
                     <div class="info-field">
                         <label>
                             Universidad
                         </label>
-                        <div class="value">
-                            {{ $externo->universidad }}
+                        <div class="value {{ $externo->universidad ? '' : 'empty' }}">
+                            {{ $externo->universidad ?? '-' }}
                         </div>
                     </div>
-                @endif
-                @if ($externo->matricula)
                     <div class="info-field">
                         <label>
                             Matrícula
                         </label>
-                        <div class="value">
-                            {{ $externo->matricula }}
+                        <div class="value {{ $externo->matricula ? '' : 'empty' }}">
+                            {{ $externo->matricula ?? '-' }}
                         </div>
                     </div>
-                @endif
-                @if ($externo->carrera)
                     <div class="info-field">
                         <label>
                             Carrera
                         </label>
-                        <div class="value">
-                            {{ $externo->carrera }}
+                        <div class="value {{ $externo->carrera ? '' : 'empty' }}">
+                            {{ $externo->carrera ?? '-' }}
                         </div>
                     </div>
-                @endif
-                @if ($respons)
                     <div class="info-field">
                         <label>
                             Área (Actividad)
                         </label>
-                        <div class="value">
-                            {{ $area->nombre }} ({{ $respons->nombre }})
+                        <div class="value {{ $area && $respons ? '' : 'empty' }}">
+                            {{ $area && $respons ? $area->nombre . ' (' . $respons->nombre . ')' : '-' }}
                         </div>
                     </div>
-                @endif
+                <div class="info-field">
+                        <label>
+                            Acceso al sistema
+                        </label>
+                        <div class="value">
+                            @if($externo->usuario)
+                                    Activo
+                            @else
+                                    Inactivo
+                            @endif
+                        </div>
+                    </div>
             </div>
         </div>
         <div class="section-header">

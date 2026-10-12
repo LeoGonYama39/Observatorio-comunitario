@@ -169,8 +169,6 @@ class PCentroController extends Controller
                     'max:20',
                     Rule::unique('p_centro', 'usuario')->ignore($personas_centro->id),
                 ],
-                // Solo obligatoria si el acceso se está creando desde cero;
-                // si ya existía, en blanco significa "no cambiar la contraseña"
                 'password' => [
                     Rule::requiredIf($accesoActivo && !$teniaAcceso),
                     'nullable',
