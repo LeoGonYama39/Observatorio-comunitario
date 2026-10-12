@@ -70,11 +70,11 @@
                             {{ ucfirst($inscripcion['estado']) }}
                         </div>
                     </td>
-                    <td class="area-tag">
-                        {{ $inscripcion['curso'] }}
+                    <td class="area-tag {{ $inscripcion['curso'] ? '' : 'empty' }}">
+                        {{ $inscripcion['curso'] ?? '-'}}
                     </td>
-                    <td class="area-tag">
-                        {{ $inscripcion['avance'] }} acreditadas
+                    <td class="area-tag {{ $inscripcion['avance'] ? '' : 'empty' }}">
+                        {{ $inscripcion['avance'] ?? '-'}}
                     </td>
                 </tr>
             @endforeach

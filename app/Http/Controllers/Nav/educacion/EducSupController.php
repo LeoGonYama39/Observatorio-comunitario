@@ -92,45 +92,63 @@ class EducSupController extends Controller
     {
         $inscripciones = InscripcionEducativa::with([
             'comunidad:id,nombre,ap_pat,ap_mat',
+
             'inscripcionesCurso' => function ($query) {
                 $query->whereHas('curso', function ($query) {
-                    $query->where('tipo', 'media_superior');                            //A pesar de haber a las personas con cursos de básica, estos pueden tener
-                })                                                              //cursos de media-sup, entonces me quedo con los cursos solo de básica
+                    $query->where('tipo', 'media_superior');
+                })
                 ->with([
-                    'curso',
                     'curso.materias',
                     'materias',
                 ])
-                    ->orderBy('fecha_ingreso', 'desc');
+                ->orderBy('fecha_ingreso', 'desc');
             },
-        ])
-            ->whereHas('inscripcionesCurso.curso', function ($query) {
-                $query->where('tipo', 'media_superior');                //Filtro a las personas de InscripcionEducativa, para que solo me de los que
-            })                                                                 //tienen al menos un curso de básica en su .curso
-            ->get();
+        ])->get();
 
         return $inscripciones
             ->sortBy(function ($inscripcion) {
                 return $inscripcion->comunidad->nombre;
             })
             ->map(function ($inscripcion) {
+                $persona = $inscripcion->comunidad;
 
+                // Curso más reciente de educación media-superior
                 $curso = $inscripcion->inscripcionesCurso->first();
 
-                $acreditadas = $curso->materias
-                    ->filter(fn ($materia) => $materia->pivot->cursado)
-                    ->count();
+                if ($curso) {
+                    $acreditadas = $curso->materias
+                        ->filter(fn ($materia) => $materia->pivot->cursado)
+                        ->count();
 
-                $total = $curso->curso->materias->count();
+                    $total = $curso->curso->materias->count();
+
+                    $estado = $curso->estado;
+                    $nombreCurso = $curso->curso->nombre;
+                    $avance = "$acreditadas de $total acreditadas";
+                } else {
+                    // ¿Tiene algún curso de educación media-superior?
+                    $tieneOtroNivel = $inscripcion->inscripcionesCurso()
+                        ->whereHas('curso', function ($query) {
+                            $query->where('tipo', 'básica');
+                        })
+                        ->exists();
+
+                    $estado = $tieneOtroNivel
+                        ? 'Registrado en educación básica'
+                        : 'Sin curso registrado';
+
+                    $nombreCurso = null;
+                    $avance = null;
+                }
 
                 return [
                     'id' => $inscripcion->id,
-                    'nombre' => $inscripcion->comunidad->nombre,
-                    'ap_pat' => $inscripcion->comunidad->ap_pat,
-                    'ap_mat' => $inscripcion->comunidad->ap_mat,
-                    'estado' => $curso->estado,
-                    'curso' => $curso->curso->nombre,
-                    'avance' => "$acreditadas de $total",
+                    'nombre' => $persona->nombre,
+                    'ap_pat' => $persona->ap_pat,
+                    'ap_mat' => $persona->ap_mat,
+                    'estado' => $estado,
+                    'curso' => $nombreCurso,
+                    'avance' => $avance,
                 ];
             })
             ->values();
