@@ -541,3 +541,26 @@ dialog.confirm-modal::backdrop {
     cursor: pointer;
     accent-color: var(--ink);
 }
+
+
+/* ============ Selector de una sola persona ============ */
+ 
+/* Filas de gente que ya está registrada: atenuadas y sin poder seleccionarse */
+.selectable-row.row-registrado {
+    opacity: .55;
+    cursor: not-allowed;
+}
+.selectable-row.row-registrado:hover {
+    background: transparent;
+}
+ 
+.single-badge-cell {
+    text-align: right;
+    white-space: nowrap;
+}
+ 
+/* Datos de la persona dentro de la tarjeta de seleccionado */
+.selected-entity-card .info-grid {
+    gap: 10px 24px;
+    margin-top: 4px;
+}

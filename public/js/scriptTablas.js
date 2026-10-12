@@ -175,3 +175,159 @@ function filterEntityRows(input) {
         row.style.display = name.textContent.toLowerCase().includes(search) ? '' : 'none';
     });
 }
+
+
+//// Selector de UNA sola persona (partial single_entity_picker)
+//Depende de syncFieldGroupDisabled(), que ya vive en ScriptVarios.js.
+//No guarda estado en variables sueltas: todo vive en el DOM, así que no necesita
+//reinicializarse en initPageScripts (Blade ya deja pintado el estado inicial).
+ 
+//Click en una fila: selecciona esa persona (deselecciona la anterior) o, si ya era
+//la seleccionada, la quita. Las filas de gente ya registrada solo muestran un aviso.
+function selectSingleEntity(row) {
+    const name = row.dataset.single;
+    const picker = row.closest('[data-single-picker]');
+    if (!picker) return;
+ 
+    if (row.dataset.registrado === '1') {
+        showSingleNotice(name);
+        return;
+    }
+    hideSingleNotice(name);
+ 
+    const eraLaSeleccionada = row.classList.contains('row-selected');
+    picker.querySelectorAll('.selectable-row.row-selected').forEach(r => r.classList.remove('row-selected'));
+ 
+    if (eraLaSeleccionada) {
+        setSingleSelection(name, null);
+        return;
+    }
+ 
+    row.classList.add('row-selected');
+    setSingleSelection(name, {
+        id: row.dataset.id,
+        nombre: row.dataset.nombre,
+        subtitle: row.dataset.subtitle || '',
+        detalles: parseDetalles(row.dataset.detalles),
+    });
+}
+ 
+//Botón ✕ de la tarjeta
+function clearSingleEntity(name) {
+    const picker = document.querySelector('[data-single-picker="' + name + '"]');
+    if (picker) {
+        picker.querySelectorAll('.selectable-row.row-selected').forEach(r => r.classList.remove('row-selected'));
+    }
+    hideSingleNotice(name);
+    setSingleSelection(name, null);
+}
+ 
+//Actualiza el hidden que viaja en el POST, la tarjeta y los campos que dependen de la selección
+function setSingleSelection(name, persona) {
+    const input = document.getElementById('single-value-' + name);
+    const container = document.getElementById('selected-single-' + name);
+    if (!input || !container) return;
+ 
+    container.innerHTML = '';
+    input.value = persona ? persona.id : '';
+    if (persona) container.appendChild(buildSingleCard(name, persona));
+ 
+    //Muestra/oculta (y habilita/deshabilita) los campos que dependen de haber elegido a alguien
+    document.querySelectorAll('[data-depende-de="' + name + '"]').forEach(contenedor => {
+        contenedor.hidden = !persona;
+        syncFieldGroupDisabled(contenedor);
+    });
+}
+ 
+//Tarjeta con nombre, subtítulo, datos y botón de quitar.
+//Se arma con textContent (no innerHTML) para que un nombre con caracteres raros no inyecte HTML.
+function buildSingleCard(name, persona) {
+    const card = document.createElement('div');
+    card.className = 'selected-entity-card';
+    card.setAttribute('data-card-id', persona.id);
+ 
+    const head = document.createElement('div');
+    head.className = 'entity-card-head';
+ 
+    const info = document.createElement('div');
+    info.className = 'entity-info';
+ 
+    const nombreEl = document.createElement('div');
+    nombreEl.className = 'person-name';
+    nombreEl.textContent = persona.nombre;
+    info.appendChild(nombreEl);
+ 
+    if (persona.subtitle) {
+        const subtitleEl = document.createElement('div');
+        subtitleEl.className = 'person-role';
+        subtitleEl.textContent = persona.subtitle;
+        info.appendChild(subtitleEl);
+    }
+ 
+    const quitar = document.createElement('button');
+    quitar.type = 'button';
+    quitar.className = 'remove-entity-btn';
+    quitar.setAttribute('aria-label', 'Quitar');
+    quitar.addEventListener('click', () => clearSingleEntity(name));
+    quitar.innerHTML =
+        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">' +
+            '<path d="M18 6 6 18"/><path d="M6 6l12 12"/>' +
+        '</svg>';
+ 
+    head.appendChild(info);
+    head.appendChild(quitar);
+    card.appendChild(head);
+ 
+    const detalles = Object.entries(persona.detalles || {});
+    if (detalles.length) {
+        const grid = document.createElement('div');
+        grid.className = 'info-grid';
+ 
+        detalles.forEach(([etiqueta, valor]) => {
+            const field = document.createElement('div');
+            field.className = 'info-field';
+ 
+            const label = document.createElement('label');
+            label.textContent = etiqueta;
+ 
+            const value = document.createElement('div');
+            value.className = 'value' + (valor ? '' : ' empty');
+            value.textContent = valor || '-';
+ 
+            field.appendChild(label);
+            field.appendChild(value);
+            grid.appendChild(field);
+        });
+ 
+        card.appendChild(grid);
+    }
+ 
+    return card;
+}
+ 
+function parseDetalles(raw) {
+    try {
+        return JSON.parse(raw || '{}');
+    } catch (e) {
+        console.error('No se pudo leer data-detalles', e);
+        return {};
+    }
+}
+ 
+//Aviso al hacer clic en alguien ya registrado: se muestra unos segundos y se oculta solo
+function showSingleNotice(name) {
+    const notice = document.getElementById('single-notice-' + name);
+    if (!notice) return;
+ 
+    notice.hidden = false;
+    clearTimeout(notice._timeout);
+    notice._timeout = setTimeout(() => { notice.hidden = true; }, 3500);
+}
+ 
+function hideSingleNotice(name) {
+    const notice = document.getElementById('single-notice-' + name);
+    if (!notice) return;
+ 
+    clearTimeout(notice._timeout);
+    notice.hidden = true;
+}

@@ -17,6 +17,7 @@
                 {{ $comunidad->nombre }} {{ $comunidad->ap_pat }} {{ $comunidad->ap_mat ?? '' }}
             </span>
         </div>
+        @include('system.parts.alerts.alerts')
         <div class="content-header">
             <div>
                 <h1>

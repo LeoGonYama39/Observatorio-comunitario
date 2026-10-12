@@ -4,6 +4,7 @@
 
 @section('content')
 <div class="content-header">
+  @include('system.parts.alerts.alerts')
   <div>
     <h1>
       Educación básica
@@ -12,13 +13,13 @@
       Alumnos de cursos de educación básica
     </p>
   </div>
-  <button class="btn-new">
+  <a class="btn-new" data-url="{{ route('educ_basica.create') }}" href="{{ route('educ_basica.create') }}">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M12 5v14"/>
       <path d="M5 12h14"/>
     </svg>
     Nuevo registro
-  </button>
+  </a>
 </div>
 <div class="table-toolbar">
   <div class="table-search">

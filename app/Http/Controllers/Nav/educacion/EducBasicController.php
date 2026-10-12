@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Nav\educacion;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Sup\DatosUsuario;
-use App\Models\Educacion\InscripcionCurso;
 use App\Models\Educacion\InscripcionEducativa;
 use Illuminate\Http\Request;
-//use App\Models\;
+use App\Models\PComunidad;
+use Illuminate\Support\Facades\DB;
 
 class EducBasicController extends Controller
 {
@@ -28,20 +27,70 @@ class EducBasicController extends Controller
         return $view;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $personasComunidad = PComunidad::with('colonia')->get()->map(fn ($p) => (object) [
+            'id' => $p->id,
+            'nombre' => trim("$p->nombre $p->ap_pat $p->ap_mat"),
+            'subtitle' => $p->colonia_otro ?? ($p->colonia->nombre ?? null),
+            'detalles' => [
+                'Edad' => $p->edad ? $p->edad . ' años' : null,
+                'Nivel escolar' => $p->nv_escolar ? ucfirst(str_replace('_', ' ', $p->nv_escolar)) : null,
+            ],
+        ]);
+
+        $yaRegistrados = InscripcionEducativa::pluck('comunidad_id')->all();
+
+        $view = view("system.modules.educacion.educ_basica.create", compact('personasComunidad', 'yaRegistrados'));
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+    public function store(Request $request) {
+        $limpiar = fn ($valor) => filled($valor) ? trim($valor) : null;
+    
+        try {
+            $validated = $this->getValidate($request);
+    
+            $inscripcion = DB::transaction(function () use ($validated, $limpiar) {
+                return InscripcionEducativa::create([
+                    'comunidad_id' => $validated['comunidad_id'],
+                    'rfe'          => $limpiar($validated['rfe'] ?? null),
+                    'curp'         => $limpiar($validated['curp'] ?? null),
+                    'matricula'    => $limpiar($validated['matricula'] ?? null),
+                ]);
+            });
+    
+            return redirect()
+                ->route('educ_basica.show', $inscripcion->id)
+                ->with('success', 'Persona registrada con éxito.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Illuminate\Database\QueryException $e) {
+            // 1062 = llave única duplicada: dos personas registraron a la misma persona
+            // al mismo tiempo y el unique del validate no alcanzó a verlo.
+            if (($e->errorInfo[1] ?? null) === 1062) {
+                return back()
+                    ->withInput()
+                    ->with('error', 'Esta persona ya fue registrada en educación.');
+            }
+    
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
+        } catch (\Throwable $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
+        }
     }
 
     public function show(Request $request, $id)
@@ -224,6 +273,24 @@ class EducBasicController extends Controller
             'comunidad',
             'cursos',
         );
+    }
+
+    private function getValidate(Request $request) {
+        return $request->validate([
+            'comunidad_id' => ['required', 'integer', 'exists:p_comunidad,id', 'unique:inscripciones_educativas,comunidad_id'],
+            'rfe'       => ['nullable', 'string', 'max:20'],
+            'curp'      => ['nullable', 'string', 'max:20'],
+            'matricula' => ['nullable', 'string', 'max:20'],
+        ], [
+            'comunidad_id.required' => 'Selecciona a una persona de la comunidad.',
+            'comunidad_id.integer'  => 'La persona seleccionada no es válida.',
+            'comunidad_id.exists'   => 'La persona seleccionada ya no existe.',
+            'comunidad_id.unique'   => 'Esta persona ya está registrada en educación.',
+    
+            'rfe.max'       => 'El RFE no puede tener más de 20 caracteres.',
+            'curp.max'      => 'La CURP no puede tener más de 20 caracteres.',
+            'matricula.max' => 'La matrícula no puede tener más de 20 caracteres.',
+        ]);
     }
 
 }
