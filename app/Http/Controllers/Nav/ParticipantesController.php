@@ -36,7 +36,7 @@ class ParticipantesController extends Controller {
         return $this->edit(
             $request,
             $taller,
-            'taller',
+            'Talleres',
             route('talleres.index'),
             route('talleres.show', $taller->id),
             route('talleres.participantes.update', $taller->id)
