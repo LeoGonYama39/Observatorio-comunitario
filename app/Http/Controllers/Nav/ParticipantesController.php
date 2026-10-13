@@ -24,7 +24,7 @@ class ParticipantesController extends Controller {
         return $this->edit(
             $request,
             $proyecto,
-            'proyecto',
+            'Proyectos',
             route('proyectos.index'),
             route('proyectos.show', $proyecto->id),
             route('proyectos.participantes.update', $proyecto->id)

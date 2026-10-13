@@ -29,7 +29,7 @@ class EducBasicController extends Controller
 
     public function create(Request $request)
     {
-        $personasComunidad = PComunidad::with('colonia')->get()->map(fn ($p) => (object) [
+        $personasComunidad = PComunidad::with('colonia')->orderBy('nombre')->get()->map(fn ($p) => (object) [
             'id' => $p->id,
             'nombre' => trim("$p->nombre $p->ap_pat $p->ap_mat"),
             'subtitle' => $p->colonia_otro ?? ($p->colonia->nombre ?? null),
