@@ -124,36 +124,81 @@ function actualizarActivo(url)   {
 
 ///Función para navegar a hacer un get a un url,
 ///esperar la respuesta y reemplazar el contenido
+// Espera antes de mostrar el "cargando": si la respuesta llega rápido no se ve parpadear
+const LOADING_DELAY_MS = 200;
+// Controla la navegación en curso, para cancelarla si el usuario hace clic en otra opción
+let navigationController = null;
+ 
+//Reemplaza el contenido de #mainContent con una de las plantillas de loading.blade.php
+//('loadingTemplate' o 'loadErrorTemplate'). Si recibe onRetry, lo engancha al botón "Reintentar".
+function showMainContentState(templateId, onRetry) {
+  const template = document.getElementById(templateId);
+  const mainContent = document.getElementById('mainContent');
+  if (!template || !mainContent) { return; }
+ 
+  mainContent.innerHTML = '';
+  mainContent.appendChild(template.content.cloneNode(true));
+ 
+  if (onRetry) {
+    const retryBtn = mainContent.querySelector('[data-retry]');
+    if (retryBtn) { retryBtn.addEventListener('click', onRetry); }
+  }
+}
+ 
+///Función para navegar a hacer un get a un url,
+///esperar la respuesta y reemplazar el contenido
 async function navigateTo(url, tipo) {
+    // Si todavía hay una navegación en curso, se cancela: así una respuesta lenta
+    // no pisa a la más reciente
+    if (navigationController) { navigationController.abort(); }
+    navigationController = new AbortController();
+    const controller = navigationController;
+ 
+    const loadingTimer = setTimeout(() => showMainContentState('loadingTemplate'), LOADING_DELAY_MS);
+ 
     try{
-        const res = await fetch(url,   {
-            headers:   {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        });
+      const res = await fetch(url,   {
+        headers:   {
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        signal: controller.signal
+      });
+ 
+      if (!res.ok) throw new Error('Error al cargar la sección');
+ 
+      //Laravel responde con un json con varias cosas
+      const data = await res.json();
 
-        if (!res.ok) throw new Error('Error al cargar la sección');
-
-        //Laravel responde con un json con varias cosas
-        const data = await res.json();
-
-        //Reempazar
-        document.getElementById('mainContent').innerHTML = data.content;
-        document.title = data.title;
-
-        //Reinicializar los scripts que dependen de elementos del contenido nuevo
-        if (typeof initPageScripts === 'function') {
-            initPageScripts();
-        }
-
-        if(tipo === 1){
-            //Actualizo la barra de enlace, sin recargar
-            window.history.pushState({}, '', url);}
+      // Si mientras tanto el usuario pidió otra sección, esta respuesta ya no importa
+      if (controller.signal.aborted) { return; }
+ 
+      //Reempazar
+      document.getElementById('mainContent').innerHTML = data.content;
+      document.title = data.title;
+ 
+      //Reinicializar los scripts que dependen de elementos del contenido nuevo
+      //(slider de población objetivo, selector de casos, etc.)
+      if (typeof initPageScripts === 'function') {
+        initPageScripts();
+      }
+ 
+      if(tipo === 1){
+        //Actualizo la barra de enlace, sin recargar
+        window.history.pushState({}, '', url);
+      }
     } catch (err)   {
-        console.log('Error al hacer el push');
-        console.error(err);
+      // Cancelada a propósito por otra navegación: no es un error
+      if (err.name === 'AbortError') { return; }
+ 
+      console.error(err);
+      // Sin esto, el "cargando" se quedaría para siempre
+      showMainContentState('loadErrorTemplate', () => navigateTo(url, tipo));
+    } finally {
+      clearTimeout(loadingTimer);
+      if (navigationController === controller) { navigationController = null; }
     }
 }
+
 
 function gestionMenuParent(elemento){
     if (elemento.classList.contains('sub-item')) {
