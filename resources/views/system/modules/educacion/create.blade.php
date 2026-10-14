@@ -1,11 +1,20 @@
+{{--
+  Vista para crear nuevo registro en educación.
+  Sirve para los create de educación básica y media-superior.
+  $rutaIndex: ruta para regresar al index de educación
+  $etiqueta: etiqueta para mostrar en el breadcrumb (ej. "Educación básica")
+  $personasComunidad: lista de personas de la comunidad para seleccionar
+  $yaRegistrados: lista de personas que ya están registradas en educación
+--}}
+
 @extends('system.app')
 
 @section('title', 'Nuevo registro en educación')
 
 @section('content')
 <div class="breadcrumb">
-  <a href="{{ route('educ_basica.index') }}" data-url="{{ route('educ_basica.index') }}" class="return-index">
-    Educación básica
+  <a href="{{ $rutaIndex }}" data-url="{{ $rutaIndex }}" class="return-index">
+    {{ $etiqueta }}
   </a>
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M9 6l6 6-6 6"/>
@@ -18,7 +27,7 @@
 <div class="content-header">
   <div>
     <h1>Nuevo registro</h1>
-    <p>Educación básica</p>
+    <p>{{ $etiqueta }}</p>
   </div>
 </div>
 
@@ -38,7 +47,7 @@
 </div>
 @endif
 
-<form method="POST" action="{{ route('educ_basica.store') }}">
+<form method="POST" action="{{ route('educacion.store') }}">
   @csrf
 
   @include('system.parts.forms.single_entity_picker', [
@@ -76,7 +85,7 @@
   </div>
 
   <div class="form-actions" style="margin-top: 24px;">
-    <a href="{{ route('educ_basica.index') }}" data-url="{{ route('educ_basica.index') }}" class="btn-outline">Cancelar</a>
+    <a href="{{ $rutaIndex }}" data-url="{{ $rutaIndex }}" class="btn-outline">Cancelar</a>
     <button type="submit" class="btn-new">Registrar</button>
   </div>
 </form>

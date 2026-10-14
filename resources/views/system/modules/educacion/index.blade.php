@@ -1,19 +1,34 @@
+{{--
+Plantilla index común para educaciones.
+$etiqueta: etiqueta para mostrar el tipo de educación, viene en minúsculas (ej. "educación básica")
+$rutaCreate: ruta para crear un nuevo registro (ej. route('educ_basica.create'))
+$inscripciones: lista de inscripciones educativas, cada elemento debe tener:
+    - id: id de la inscripción
+    - nombre: nombre de la persona
+    - ap_pat: apellido paterno
+    - ap_mat: apellido materno
+    - curso: curso actual
+    - avance: avance en el curso
+    - estado: estado de la inscripción (ej. "activo", "inactivo")
+    - url: ruta para ver los detalles de la inscripción (ej. route('educ_basica.show', $inscripcion['id']))
+--}}
+
 @extends('system.app')
 
-@section('title', 'Educación Básica')
+@section('title', ucfirst($etiqueta))
 
 @section('content')
 <div class="content-header">
   @include('system.parts.alerts.alerts')
   <div>
     <h1>
-      Educación básica
+      {{ ucfirst($etiqueta) }}
     </h1>
     <p>
-      Alumnos de cursos de educación básica
+      Alumnos de cursos de {{ $etiqueta }}
     </p>
   </div>
-  <a class="btn-new" data-url="{{ route('educ_basica.create') }}" href="{{ route('educ_basica.create') }}">
+  <a class="btn-new" data-url="{{ $rutaCreate }}" href="{{ $rutaCreate }}">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M12 5v14"/>
       <path d="M5 12h14"/>
@@ -58,7 +73,7 @@
     </thead>
     <tbody>
     @foreach($inscripciones as $inscripcion)
-        <tr data-url="{{ route('educ_basica.show', $inscripcion['id']) }}"
+        <tr data-url="{{ $inscripcion['url'] }}"
             data-curso="{{ $inscripcion['curso'] }}"
             data-estado="{{ $inscripcion['estado'] }}">
             <td>

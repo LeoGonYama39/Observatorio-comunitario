@@ -10,6 +10,7 @@ use App\Http\Controllers\Nav\personas\PCentroController;
 use App\Http\Controllers\Nav\personas\PExternoController;
 use App\Http\Controllers\Nav\personas\PComunidadController;
 use App\Http\Controllers\Nav\ProyectosController;
+use App\Http\Controllers\Nav\EducacionController;
 use App\Http\Controllers\Nav\juridica\AJuridicasController;
 use App\Http\Controllers\Nav\juridica\AFamiliaresController;
 use App\Http\Controllers\Nav\educacion\EducBasicController;
@@ -38,8 +39,6 @@ Route::middleware('auth:centro')->group(function () {
     Route::resource('/sistema/personas-usuarias', PComunidadController::class);
     Route::resource('/sistema/a-juridicas', AJuridicasController::class);
     Route::resource('/sistema/a-familiares', AFamiliaresController::class);
-    Route::resource('/sistema/educ_basica', EducBasicController::class);
-    Route::resource('/sistema/educ_sup', EducSupController::class);
     Route::resource('/sistema/aten_pers', AtenPersController::class);
     Route::resource('/sistema/proc_grup', ProcGrupController::class);
     Route::resource('/sistema/eventos', EventosController::class);
@@ -54,6 +53,17 @@ Route::middleware('auth:centro')->group(function () {
 
     //Rutas para proyectos, exclusivas para usuarios del centro
     Route::resource('/sistema/proyectos', ProyectosController::class)->except(['index', 'show']);
+
+    //Rutas para educación básica y media superior, usan un controlador común
+    Route::get('/sistema/educ_basica', [EducacionController::class, 'index_basica'])->name('educ_basica.index');
+    Route::get('/sistema/educ_basica/create', [EducacionController::class, 'create_basica'])->name('educ_basica.create');
+    Route::get('/sistema/educ_basica/{id}', [EducacionController::class, 'show_basica'])->name('educ_basica.show');
+
+    Route::get('/sistema/educ_sup', [EducacionController::class, 'index_sup'])->name('educ_sup.index');
+    Route::get('/sistema/educ_sup/create', [EducacionController::class, 'create_sup'])->name('educ_sup.create');
+    Route::get('/sistema/educ_sup/{id}', [EducacionController::class, 'show_sup'])->name('educ_sup.show');
+
+    Route::post('/sistema/educacion', [EducacionController::class, 'store'])->name('educacion.store');
 
     //Rutas para talleres
     Route::resource('/sistema/talleres', TalleresController::class);

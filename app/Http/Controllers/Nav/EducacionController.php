@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Nav\educacion;
+//Controlador para ambos tipos de educación: básica y media-superior
+
+namespace App\Http\Controllers\Nav;
 
 use App\Http\Controllers\Controller;
 use App\Models\Educacion\InscripcionEducativa;
@@ -8,13 +10,15 @@ use Illuminate\Http\Request;
 use App\Models\PComunidad;
 use Illuminate\Support\Facades\DB;
 
-class EducBasicController extends Controller
+class EducacionController extends Controller
 {
-    public function index(Request $request)
+    public function index_basica(Request $request)
     {
-        $inscripciones = $this->getDatosIndex();
+        $inscripciones = $this->getDatosIndex('básica', 'media_superior');
+        $etiqueta = 'educación básica';
+        $rutaCreate = route('educ_basica.create');
 
-        $view = view("system.modules.educacion.educ_basica.index", compact('inscripciones'));
+        $view = view("system.modules.educacion.index", compact('inscripciones', 'etiqueta', 'rutaCreate'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -27,21 +31,105 @@ class EducBasicController extends Controller
         return $view;
     }
 
-    public function create(Request $request)
+    public function index_sup(Request $request)
     {
-        $personasComunidad = PComunidad::with('colonia')->orderBy('nombre')->get()->map(fn ($p) => (object) [
-            'id' => $p->id,
-            'nombre' => trim("$p->nombre $p->ap_pat $p->ap_mat"),
-            'subtitle' => $p->colonia_otro ?? ($p->colonia->nombre ?? null),
-            'detalles' => [
-                'Edad' => $p->edad ? $p->edad . ' años' : null,
-                'Nivel escolar' => $p->nv_escolar ? ucfirst(str_replace('_', ' ', $p->nv_escolar)) : null,
-            ],
-        ]);
+        $inscripciones = $this->getDatosIndex('media_superior', 'básica');
+        $etiqueta = 'educación media superior';
+        $rutaCreate = route('educ_sup.create');
 
-        $yaRegistrados = InscripcionEducativa::pluck('comunidad_id')->all();
+        $view = view("system.modules.educacion.index", compact('inscripciones', 'etiqueta', 'rutaCreate'));
 
-        $view = view("system.modules.educacion.educ_basica.create", compact('personasComunidad', 'yaRegistrados'));
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
+    }
+
+    public function show_basica(Request $request, string $id)
+    {
+        $datos = $this->getDatosShow((int)$id, 'básica');
+        $etiqueta = 'educación básica';
+        $rutaIndex = route('educ_basica.index');
+
+        $view = view(
+            'system.modules.educacion.show',
+                        array_merge(
+                            compact('etiqueta', 'rutaIndex'),
+                            $datos ?? ['inscripcion' => null]));
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
+    }
+
+    public function show_sup(Request $request, string $id)
+    {
+        $datos = $this->getDatosShow((int)$id, 'media_superior');
+        $etiqueta = 'educación media superior';
+        $rutaIndex = route('educ_sup.index');
+
+        $view = view(
+            'system.modules.educacion.show',
+                        array_merge(
+                            compact('etiqueta', 'rutaIndex'),
+                            $datos ?? ['inscripcion' => null]));
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
+    }
+
+    public function create_basica(Request $request)
+    {
+        [$personasComunidad, $yaRegistrados] = $this->getUsuarias();
+        $rutaIndex = route('educ_basica.index');
+        $etiqueta = 'Educación básica';
+
+        $view = view("system.modules.educacion.create", compact(
+            'personasComunidad',
+            'yaRegistrados',
+            'rutaIndex',
+            'etiqueta'));
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
+    }
+
+    public function create_sup(Request $request)
+    {
+        [$personasComunidad, $yaRegistrados] = $this->getUsuarias();
+        $rutaIndex = route('educ_sup.index');
+        $etiqueta = 'Educación media superior';
+
+        $view = view("system.modules.educacion.create", compact(
+            'personasComunidad',
+            'yaRegistrados',
+            'rutaIndex',
+            'etiqueta'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -93,23 +181,7 @@ class EducBasicController extends Controller
         }
     }
 
-    public function show(Request $request, $id)
-    {
-        $datos = $this->getDatosShow($id);
-
-        $view = view('system.modules.educacion.educ_basica.show', array_merge($datos ?? ['inscripcion' => null]));
-
-        if ($request->ajax()) {
-            $sections = $view->renderSections();
-            return response()->json([
-                'content' => $sections['content'],
-                'title' => $sections['title'],
-            ]);
-        }
-
-        return $view;
-    }
-
+    
     /**
      * Show the form for editing the specified resource.
      */
@@ -137,14 +209,14 @@ class EducBasicController extends Controller
     //-------------------
     //  Funciones
     //------------------
-    private function getDatosIndex()
+    private function getDatosIndex(string $tipo, string $otro)
     {
         $inscripciones = InscripcionEducativa::with([
             'comunidad:id,nombre,ap_pat,ap_mat',
 
-            'inscripcionesCurso' => function ($query) {
-                $query->whereHas('curso', function ($query) {
-                    $query->where('tipo', 'básica');
+            'inscripcionesCurso' => function ($query) use ($tipo) {
+                $query->whereHas('curso', function ($query) use ($tipo) {
+                    $query->where('tipo', $tipo);
                 })
                 ->with([
                     'curso.materias',
@@ -158,7 +230,7 @@ class EducBasicController extends Controller
             ->sortBy(function ($inscripcion) {
                 return $inscripcion->comunidad->nombre;
             })
-            ->map(function ($inscripcion) {
+            ->map(function ($inscripcion) use ($otro, $tipo) {
                 $persona = $inscripcion->comunidad;
 
                 // Curso más reciente de educación básica
@@ -177,17 +249,28 @@ class EducBasicController extends Controller
                 } else {
                     // ¿Tiene algún curso de educación media-superior?
                     $tieneOtroNivel = $inscripcion->inscripcionesCurso()
-                        ->whereHas('curso', function ($query) {
-                            $query->where('tipo', 'media_superior');
+                        ->whereHas('curso', function ($query) use ($otro) {
+                            $query->where('tipo', $otro);
                         })
                         ->exists();
 
                     $estado = $tieneOtroNivel
-                        ? 'Registrado en educación media-superior'
+                        ? 'Registrado en educación ' . $otro
                         : 'Sin curso registrado';
 
                     $nombreCurso = null;
                     $avance = null;
+                }
+
+                switch($tipo) {
+                    case 'básica':
+                        $urlShow = route('educ_basica.show', $inscripcion->id);
+                        break;
+                    case 'media_superior':
+                        $urlShow = route('educ_sup.show', $inscripcion->id);
+                        break;
+                    default:
+                        $urlShow = 'hola';
                 }
 
                 return [
@@ -198,27 +281,27 @@ class EducBasicController extends Controller
                     'estado' => $estado,
                     'curso' => $nombreCurso,
                     'avance' => $avance,
+                    'url' => $urlShow,
                 ];
             })
             ->values();
     }
 
-    private function getDatosShow($id) {
+    private function getDatosShow(int $id, string $tipo) {
         $inscripcion = InscripcionEducativa::with([
             'comunidad:id,nombre,ap_pat,ap_mat,birth_date,genero,colonia_id,colonia_otro',
             'comunidad.colonia:id,nombre',
-            'inscripcionesCurso' => function ($query) {
+            'inscripcionesCurso' => function ($query) use ($tipo) {
                 $query->select(
                     'id',
                     'insc_edu_id',
                     'cursos_id',
-                    'fecha_ingreso',
                     'anio',
                     'temporada',
                     'estado'
                 )
-                    ->whereHas('curso', function ($query) {
-                        $query->where('tipo', 'básica');
+                    ->whereHas('curso', function ($query) use ($tipo) {
+                        $query->where('tipo', $tipo);
                     })
                     ->with([
                         'curso:id,nombre',
@@ -240,7 +323,7 @@ class EducBasicController extends Controller
 
         $comunidad = $inscripcion->comunidad;
 
-        $cursos = $inscripcion->inscripcionesCurso->map(function ($inscripcionCurso) {
+        $cursos = $inscripcion->inscripcionesCurso->map(function ($inscripcionCurso) use ($tipo) {
 
             $materias = $inscripcionCurso->materias->map(function ($materia) {
                 return [
@@ -291,6 +374,22 @@ class EducBasicController extends Controller
             'curp.max'      => 'La CURP no puede tener más de 20 caracteres.',
             'matricula.max' => 'La matrícula no puede tener más de 20 caracteres.',
         ]);
+    }
+
+    private function getUsuarias(){
+        $personasComunidad = PComunidad::with('colonia')->orderBy('nombre')->get()->map(fn ($p) => (object) [
+            'id' => $p->id,
+            'nombre' => trim("$p->nombre $p->ap_pat $p->ap_mat"),
+            'subtitle' => $p->colonia_otro ?? ($p->colonia->nombre ?? null),
+            'detalles' => [
+                'Edad' => $p->edad ? $p->edad . ' años' : null,
+                'Nivel escolar' => $p->nv_escolar ? ucfirst(str_replace('_', ' ', $p->nv_escolar)) : null,
+            ],
+        ]);
+
+        $yaRegistrados = InscripcionEducativa::pluck('comunidad_id')->all();
+
+        return [$personasComunidad, $yaRegistrados];
     }
 
 }

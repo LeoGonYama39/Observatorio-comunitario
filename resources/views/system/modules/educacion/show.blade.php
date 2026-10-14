@@ -1,3 +1,32 @@
+{{--
+Plantilla show común para educaciones.
+$etiqueta: etiqueta para mostrar el tipo de educación, viene en minúsculas (ej. "educación básica")
+$rutaIndex: ruta para ir al index de la educación (ej. route('educ_basica.index'))
+$inscripcion: objeto de la inscripción educativa, debe tener:
+    - id: id de la inscripción
+    - rfe: RFE de la persona
+    - curp: CURP de la persona
+$comunidad: objeto de la persona de la comunidad, debe tener:
+    - nombre: nombre de la persona
+    - ap_pat: apellido paterno
+    - ap_mat: apellido materno
+    - edad: edad de la persona
+    - genero: género de la persona
+    - colonia: objeto de la colonia, debe tener:
+        - nombre: nombre de la colonia
+    - colonia_otro: nombre de la colonia si no está en el catálogo
+    - telefono: teléfono de la persona
+$cursos: lista de cursos de la persona, cada elemento debe tener:
+    - nombre: nombre del curso
+    - estado: estado del curso (ej. "activo", "inactivo")
+    - fecha_ingreso: fecha de ingreso al curso
+    - acreditadas: número de materias acreditadas
+    - total: número total de materias del curso
+    - materias: lista de materias del curso, cada elemento debe tener:
+        - nombre: nombre de la materia
+        - acreditada: booleano que indica si la materia está acreditada
+--}}
+
 @extends('system.app')
 
 @section('title', $inscripcion ? $comunidad->nombre . ' ' . $comunidad->ap_pat . ' ' . $comunidad->ap_mat . ' · Ficha
@@ -6,8 +35,8 @@
 @section('content')
     @if ($inscripcion)
         <div class="breadcrumb">
-            <a href="{{ route('educ_basica.index') }}" data-url="{{ route('educ_basica.index') }}" class="return-index">
-                Educación básica
+            <a href="{{ $rutaIndex }}" data-url="{{ $rutaIndex }}" class="return-index">
+                {{ ucfirst($etiqueta) }}
             </a>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"
                  stroke-linejoin="round">
@@ -183,6 +212,6 @@
             @endforeach
         @endif
     @else
-        @include('system.parts.alerts.not_found', ['route' => route('educ_basica.index')])
+        @include('system.parts.alerts.not_found', ['route' => $rutaIndex])
     @endif
 @endsection
