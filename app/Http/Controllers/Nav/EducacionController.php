@@ -12,16 +12,22 @@ use Illuminate\Support\Facades\DB;
 
 class EducacionController extends Controller
 {
-    public function index_basica(Request $request)
+    public function index(Request $request, string $nivel)
     {
-        $inscripciones = $this->getDatosIndex('básica', 'media_superior');
-        $etiqueta = 'educación básica';
-        $rutaCreate = route('educ_basica.create');
+        $config = $this->configEducacion($nivel);
 
-        $view = view("system.modules.educacion.index", compact('inscripciones', 'etiqueta', 'rutaCreate'));
+        $inscripciones = $this->getDatosIndex($config['tipo'], $config['otro_tipo']);
+        $etiqueta = $config['etiqueta'];
+        $rutaCreate = route($config['ruta'] . '.create');
+
+        $view = view(
+            'system.modules.educacion.index',
+            compact('inscripciones', 'etiqueta', 'rutaCreate')
+        );
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
+
             return response()->json([
                 'content' => $sections['content'],
                 'title' => $sections['title'],
@@ -31,35 +37,20 @@ class EducacionController extends Controller
         return $view;
     }
 
-    public function index_sup(Request $request)
+    public function show(Request $request, string $id, string $nivel)
     {
-        $inscripciones = $this->getDatosIndex('media_superior', 'básica');
-        $etiqueta = 'educación media superior';
-        $rutaCreate = route('educ_sup.create');
-
-        $view = view("system.modules.educacion.index", compact('inscripciones', 'etiqueta', 'rutaCreate'));
-
-        if ($request->ajax()) {
-            $sections = $view->renderSections();
-            return response()->json([
-                'content' => $sections['content'],
-                'title' => $sections['title'],
-            ]);
-        }
-
-        return $view;
-    }
-
-    public function show_basica(Request $request, string $id)
-    {
-        $datos = $this->getDatosShow((int)$id, 'básica');
-        $etiqueta = 'educación básica';
-        $rutaIndex = route('educ_basica.index');
+        $config = $this->configEducacion($nivel);
+        
+        $datos = $this->getDatosShow((int)$id, $config['tipo']);
+        $etiqueta = $config['etiqueta'];
+        $rutaIndex = route($config['ruta'] . '.index');
+        $rutaEdit = route($config['ruta'] . '.edit', $id);
+        $rutaDestroy = route($config['ruta'] . '.destroy', $id);
 
         $view = view(
             'system.modules.educacion.show',
                         array_merge(
-                            compact('etiqueta', 'rutaIndex'),
+                            compact('etiqueta', 'rutaIndex', 'rutaEdit', 'rutaDestroy'),
                             $datos ?? ['inscripcion' => null]));
 
         if ($request->ajax()) {
@@ -73,40 +64,21 @@ class EducacionController extends Controller
         return $view;
     }
 
-    public function show_sup(Request $request, string $id)
+    public function create(Request $request, string $nivel)
     {
-        $datos = $this->getDatosShow((int)$id, 'media_superior');
-        $etiqueta = 'educación media superior';
-        $rutaIndex = route('educ_sup.index');
-
-        $view = view(
-            'system.modules.educacion.show',
-                        array_merge(
-                            compact('etiqueta', 'rutaIndex'),
-                            $datos ?? ['inscripcion' => null]));
-
-        if ($request->ajax()) {
-            $sections = $view->renderSections();
-            return response()->json([
-                'content' => $sections['content'],
-                'title' => $sections['title'],
-            ]);
-        }
-
-        return $view;
-    }
-
-    public function create_basica(Request $request)
-    {
+        $config = $this->configEducacion($nivel);
+        
         [$personasComunidad, $yaRegistrados] = $this->getUsuarias();
-        $rutaIndex = route('educ_basica.index');
-        $etiqueta = 'Educación básica';
+        $rutaIndex = route($config['ruta'] . '.index');
+        $etiqueta = $config['etiqueta'];
+        $rutaStore = route($config['ruta'] . '.store');
 
         $view = view("system.modules.educacion.create", compact(
             'personasComunidad',
             'yaRegistrados',
             'rutaIndex',
-            'etiqueta'));
+            'etiqueta',
+            'rutaStore'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -119,46 +91,22 @@ class EducacionController extends Controller
         return $view;
     }
 
-    public function create_sup(Request $request)
-    {
-        [$personasComunidad, $yaRegistrados] = $this->getUsuarias();
-        $rutaIndex = route('educ_sup.index');
-        $etiqueta = 'Educación media superior';
-
-        $view = view("system.modules.educacion.create", compact(
-            'personasComunidad',
-            'yaRegistrados',
-            'rutaIndex',
-            'etiqueta'));
-
-        if ($request->ajax()) {
-            $sections = $view->renderSections();
-            return response()->json([
-                'content' => $sections['content'],
-                'title' => $sections['title'],
-            ]);
-        }
-
-        return $view;
-    }
-
-    public function store(Request $request) {
+    public function store(Request $request, string $nivel) {
         $limpiar = fn ($valor) => filled($valor) ? trim($valor) : null;
+        $config = $this->configEducacion($nivel);
     
         try {
             $validated = $this->getValidate($request);
     
-            $inscripcion = DB::transaction(function () use ($validated, $limpiar) {
-                return InscripcionEducativa::create([
-                    'comunidad_id' => $validated['comunidad_id'],
-                    'rfe'          => $limpiar($validated['rfe'] ?? null),
-                    'curp'         => $limpiar($validated['curp'] ?? null),
-                    'matricula'    => $limpiar($validated['matricula'] ?? null),
-                ]);
-            });
+            $inscripcion = InscripcionEducativa::create([
+                'comunidad_id' => $validated['comunidad_id'],
+                'rfe'          => $limpiar($validated['rfe'] ?? null),
+                'curp'         => $limpiar($validated['curp'] ?? null),
+                'matricula'    => $limpiar($validated['matricula'] ?? null),
+            ]);
     
             return redirect()
-                ->route('educ_basica.show', $inscripcion->id)
+                ->route($config['ruta'] . '.show', $inscripcion->id)
                 ->with('success', 'Persona registrada con éxito.');
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;
@@ -182,35 +130,114 @@ class EducacionController extends Controller
     }
 
     
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit(Request $request, string $id, string $nivel)
     {
-        //
+        $config = $this->configEducacion($nivel);
+
+        $inscripcion = $this->getDatosEdit((int)$id);
+        $etiqueta = $config['etiqueta'];
+        $rutaIndex = route($config['ruta'] . '.index');
+        $rutaShow = route($config['ruta'] . '.show', $id);
+        $rutaUpdate = route($config['ruta'] . '.update', $id);
+
+        $view = view("system.modules.educacion.edit", compact(
+            'inscripcion',
+            'etiqueta',
+            'rutaIndex',
+            'rutaShow',
+            'rutaUpdate'));
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
+    public function update(Request $request, InscripcionEducativa $id, string $nivel) {
+        $limpiar = fn ($valor) => filled($valor) ? trim($valor) : null;
+        $config = $this->configEducacion($nivel);
+    
+        try {
+            $validated = $this->getValidate($request, true);
+    
+            $id->rfe = $limpiar($validated['rfe'] ?? null);
+            $id->curp = $limpiar($validated['curp'] ?? null);
+            $id->matricula = $limpiar($validated['matricula'] ?? null);
+            $id->save();
+    
+            return redirect()
+                ->route($config['ruta'] . '.show', $id)
+                ->with('success', 'Persona registrada con éxito.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Illuminate\Database\QueryException $e) {
+            // 1062 = llave única duplicada: dos personas registraron a la misma persona
+            // al mismo tiempo y el unique del validate no alcanzó a verlo.
+            if (($e->errorInfo[1] ?? null) === 1062) {
+                return back()
+                    ->withInput()
+                    ->with('error', 'Esta persona ya fue registrada en educación.');
+            }
+    
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
+        } catch (\Throwable $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+    public function destroy(string $id, string $nivel) {
+        $config = $this->configEducacion($nivel);
+        try {
+                $inscripcion = InscripcionEducativa::findOrFail($id);
+                $nombre = $inscripcion->comunidad->nombre . ' ' . $inscripcion->comunidad->ap_pat . ' ' . $inscripcion->comunidad->ap_mat;
+                $inscripcion->delete();
+
+                return redirect()
+                ->route($config['ruta'] . '.index')
+                ->with('success', "Registro de educación de {$nombre} eliminado con éxito.");
+                } 
+                catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+                    return redirect()
+                    ->route($config['ruta'] . '.index')
+                    ->with('error', 'El registro que intentas eliminar no existe.');
+                } catch (\Throwable $e) {
+                    return back()
+                    ->with('error', 'Ocurrió un error al intentar eliminar el registro: ' . $e->getMessage());
+            }
     }
 
     //-------------------
     //  Funciones
     //------------------
-    private function getDatosIndex(string $tipo, string $otro)
-    {
+
+    private function configEducacion(string $nivel): array {
+        return match ($nivel) {
+            'basica' => [
+                'tipo' => 'básica',
+                'otro_tipo' => 'media_superior',
+                'etiqueta' => 'educación básica',
+                'ruta' => 'educ_basica',
+            ],
+            'sup' => [
+                'tipo' => 'media_superior',
+                'otro_tipo' => 'básica',
+                'etiqueta' => 'educación media superior',
+                'ruta' => 'educ_sup',
+            ],
+            default => abort(404),
+        };
+    }
+
+    private function getDatosIndex(string $tipo, string $otro) {
         $inscripciones = InscripcionEducativa::with([
             'comunidad:id,nombre,ap_pat,ap_mat',
 
@@ -314,7 +341,8 @@ class EducacionController extends Controller
                 'id',
                 'comunidad_id',
                 'rfe',
-                'curp')
+                'curp',
+                'matricula',)
             ->find($id);
 
         if (!$inscripcion) {
@@ -358,9 +386,12 @@ class EducacionController extends Controller
         );
     }
 
-    private function getValidate(Request $request) {
+    private function getValidate(Request $request, bool $actualizar = false) {
         return $request->validate([
-            'comunidad_id' => ['required', 'integer', 'exists:p_comunidad,id', 'unique:inscripciones_educativas,comunidad_id'],
+            'comunidad_id' => $actualizar
+                ? ['sometimes', 'required', 'integer', 'exists:p_comunidad,id']
+                : ['required', 'integer', 'exists:p_comunidad,id', 'unique:inscripciones_educativas,comunidad_id'],
+
             'rfe'       => ['nullable', 'string', 'max:20'],
             'curp'      => ['nullable', 'string', 'max:20'],
             'matricula' => ['nullable', 'string', 'max:20'],
@@ -369,7 +400,7 @@ class EducacionController extends Controller
             'comunidad_id.integer'  => 'La persona seleccionada no es válida.',
             'comunidad_id.exists'   => 'La persona seleccionada ya no existe.',
             'comunidad_id.unique'   => 'Esta persona ya está registrada en educación.',
-    
+
             'rfe.max'       => 'El RFE no puede tener más de 20 caracteres.',
             'curp.max'      => 'La CURP no puede tener más de 20 caracteres.',
             'matricula.max' => 'La matrícula no puede tener más de 20 caracteres.',
@@ -390,6 +421,10 @@ class EducacionController extends Controller
         $yaRegistrados = InscripcionEducativa::pluck('comunidad_id')->all();
 
         return [$personasComunidad, $yaRegistrados];
+    }
+
+    private function getDatosEdit(int $id){
+        return InscripcionEducativa::find($id);
     }
 
 }

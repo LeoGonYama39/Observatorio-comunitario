@@ -419,7 +419,7 @@ class ProyectosController extends Controller
         )->orderBy('nombre')->get();
     }
 
-    private function getDropDownOptions($datosUsuario) {
+    private function getDropDownOptions(DatosUsuario $datosUsuario) {
         $colonias = Colonia::select('id', 'nombre')->get();
         $ejes = Eje::select('id', 'nombre')->get();
         $problematicas = Problematica::select('id', 'nombre')->get();
@@ -489,7 +489,7 @@ class ProyectosController extends Controller
         ];
     }
 
-    private function getValidate($request, $messages, $datosUsuario) {
+    private function getValidate(Request $request, $messages, DatosUsuario $datosUsuario) {
         return $request->validate([
             'nombre'        => ['required', 'string', 'max:50'],
             'estado'        => ['required', 'string', Rule::in($datosUsuario->getEnumValues('proyecto', 'estado'))],

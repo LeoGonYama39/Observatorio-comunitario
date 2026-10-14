@@ -18,8 +18,8 @@ $inscripciones: lista de inscripciones educativas, cada elemento debe tener:
 @section('title', ucfirst($etiqueta))
 
 @section('content')
+@include('system.parts.alerts.alerts')
 <div class="content-header">
-  @include('system.parts.alerts.alerts')
   <div>
     <h1>
       {{ ucfirst($etiqueta) }}

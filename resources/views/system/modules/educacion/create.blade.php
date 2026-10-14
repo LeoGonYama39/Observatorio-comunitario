@@ -5,6 +5,7 @@
   $etiqueta: etiqueta para mostrar en el breadcrumb (ej. "Educación básica")
   $personasComunidad: lista de personas de la comunidad para seleccionar
   $yaRegistrados: lista de personas que ya están registradas en educación
+  $rutaStore: ruta para enviar el formulario de creación (ej. route('educ_basica.store'))
 --}}
 
 @extends('system.app')
@@ -14,7 +15,7 @@
 @section('content')
 <div class="breadcrumb">
   <a href="{{ $rutaIndex }}" data-url="{{ $rutaIndex }}" class="return-index">
-    {{ $etiqueta }}
+    {{ ucfirst($etiqueta) }}
   </a>
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M9 6l6 6-6 6"/>
@@ -27,27 +28,11 @@
 <div class="content-header">
   <div>
     <h1>Nuevo registro</h1>
-    <p>{{ $etiqueta }}</p>
+    <p>{{ ucfirst($etiqueta) }}</p>
   </div>
 </div>
 
-@if (session('error'))
-<div class="form-card" style="border-color:#b3261e; margin-bottom: 16px;">
-  <p style="color:#b3261e; margin:0;">{{ session('error') }}</p>
-</div>
-@endif
-
-@if ($errors->any())
-<div class="form-card" style="border-color:#b3261e; margin-bottom: 16px;">
-  <ul style="margin:0; padding-left: 18px; color:#b3261e;">
-    @foreach ($errors->all() as $error)
-      <li>{{ $error }}</li>
-    @endforeach
-  </ul>
-</div>
-@endif
-
-<form method="POST" action="{{ route('educacion.store') }}">
+<form method="POST" action="{{ $rutaStore }}">
   @csrf
 
   @include('system.parts.forms.single_entity_picker', [

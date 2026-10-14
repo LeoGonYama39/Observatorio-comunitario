@@ -2,6 +2,8 @@
 Plantilla show común para educaciones.
 $etiqueta: etiqueta para mostrar el tipo de educación, viene en minúsculas (ej. "educación básica")
 $rutaIndex: ruta para ir al index de la educación (ej. route('educ_basica.index'))
+$rutaEdit: ruta para ir a la vista de edición de la educación (ej. route('educ_basica.edit', $inscripcion['id']))
+$rutaDestroy: ruta para eliminar la educación (ej. route('educ_basica.destroy', $inscripcion['id']))
 $inscripcion: objeto de la inscripción educativa, debe tener:
     - id: id de la inscripción
     - rfe: RFE de la persona
@@ -57,15 +59,15 @@ $cursos: lista de cursos de la persona, cada elemento debe tener:
                 </p>
             </div>
             <div class="header-actions">
-                <button class="btn-outline">
+                <a class="btn-outline" href="{{ $rutaEdit }}" data-url="{{ $rutaEdit }}">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
                          stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 20h9"/>
                         <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>
                     </svg>
                     Editar
-                </button>
-                <button class="btn-danger">
+                </a>
+                <button type="button" class="btn-danger" onclick="document.getElementById('modalEliminar').showModal()">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
                          stroke-linecap="round" stroke-linejoin="round">
                         <path d="M3 6h18"/>
@@ -119,6 +121,14 @@ $cursos: lista de cursos de la persona, cada elemento debe tener:
                         </div>
                     </div>
                 @endif
+                <div class="info-field">
+                    <label>
+                        Matrícula
+                    </label>
+                    <div class="value {{ $inscripcion->matricula ? '' : 'empty' }}">
+                        {{ $inscripcion->matricula ?? '-' }}
+                    </div>
+                </div>
                 <div class="info-field">
                     <label>
                         Colonia
@@ -211,6 +221,13 @@ $cursos: lista de cursos de la persona, cada elemento debe tener:
                 </div>
             @endforeach
         @endif
+        @include('system.parts.alerts.confirm_delete', [
+                'modalId' => 'modalEliminar',
+                'titulo' => '¿Eliminar ficha de educación de esta persona?',
+                'mensaje' => 'Esta acción no se puede deshacer. Se eliminará el registro de educación de :nombre. <br><strong>Se eliminarán sus cursos de educación básica y media superior!!</strong>',
+                'nombre' => $comunidad->nombre . ' ' . $comunidad->ap_pat . ' ' . $comunidad->ap_mat,
+                'ruta' => $rutaDestroy,
+            ])
     @else
         @include('system.parts.alerts.not_found', ['route' => $rutaIndex])
     @endif
