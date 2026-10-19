@@ -177,12 +177,11 @@
             </h3>
             <a class="btn-outline btn-small" href="{{ route('talleres.participantes.edit', $taller->id) }}"
                data-url="{{ route('talleres.participantes.edit', $taller->id) }}">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.2"
-                     stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 5v14" />
-                    <path d="M5 12h14" />
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 20h9" />
+                    <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
                 </svg>
-                Agregar involucrado
+                Editar involucrados
             </a>
         </div>
         @if ($involucrados->isNotEmpty())
