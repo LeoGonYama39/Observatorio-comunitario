@@ -282,7 +282,7 @@ class EducacionController extends Controller
                         ->exists();
 
                     $estado = $tieneOtroNivel
-                        ? 'Registrado en educación ' . $otro
+                        ? 'Registrado en educación ' . str_replace('_', ' ', $otro)
                         : 'Sin curso registrado';
 
                     $nombreCurso = null;
