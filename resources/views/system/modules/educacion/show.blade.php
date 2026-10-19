@@ -167,14 +167,14 @@ $cursos: lista de cursos de la persona, cada elemento debe tener:
             <p>Sin cursos registrados</p>
         @else
             @foreach ($cursos as $curso)
-                <div class="progress-card">
+                <div class="progress-card" data-inscripcion-curso-id="{{ $curso['id'] }}">
                     <div class="progress-top">
                         <h3>{{ $curso['nombre'] }}</h3>
+
                         <div class="progress-actions">
                             <span class="meta-badge on">
                                 {{ ucfirst($curso['estado']) }}
                             </span>
-
                             <a class="btn-outline" href="{{ route($ruta . '_curso.edit', $curso['id']) }}" data-url="{{ route($ruta . '_curso.edit', $curso['id']) }}">
                                 <svg width="15" height="15" viewBox="0 0 24 24"
                                     fill="none" stroke-width="1.8"
@@ -199,34 +199,55 @@ $cursos: lista de cursos de la persona, cada elemento debe tener:
                             </button>
                         </div>
                     </div>
+
                     <p class="progress-meta">
-                        Ingreso: {{ $curso['fecha_ingreso'] ?? 'No registrada' }} <strong>({{ ucfirst($curso['temporada']) }} {{ $curso['anio'] }})</strong>
+                        Ingreso: {{ $curso['fecha_ingreso'] ?? 'No registrada' }}
+                        <strong>({{ ucfirst($curso['temporada']) }} {{ $curso['anio'] }})</strong>
                     </p>
+
                     <div class="progress-summary">
                         <span class="count">
-                            {{ $curso['acreditadas'] }} de {{ $curso['total'] }} materias
+                            <span class="materias-acreditadas">{{ $curso['acreditadas'] }}</span>
+                            de
+                            <span class="materias-total">{{ $curso['total'] }}</span>
+                            materias
                         </span>
+
+                        <span class="responsable-feedback" role="status" aria-live="polite" aria-label="Resultado de la actualización"></span>
+
                         <div class="progress-bar-track">
                             <div class="progress-bar-fill"
-                                 style="width: {{ ((int) $curso['acreditadas'] / (int) $curso['total']) * 100 }}%;">
+                                style="width: {{ $curso['total'] > 0 ? ($curso['acreditadas'] / $curso['total']) * 100 : 0 }}%;">
                             </div>
                         </div>
                     </div>
+
                     <div class="materias-grid">
-                        @foreach($curso['materias'] as $materia)
-                            <div class="materia-box {{ $materia['acreditada'] ? 'done' : '' }}"
-                                 onclick="toggleMateria(this)">
+                        @foreach ($curso['materias'] as $materia)
+                            <div
+                                class="materia-box {{ $materia['acreditada'] ? 'done' : '' }}"
+                                data-inscripcion-curso-id="{{ $curso['id'] }}"
+                                data-materia-id="{{ $materia['id'] }}"
+                                data-toggle-url="{{ route('educacion.materia.toggle', [
+                                    'inscripcionCurso' => $curso['id'],
+                                    'materia' => $materia['id']
+                                ]) }}"
+                                onclick="toggleMateria(this)"
+                                role="button"
+                                tabindex="0"
+                                aria-pressed="{{ $materia['acreditada'] ? 'true' : 'false' }}"
+                            >
                                 <div class="check-circle">
-                                    @if($materia['acreditada'])
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.5"
-                                             stroke-linecap="round" stroke-linejoin="round">
+                                    @if ($materia['acreditada'])
+                                        <svg width="14" height="14" viewBox="0 0 24 24"
+                                            fill="none" stroke-width="2.5"
+                                            stroke-linecap="round" stroke-linejoin="round">
                                             <path d="M20 6 9 17l-5-5"/>
                                         </svg>
                                     @endif
                                 </div>
-                                <span>
-                                    {{ $materia['nombre'] }}
-                                </span>
+
+                                <span>{{ $materia['nombre'] }}</span>
                             </div>
                         @endforeach
                     </div>

@@ -365,6 +365,68 @@ class EducacionController extends Controller
             }
     }
 
+    public function toggleMateria(Request $request, int $inscripcionCurso,int $materia) {
+        $validated = $request->validate([
+            'cursado' => ['required', 'boolean'],
+        ]);
+
+        $resultado = DB::transaction(function () use ($inscripcionCurso, $materia, $validated) {
+            $inscripcion = InscripcionCurso::whereKey($inscripcionCurso)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $materiaInscrita = $inscripcion->materias()
+                ->where('materias.id', $materia)
+                ->exists();
+
+            if (!$materiaInscrita) {
+                abort(404, 'La materia no pertenece a esta inscripción.');
+            }
+
+            DB::table('inscripcion_materia')
+                ->where('insc_curso_id', $inscripcionCurso)
+                ->where('materia_id', $materia)
+                ->update([
+                    'cursado' => $validated['cursado'],
+                ]);
+
+            $materias = $inscripcion->materias()->get();
+
+            $total = $materias->count();
+
+            $acreditadas = $materias
+                ->filter(fn ($item) => (bool) $item->pivot->cursado)
+                ->count();
+
+            $estadoAnterior = $inscripcion->estado;
+
+            if ($total > 0 && $acreditadas === $total) {
+                $inscripcion->estado = 'concluido';
+            } elseif ($inscripcion->estado === 'concluido') {
+                $inscripcion->estado = 'activo';
+            }
+
+            if ($inscripcion->estado !== $estadoAnterior) {
+                $inscripcion->save();
+            }
+
+            return [
+                'cursado' => (bool) $validated['cursado'],
+                'acreditadas' => $acreditadas,
+                'total' => $total,
+                'progreso' => $total > 0
+                    ? round(($acreditadas / $total) * 100, 2)
+                    : 0,
+                'estado' => $inscripcion->estado,
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            ...$resultado,
+        ]);
+    }
+
     //-------------------
     //  Funciones
     //------------------
@@ -505,6 +567,7 @@ class EducacionController extends Controller
 
             $materias = $inscripcionCurso->materias->map(function ($materia) {
                 return [
+                    'id' => $materia->id,
                     'nombre' => $materia->nombre,
                     'acreditada' => (bool)$materia->pivot->cursado,
                 ];
@@ -514,7 +577,7 @@ class EducacionController extends Controller
                 ->filter(fn ($materia) => $materia->pivot->cursado)
                 ->count();
 
-            $total = $inscripcionCurso->curso->materias->count();
+            $total = $inscripcionCurso->materias->count();
 
             return [
                 'id' => $inscripcionCurso->id,

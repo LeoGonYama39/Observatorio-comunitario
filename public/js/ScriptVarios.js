@@ -12,13 +12,94 @@ function toggleBreakdown(btn) {
     }
 }
 
-//Toggle de las materias en educación
-function toggleMateria(box) {
-    box.classList.toggle('done');
-    const check = box.querySelector('.check-circle');
-    check.innerHTML = box.classList.contains('done')
-        ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'
-        : '';
+async function toggleMateria(box) {
+    const card = box.closest('.progress-card');
+
+    // Evitar interacciones mientras esta tarjeta se está actualizando.
+    if (!card || card.classList.contains('is-updating')) {
+        return;
+    }
+
+    const url = box.dataset.toggleUrl;
+    const cursadoActual = box.classList.contains('done');
+    const cursadoNuevo = !cursadoActual;
+
+    const feedback = card.querySelector('.responsable-feedback');
+
+    if (!url || !feedback) {
+        console.error('Falta la URL de actualización o el indicador de resultado.');
+        return;
+    }
+
+    // Bloquear la tarjeta y limpiar el indicador anterior.
+    card.classList.add('is-updating');
+    feedback.classList.remove('show', 'ok', 'error');
+
+    try {
+        const response = await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector(
+                    'meta[name="csrf-token"]'
+                )?.content ?? '',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({
+                cursado: cursadoNuevo
+            })
+        });
+
+        const data = await response.json();
+
+        // Laravel debe confirmar tanto el éxito HTTP como el de la operación.
+        if (!response.ok || data.success !== true) {
+            throw new Error(
+                data.message || 'No se pudo actualizar la materia.'
+            );
+        }
+
+        // Aplicar el estado confirmado por Laravel.
+        box.classList.toggle('done', data.cursado);
+
+        box.setAttribute(
+            'aria-pressed',
+            String(data.cursado)
+        );
+
+        const check = box.querySelector('.check-circle');
+
+        check.innerHTML = data.cursado
+            ? `<svg width="14" height="14" viewBox="0 0 24 24"
+                    fill="none" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 6 9 17l-5-5"/>
+               </svg>`
+            : '';
+
+        // Actualizar el contador de materias acreditadas.
+        const contador = card.querySelector('.materias-acreditadas');
+        const total = card.querySelector('.materias-total');
+        const barra = card.querySelector('.progress-bar-fill');
+        const estadoBadge = card.querySelector('.progress-actions .meta-badge');
+
+        contador.textContent = data.acreditadas;
+        total.textContent = data.total;
+        barra.style.width = `${data.progreso}%`;
+        if (estadoBadge) {
+            estadoBadge.textContent =
+                data.estado.charAt(0).toUpperCase() + data.estado.slice(1);
+        }
+        showResponsableFeedback(feedback, 'ok');
+
+    } catch (error) {
+        console.error('Error al actualizar la materia:', error);
+        showResponsableFeedback(feedback, 'error');
+    } finally {
+        // La tarjeta siempre vuelve a estar disponible.
+        card.classList.remove('is-updating');
+    }
 }
 
 //Sincroniza el atributo disabled de los inputs dentro de un bloque con su estado hidden,

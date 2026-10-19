@@ -1243,6 +1243,19 @@
      padding: 28px 32px;
      margin-bottom: 24px;
 }
+.progress-card .materia-box {
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+}
+
+.progress-card.is-updating .materias-grid {
+    pointer-events: none;
+}
+
+.progress-card.is-updating .materia-box {
+    cursor: wait;
+}
+
 .progress-top {
     display: flex;
     align-items: center;

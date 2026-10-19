@@ -83,6 +83,14 @@ Route::middleware('auth:centro')->group(function () {
     Route::get      ('/sistema/educ_sup/{id}/curso/edit', [EducacionController::class, 'edit_curso'])  ->whereNumber('id') ->defaults('nivel', 'sup')->name('educ_sup_curso.edit');
     Route::put      ('/sistema/educ_sup/{id}/curso/', [EducacionController::class, 'update_curso'])  ->whereNumber('id') ->defaults('nivel', 'sup')->name('educ_sup_curso.update');
 
+    //Para actualizar las materias
+    Route::patch(
+        '/sistema/educacion/curso/{inscripcionCurso}/materia/{materia}',
+        [EducacionController::class, 'toggleMateria']
+    )->whereNumber('inscripcionCurso')
+    ->whereNumber('materia')
+    ->name('educacion.materia.toggle');
+
     //Rutas para talleres
     Route::resource('/sistema/talleres', TalleresController::class);
     Route::get('/sistema/talleres/{taller}/participantes', [ParticipantesController::class, 'edit_taller'])->name('talleres.participantes.edit');
