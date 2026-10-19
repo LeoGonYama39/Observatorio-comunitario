@@ -153,14 +153,14 @@ $cursos: lista de cursos de la persona, cada elemento debe tener:
             <h3>
                 Cursos
             </h3>
-            <button class="btn-outline btn-small">
+            <a class="btn-outline btn-small" href="{{ $rutaCreateCurso }}" data-url="{{ $rutaCreateCurso }}">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.2"
                      stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 5v14"/>
                     <path d="M5 12h14"/>
                 </svg>
                 Nueva inscripción
-            </button>
+            </a>
         </div>
 
         @if ($cursos->isEmpty())
@@ -175,7 +175,15 @@ $cursos: lista de cursos de la persona, cada elemento debe tener:
                         <span class="meta-badge on">
                             {{ ucfirst($curso['estado']) }}
                         </span>
-                        <button class="btn-danger btn-small">
+                        <a class="btn-outline" href="{{ $rutaEdit }}" data-url="{{ $rutaEdit }}">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 20h9"/>
+                                <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+                            </svg>
+                            Editar
+                        </a>
+                        <button type="button" class="btn-danger" onclick="document.getElementById('modalEliminarCurso{{ $curso['id'] }}').showModal()">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
                                  stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M3 6h18"/>
@@ -188,7 +196,7 @@ $cursos: lista de cursos de la persona, cada elemento debe tener:
                         </button>
                     </div>
                     <p class="progress-meta">
-                        Ingreso: {{ $curso['fecha_ingreso'] ?? 'No registrada' }}
+                        Ingreso: {{ $curso['fecha_ingreso'] ?? 'No registrada' }} <strong>({{ ucfirst($curso['temporada']) }} {{ $curso['anio'] }})</strong>
                     </p>
                     <div class="progress-summary">
                         <span class="count">
@@ -219,6 +227,13 @@ $cursos: lista de cursos de la persona, cada elemento debe tener:
                         @endforeach
                     </div>
                 </div>
+                @include('system.parts.alerts.confirm_delete', [
+                'modalId' => 'modalEliminarCurso' . $curso['id'],
+                'titulo' => '¿Eliminar curso?',
+                'mensaje' => 'Esta acción no se puede deshacer. Se eliminará el curso :nombre y todas sus materias de la ficha educativa.',
+                'nombre' => $curso['nombre'],
+                'ruta' => route($ruta . '_curso.destroy', $curso['id'])
+            ])
             @endforeach
         @endif
         @include('system.parts.alerts.confirm_delete', [

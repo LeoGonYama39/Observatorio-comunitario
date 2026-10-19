@@ -56,22 +56,30 @@ Route::middleware('auth:centro')->group(function () {
 
     //Rutas para educación básica y media superior, usan un controlador común
     // Educación básica
-    Route::get      ('/sistema/educ_basica', [EducacionController::class, 'index'])                             ->defaults('nivel', 'basica')->name('educ_basica.index');
-    Route::get      ('/sistema/educ_basica/create', [EducacionController::class, 'create'])                     ->defaults('nivel', 'basica')->name('educ_basica.create');
-    Route::post     ('/sistema/educ_basica', [EducacionController::class, 'store'])                             ->defaults('nivel', 'basica')->name('educ_basica.store');
-    Route::put      ('/sistema/educ_basica/{id}', [EducacionController::class, 'update'])   ->whereNumber('id') ->defaults('nivel', 'basica')->name('educ_basica.update');
-    Route::get      ('/sistema/educ_basica/{id}/edit', [EducacionController::class, 'edit'])->whereNumber('id') ->defaults('nivel', 'basica')->name('educ_basica.edit');
-    Route::get      ('/sistema/educ_basica/{id}', [EducacionController::class, 'show'])     ->whereNumber('id') ->defaults('nivel', 'basica')->name('educ_basica.show');
-    Route::delete   ('/sistema/educ_basica/{id}', [EducacionController::class, 'destroy'])  ->whereNumber('id') ->defaults('nivel', 'basica')->name('educ_basica.destroy');
+    Route::get      ('/sistema/educ_basica', [EducacionController::class, 'index'])                                         ->defaults('nivel', 'basica')->name('educ_basica.index');
+    Route::get      ('/sistema/educ_basica/create', [EducacionController::class, 'create'])                                 ->defaults('nivel', 'basica')->name('educ_basica.create');
+    Route::post     ('/sistema/educ_basica', [EducacionController::class, 'store'])                                         ->defaults('nivel', 'basica')->name('educ_basica.store');
+    Route::put      ('/sistema/educ_basica/{id}', [EducacionController::class, 'update'])               ->whereNumber('id') ->defaults('nivel', 'basica')->name('educ_basica.update');
+    Route::get      ('/sistema/educ_basica/{id}/edit', [EducacionController::class, 'edit'])            ->whereNumber('id') ->defaults('nivel', 'basica')->name('educ_basica.edit');
+    Route::get      ('/sistema/educ_basica/{id}', [EducacionController::class, 'show'])                 ->whereNumber('id') ->defaults('nivel', 'basica')->name('educ_basica.show');
+    Route::delete   ('/sistema/educ_basica/{id}', [EducacionController::class, 'destroy'])              ->whereNumber('id') ->defaults('nivel', 'basica')->name('educ_basica.destroy');
+    Route::get      ('/sistema/educ_basica/{id}/curso', [EducacionController::class, 'create_curso'])   ->whereNumber('id') ->defaults('nivel', 'basica')->name('educ_basica_curso.create');
+    Route::post     ('/sistema/educ_basica/{id}/curso', [EducacionController::class, 'store_curso'])    ->whereNumber('id') ->defaults('nivel', 'basica')->name('educ_basica_curso.store');
+    Route::delete   ('/sistema/educ_basica/{id}/curso', [EducacionController::class, 'destroy_curso'])  ->whereNumber('id') ->defaults('nivel', 'basica')->name('educ_basica_curso.destroy');
+    Route::get      ('/sistema/educ_basica/{id}/curso/edit', [EducacionController::class, 'edit_curso'])   ->whereNumber('id') ->defaults('nivel', 'basica')->name('educ_basica_curso.edit');
 
     // Educación media-superior
-    Route::get      ('/sistema/educ_sup', [EducacionController::class, 'index'])                                ->defaults('nivel', 'sup')->name('educ_sup.index');
-    Route::get      ('/sistema/educ_sup/create', [EducacionController::class, 'create'])                        ->defaults('nivel', 'sup')->name('educ_sup.create');
-    Route::post     ('/sistema/educ_sup', [EducacionController::class, 'store'])                                ->defaults('nivel', 'sup')->name('educ_sup.store');
-    Route::get      ('/sistema/educ_sup/{id}/edit', [EducacionController::class, 'edit'])   ->whereNumber('id') ->defaults('nivel', 'sup')->name('educ_sup.edit');
-    Route::get      ('/sistema/educ_sup/{id}', [EducacionController::class, 'show'])        ->whereNumber('id') ->defaults('nivel', 'sup')->name('educ_sup.show');
-    Route::put      ('/sistema/educ_sup/{id}', [EducacionController::class, 'update'])      ->whereNumber('id') ->defaults('nivel', 'sup')->name('educ_sup.update');
-    Route::delete   ('/sistema/educ_sup/{id}', [EducacionController::class, 'destroy'])     ->whereNumber('id') ->defaults('nivel', 'sup')->name('educ_sup.destroy');    
+    Route::get      ('/sistema/educ_sup', [EducacionController::class, 'index'])                                        ->defaults('nivel', 'sup')->name('educ_sup.index');
+    Route::get      ('/sistema/educ_sup/create', [EducacionController::class, 'create'])                                ->defaults('nivel', 'sup')->name('educ_sup.create');
+    Route::post     ('/sistema/educ_sup', [EducacionController::class, 'store'])                                        ->defaults('nivel', 'sup')->name('educ_sup.store');
+    Route::get      ('/sistema/educ_sup/{id}/edit', [EducacionController::class, 'edit'])           ->whereNumber('id') ->defaults('nivel', 'sup')->name('educ_sup.edit');
+    Route::get      ('/sistema/educ_sup/{id}', [EducacionController::class, 'show'])                ->whereNumber('id') ->defaults('nivel', 'sup')->name('educ_sup.show');
+    Route::put      ('/sistema/educ_sup/{id}', [EducacionController::class, 'update'])              ->whereNumber('id') ->defaults('nivel', 'sup')->name('educ_sup.update');
+    Route::delete   ('/sistema/educ_sup/{id}', [EducacionController::class, 'destroy'])             ->whereNumber('id') ->defaults('nivel', 'sup')->name('educ_sup.destroy');    
+    Route::get      ('/sistema/educ_sup/{id}/curso', [EducacionController::class, 'create_curso'])  ->whereNumber('id') ->defaults('nivel', 'sup')->name('educ_sup_curso.create');
+    Route::post     ('/sistema/educ_sup/{id}/curso', [EducacionController::class, 'store_curso'])   ->whereNumber('id') ->defaults('nivel', 'sup')->name('educ_sup_curso.store');
+    Route::delete   ('/sistema/educ_sup/{id}/curso', [EducacionController::class, 'destroy_curso'])  ->whereNumber('id') ->defaults('nivel', 'sup')->name('educ_sup_curso.destroy');
+    Route::get      ('/sistema/educ_sup/{id}/curso/edit', [EducacionController::class, 'edit_curso'])  ->whereNumber('id') ->defaults('nivel', 'sup')->name('educ_sup_curso.edit');
 
     //Rutas para talleres
     Route::resource('/sistema/talleres', TalleresController::class);

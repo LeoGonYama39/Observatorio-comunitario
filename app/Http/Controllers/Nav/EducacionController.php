@@ -6,12 +6,18 @@ namespace App\Http\Controllers\Nav;
 
 use App\Http\Controllers\Controller;
 use App\Models\Educacion\InscripcionEducativa;
+use App\Models\Educacion\InscripcionCurso;
+use App\Models\Educacion\Curso;
 use Illuminate\Http\Request;
 use App\Models\PComunidad;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class EducacionController extends Controller
 {
+    private const TEMPORADA_PRIMAVERA = 'primavera';
+    private const TEMPORADA_OTONO     = 'otoño';
+
     public function index(Request $request, string $nivel)
     {
         $config = $this->configEducacion($nivel);
@@ -46,11 +52,13 @@ class EducacionController extends Controller
         $rutaIndex = route($config['ruta'] . '.index');
         $rutaEdit = route($config['ruta'] . '.edit', $id);
         $rutaDestroy = route($config['ruta'] . '.destroy', $id);
+        $rutaCreateCurso = route($config['ruta'] . '_curso.create', $id);
+        $ruta = $config['ruta'];
 
         $view = view(
             'system.modules.educacion.show',
                         array_merge(
-                            compact('etiqueta', 'rutaIndex', 'rutaEdit', 'rutaDestroy'),
+                            compact('etiqueta', 'rutaIndex', 'rutaEdit', 'rutaDestroy', 'rutaCreateCurso', 'ruta'),
                             $datos ?? ['inscripcion' => null]));
 
         if ($request->ajax()) {
@@ -128,10 +136,8 @@ class EducacionController extends Controller
                 ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
         }
     }
-
     
-    public function edit(Request $request, string $id, string $nivel)
-    {
+    public function edit(Request $request, string $id, string $nivel) {
         $config = $this->configEducacion($nivel);
 
         $inscripcion = $this->getDatosEdit((int)$id);
@@ -204,6 +210,92 @@ class EducacionController extends Controller
                 return redirect()
                 ->route($config['ruta'] . '.index')
                 ->with('success', "Registro de educación de {$nombre} eliminado con éxito.");
+                } 
+                catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+                    return redirect()
+                    ->route($config['ruta'] . '.index')
+                    ->with('error', 'El registro que intentas eliminar no existe.');
+                } catch (\Throwable $e) {
+                    return back()
+                    ->with('error', 'Ocurrió un error al intentar eliminar el registro: ' . $e->getMessage());
+            }
+    }
+
+    public function create_curso(Request $request, string $id, string $nivel) {
+        $config = $this->configEducacion($nivel);
+
+        $datos = $this->getDatosCreateCurso((int)$id, $config['tipo']);
+
+        $etiqueta = $config['etiqueta'];
+        $rutaIndex = route($config['ruta'] . '.index');
+        $rutaShow = route($config['ruta'] . '.show', $id);
+        $rutaStore = route($config['ruta'] . '_curso.store', $id);
+
+        $view = view("system.modules.educacion.create_curso", array_merge(
+            compact('etiqueta', 'rutaIndex', 'rutaShow', 'rutaStore'),
+            $datos ?? ['inscripcion' => null]));
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
+    }
+
+    public function store_curso(Request $request, InscripcionEducativa $id, string $nivel) {
+        $config = $this->configEducacion($nivel);
+
+        try {
+            $validated = $this->getValidateCurso($request);
+
+            DB::transaction(function () use ($validated, $id) {
+
+                $inscripcionCurso = InscripcionCurso::create([
+                    'insc_edu_id'   => $id->id,
+                    'cursos_id'     => $validated['cursos_id'],
+                    'fecha_ingreso' => $validated['fecha_ingreso'],
+                    'temporada'     => $this->temporadaDe($validated['fecha_ingreso']),
+                    'estado'        => 'activo',
+                ]);
+
+                $curso = Curso::with('materias:id')->findOrFail((int)$validated['cursos_id']);
+
+                $materias = $curso->materias->mapWithKeys(function ($materia) {
+                    return [$materia->id => ['cursado' => false],];
+                })->all();
+
+                $inscripcionCurso->materias()->attach($materias);
+            });
+
+            return redirect()
+                ->route($config['ruta'] . '.show', $id->id)
+                ->with('success', 'Curso y materias registrados con éxito.');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+
+        } catch (\Throwable $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
+        }
+    }
+
+    public function destroy_curso(string $id, string $nivel) {
+        $config = $this->configEducacion($nivel);
+        try {
+                $inscripcion = InscripcionCurso::findOrFail($id);
+                $nombre = $inscripcion->curso->nombre;
+                $idShow = $inscripcion->inscripcionEducativa->id;
+                $inscripcion->delete();
+
+                return redirect()
+                ->route($config['ruta'] . '.show', $idShow)
+                ->with('success', "Curso {$nombre} eliminado con éxito.");
                 } 
                 catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
                     return redirect()
@@ -323,9 +415,9 @@ class EducacionController extends Controller
                     'id',
                     'insc_edu_id',
                     'cursos_id',
-                    'anio',
                     'temporada',
-                    'estado'
+                    'estado',
+                    'fecha_ingreso'
                 )
                     ->whereHas('curso', function ($query) use ($tipo) {
                         $query->where('tipo', $tipo);
@@ -370,9 +462,9 @@ class EducacionController extends Controller
                 'id' => $inscripcionCurso->id,
                 'nombre' => $inscripcionCurso->curso->nombre,
                 'estado' => $inscripcionCurso->estado,
-                'anio' => $inscripcionCurso->anio,
                 'temporada' => $inscripcionCurso->temporada,
                 'fecha_ingreso' => $inscripcionCurso->fecha_formateada,
+                'anio' => $inscripcionCurso->anio,
                 'materias' => $materias,
                 'acreditadas' => $acreditadas,
                 'total' => $total,
@@ -386,6 +478,15 @@ class EducacionController extends Controller
         );
     }
 
+    private function getDatosCreateCurso(int $id, string $tipo) {
+        $inscripcion = InscripcionEducativa::find($id);
+        if (!$inscripcion) return null;
+        
+        $cursos = Curso::where('tipo', $tipo)->get();
+
+        return compact('inscripcion', 'cursos');
+    }
+    
     private function getValidate(Request $request, bool $actualizar = false) {
         return $request->validate([
             'comunidad_id' => $actualizar
@@ -427,4 +528,23 @@ class EducacionController extends Controller
         return InscripcionEducativa::find($id);
     }
 
+    private function getValidateCurso(Request $request) {
+        return $request->validate([
+            'fecha_ingreso' => ['required', 'date'],
+            'cursos_id'     => ['required', 'integer', 'exists:cursos,id'],
+        ], [
+            'fecha_ingreso.required' => 'La fecha de ingreso es obligatoria.',
+            'fecha_ingreso.date'     => 'La fecha de ingreso no es válida.',
+            'cursos_id.required'     => 'Selecciona un curso.',
+            'cursos_id.integer'      => 'El curso seleccionado no es válido.',
+            'cursos_id.exists'       => 'El curso seleccionado ya no existe.',
+        ]);
+    }
+
+    private function temporadaDe(string $fecha): string {
+        return Carbon::parse($fecha)->month <= 6
+            ? self::TEMPORADA_PRIMAVERA
+            : self::TEMPORADA_OTONO;
+    }
+    
 }

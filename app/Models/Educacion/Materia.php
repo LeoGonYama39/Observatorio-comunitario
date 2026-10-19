@@ -18,7 +18,6 @@ use App\Models\Educacion\InscripcionMateria;
  * @property string $nombre
  *
  * @property Collection|Curso[] $cursos
- * @property Collection|InscripcionMateria[] $inscripcion_materia
  *
  * @package App\Models\Educacion
  */
@@ -30,11 +29,6 @@ class Materia extends Model
 	protected $fillable = [
 		'nombre'
 	];
-
-	public function inscripcion_materia()
-	{
-		return $this->hasMany(InscripcionMateria::class);
-	}
 
     public function inscripcionesCurso()
     {

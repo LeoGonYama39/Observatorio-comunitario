@@ -404,7 +404,7 @@ class PExternoController extends Controller
                 ->with("success", "Participación eliminada con éxito.");
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return redirect()
-                ->route("personas-externo.show", $idOld)
+                ->route("personas-externo.index")
                 ->with("error", "El registro que intentas eliminar no existe.");
         } catch (\Throwable $e) {
             return back()->with(

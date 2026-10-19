@@ -44,12 +44,12 @@ class InscripcionCurso extends Model
 		'cursos_id',
 		'fecha_ingreso',
 		'estado',
-        'anio',
         'temporada',
 	];
 
     protected $appends = [
         'fecha_formateada',
+        'anio'
     ];
 
     public function getFechaFormateadaAttribute()
@@ -57,10 +57,16 @@ class InscripcionCurso extends Model
         if(!$this->fecha_ingreso) return null;
         return $this->fecha_ingreso
             ->locale('es')
-            ->translatedFormat('j \d\e F \d\e Y');
+            ->translatedFormat('j \d\e F');
     }
 
-	public function inscripciones_educativa()
+    public function getAnioAttribute()
+    {
+        if(!$this->fecha_ingreso) return null;
+        return $this->fecha_ingreso->format('Y');
+    }
+
+	public function inscripcionEducativa()
 	{
 		return $this->belongsTo(InscripcionEducativa::class, 'insc_edu_id');
 	}

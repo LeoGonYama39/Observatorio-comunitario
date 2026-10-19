@@ -111,7 +111,7 @@
                 </a>
             </div>
             <button
-                class="nav-item has-submenu {{ request()->routeIs('educ_basica.*') || request()->routeIs('educ_sup.*')
+                class="nav-item has-submenu {{ request()->routeIs('educ_basica.*', 'educ_basica_curso.*') || request()->routeIs('educ_sup.*', 'educ_sup_curso.*')
                     ? 'section-active parent-active'
                     : '' }}">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
@@ -128,19 +128,17 @@
                 </svg>
             </button>
             <div class="submenu">
-                <a href="{{ route('educ_basica.index') }}" data-url="{{ route('educ_basica.index') }}"
-                   class="sub-item {{ request()->routeIs('educ_basica.*') ? 'active' : '' }}">
+                <a href="{{ route('educ_basica.index') }}"
+                data-url="{{ route('educ_basica.index') }}"
+                class="sub-item {{ request()->routeIs('educ_basica.*', 'educ_basica_curso.*') ? 'active' : '' }}">
                     Educación básica
                 </a>
-                <a href="{{ route('educ_sup.index') }}" data-url="{{ route('educ_sup.index') }}"
-                   class="sub-item {{ request()->routeIs('educ_sup.*') ? 'active' : '' }}">
+
+                <a href="{{ route('educ_sup.index') }}"
+                data-url="{{ route('educ_sup.index') }}"
+                class="sub-item {{ request()->routeIs('educ_sup.*', 'educ_sup_curso.*') ? 'active' : '' }}">
                     Educación media-superior
                 </a>
-                @if (0 === 1)
-                    <a href="#" class="sub-item">
-                        Materias
-                    </a>
-                @endif
             </div>
             <button
                 class="nav-item has-submenu {{ request()->routeIs('aten_pers.*') || request()->routeIs('proc_grup.*') ? 'section-active parent-active' : '' }}">
