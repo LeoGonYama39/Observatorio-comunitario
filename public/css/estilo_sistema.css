@@ -1243,19 +1243,34 @@
      padding: 28px 32px;
      margin-bottom: 24px;
 }
- .progress-top {
-     display: flex;
-     align-items: center;
-     justify-content: space-between;
-     flex-wrap: wrap;
-     gap: 12px;
-     margin-bottom: 6px;
+.progress-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 6px;
 }
- .progress-top h3 {
-     font-size: 16px;
-     font-weight: 800;
-     color: var(--ink);
+
+.progress-top h3 {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--ink);
+    margin: 0;
 }
+
+.progress-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.progress-top .meta-badge {
+    margin-left: auto;
+}
+
 .progress-top .btn-danger {
   margin-left: auto;
 }
@@ -1475,6 +1490,15 @@
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
+
+.form-checkbox-row input[type="checkbox"]:disabled {
+    cursor: not-allowed;
+}
+
+.form-checkbox-row input[type="checkbox"]:disabled + label {
+    cursor: not-allowed;
+}
+
 .form-checkbox-row label {
   font-size: 13.5px;
   font-weight: 600;

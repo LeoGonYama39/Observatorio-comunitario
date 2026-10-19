@@ -43,8 +43,7 @@ class EducacionController extends Controller
         return $view;
     }
 
-    public function show(Request $request, string $id, string $nivel)
-    {
+    public function show(Request $request, string $id, string $nivel) {
         $config = $this->configEducacion($nivel);
         
         $datos = $this->getDatosShow((int)$id, $config['tipo']);
@@ -72,8 +71,7 @@ class EducacionController extends Controller
         return $view;
     }
 
-    public function create(Request $request, string $nivel)
-    {
+    public function create(Request $request, string $nivel) {
         $config = $this->configEducacion($nivel);
         
         [$personasComunidad, $yaRegistrados] = $this->getUsuarias();
@@ -278,6 +276,66 @@ class EducacionController extends Controller
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;
 
+        } catch (\Throwable $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
+        }
+    }
+
+    public function edit_curso(Request $request, string $id, string $nivel) {
+        $config = $this->configEducacion($nivel);
+
+        $inscripcion = InscripcionCurso::with('curso')->findOrFail((int)$id);
+        $etiqueta = $config['etiqueta'];
+        $rutaIndex = route($config['ruta'] . '.index');
+        $rutaShow = route($config['ruta'] . '.show', $inscripcion->insc_edu_id);
+        $rutaStore = route($config['ruta'] . '_curso.update', $id);
+        $ruta = $config['ruta'];
+
+        $view = view("system.modules.educacion.edit_curso", compact(
+            'inscripcion',
+            'etiqueta',
+            'rutaIndex',
+            'rutaShow',
+            'rutaStore',
+            'ruta'
+        ));
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
+    }
+
+    public function update_curso(Request $request, InscripcionCurso $id, string $nivel) {
+        $config = $this->configEducacion($nivel);
+    
+        try {
+            $validated = $this->getValidateCurso($request, true);
+            $id->fecha_ingreso = $validated['fecha_ingreso'];
+            if ($id->estado !== 'concluido') {
+                $id->estado = $request->boolean('dado_de_baja')
+                    ? 'baja'
+                    : 'activo';
+            }
+            $id->temporada = $this->temporadaDe($validated['fecha_ingreso']);
+            $id->save();
+    
+            return redirect()
+                ->route($config['ruta'] . '.show', $id->inscripcionEducativa->id)
+                ->with('success', 'Cambios registrados con éxito.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Illuminate\Database\QueryException $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
         } catch (\Throwable $e) {
             return back()
                 ->withInput()
@@ -528,16 +586,23 @@ class EducacionController extends Controller
         return InscripcionEducativa::find($id);
     }
 
-    private function getValidateCurso(Request $request) {
+    private function getValidateCurso(Request $request, bool $actualizar = false) {
         return $request->validate([
             'fecha_ingreso' => ['required', 'date'],
-            'cursos_id'     => ['required', 'integer', 'exists:cursos,id'],
+            'cursos_id'     => $actualizar
+                ? ['sometimes', 'required', 'integer', 'exists:cursos,id']
+                : ['required', 'integer', 'exists:cursos,id'],
+            'dado_de_baja' => $actualizar
+                ? ['sometimes', 'nullable', 'boolean']
+                : ['prohibited'],
         ], [
             'fecha_ingreso.required' => 'La fecha de ingreso es obligatoria.',
             'fecha_ingreso.date'     => 'La fecha de ingreso no es válida.',
             'cursos_id.required'     => 'Selecciona un curso.',
             'cursos_id.integer'      => 'El curso seleccionado no es válido.',
             'cursos_id.exists'       => 'El curso seleccionado ya no existe.',
+            'dado_de_baja.boolean' => 'El valor de "Dado de baja" no es válido.',
+            'dado_de_baja.prohibited' => 'Este campo no está permitido en este formulario.',
         ]);
     }
 
