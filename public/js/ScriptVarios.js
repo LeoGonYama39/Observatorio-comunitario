@@ -330,6 +330,7 @@ function initPageScripts() {
     initResponsableSelects();
     initToggleGroups();
     initTableSearch();
+    initTablePagination();
 }
 
 initPageScripts();

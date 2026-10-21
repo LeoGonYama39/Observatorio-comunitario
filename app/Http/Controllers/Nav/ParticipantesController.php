@@ -53,6 +53,7 @@ class ParticipantesController extends Controller {
 
         $personasComunidad = PComunidad::with('colonia')
         ->where('lider', true)
+        ->orderBy('nombre')
         ->get()
         ->map(fn ($p) => (object) [
             'id' => $p->id,

@@ -4,27 +4,150 @@
 
 //Función para inicializar el buscado por texto y filtrar la búsqueda
 function initTableSearch() {
-    document.querySelectorAll('.table-search input').forEach(searchInput => {   //Se hace así para que sirva si hay más de una tabla del mismo tipo
-        const scope = searchInput.closest('.entity-picker') || document.getElementById('mainContent');
-        const table = scope ? scope.querySelector('.table-card table') : null;
+    document.querySelectorAll('.table-search input').forEach(searchInput => {
+        // Evita duplicar el evento si la vista se vuelve a inicializar.
+        if (searchInput.dataset.initialized === 'true') return;
+        searchInput.dataset.initialized = 'true';
 
-        if (!table) { return; }
+        const toolbar = searchInput.closest('.table-toolbar');
 
-        const rows = table.querySelectorAll('tbody tr');
+        // En el index, la tabla está inmediatamente después de la barra.
+        const nextElement = toolbar?.nextElementSibling;
+
+        let table = nextElement?.matches('.table-card')
+            ? nextElement.querySelector('table')
+            : null;
+
+        // Alternativa para vistas que tengan otra estructura.
+        if (!table) {
+            const scope = searchInput.closest('.entity-picker')
+                || document.getElementById('mainContent');
+
+            table = scope?.querySelector('.table-card table') ?? null;
+        }
+
+        if (!table) return;
+
+        const rows = Array.from(table.querySelectorAll('tbody tr'));
+
+        // Estado inicial: todas las filas coinciden.
+        table._filteredRows = rows;
 
         searchInput.addEventListener('input', function () {
             const search = this.value.toLowerCase().trim();
 
-            rows.forEach(row => {
+            // Obtiene únicamente las filas cuyo nombre coincide.
+            table._filteredRows = rows.filter(row => {
                 const name = row.querySelector('.person-name');
-                if (!name) { return; }
-                const text = name.textContent.toLowerCase();
-                row.style.display = text.includes(search) ? '' : 'none';
+
+                if (!name) return false;
+
+                return name.textContent.toLowerCase().includes(search);
             });
+
+            // Reinicia la paginación y actualiza el contador.
+            if (table._paginationReset) {
+                table._paginationReset();
+            } else {
+                // Respaldo si la paginación no está inicializada.
+                rows.forEach(row => {
+                    row.hidden = !table._filteredRows.includes(row);
+                });
+            }
         });
     });
 }
 
+function initTablePagination() {
+    const PAGE_SIZE = 20;
+
+    document.querySelectorAll('.table-pagination').forEach(pagination => {
+        // Evita inicializar dos veces el mismo bloque.
+        if (pagination.dataset.initialized === 'true') return;
+        pagination.dataset.initialized = 'true';
+
+        // Busca la tabla asociada a esta paginación.
+        const scope = pagination.closest('.entity-picker')
+            || document.getElementById('mainContent');
+
+        const table = scope
+            ? scope.querySelector('.table-card table')
+            : null;
+
+        if (!table) return;
+
+        const tbody = table.querySelector('tbody');
+        if (!tbody) return;
+
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+
+        const info = pagination.querySelector('.table-pagination-info');
+        const [prevBtn, nextBtn] = pagination.querySelectorAll(
+            '.table-pagination-btn'
+        );
+
+        if (!info || !prevBtn || !nextBtn) return;
+
+        let currentPage = 1;
+
+        function renderPage() {
+            const filteredRows = table._filteredRows ?? rows;
+            const total = filteredRows.length;
+            const totalPages = Math.ceil(total / PAGE_SIZE);
+
+            // Si cambia la cantidad de resultados, evita páginas inválidas.
+            currentPage = totalPages > 0
+                ? Math.min(currentPage, totalPages)
+                : 1;
+
+            const startIndex = (currentPage - 1) * PAGE_SIZE;
+            const endIndex = Math.min(startIndex + PAGE_SIZE, total);
+
+            // Oculta las filas que no pertenecen a la página actual.
+            rows.forEach(row => {
+                row.hidden = true;
+            });
+
+            filteredRows.slice(startIndex, endIndex).forEach(row => {
+                row.hidden = false;
+            });
+
+            // Actualiza el contador.
+            const desde = total > 0 ? startIndex + 1 : 0;
+            const hasta = endIndex;
+
+            info.textContent = `${desde}–${hasta} de ${total}`;
+
+            // Habilita o deshabilita las flechas.
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage >= totalPages;
+        }
+
+        table._paginationReset = () => {
+            currentPage = 1;
+            renderPage();
+        };
+
+        prevBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderPage();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            const totalPages = Math.ceil(rows.length / PAGE_SIZE);
+
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderPage();
+            }
+        });
+
+        // Muestra la primera página al inicializar.
+        renderPage();
+    });
+}
 
 //---------------------------------------------------------
 //          Para las tablas de involucrados

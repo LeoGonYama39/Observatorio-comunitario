@@ -471,12 +471,22 @@
  .btn-new svg {
      stroke: var(--white);
 }
- .table-toolbar {
-     display: flex;
-     align-items: center;
-     gap: 12px;
-     margin-bottom: 16px;
+.table-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 16px;
 }
+.table-toolbar .table-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+    margin: 0 4px 0 auto;
+    flex-shrink: 0;
+}
+
  .table-search {
      display: flex;
      align-items: center;
@@ -509,6 +519,71 @@
  .table-search input::placeholder {
      color: #b4b5b5;
 }
+
+/* Contenedor del contador y los controles de paginación */
+.table-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+    margin: 12px 4px;
+}
+
+/* Texto: "1–20 de 25 personas" */
+.table-pagination-info {
+    color: var(--text-secondary, #6b7280);
+    font-size: 13px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Grupo de flechas */
+.table-pagination-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--text-primary, #374151);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.table-pagination-btn:not(:disabled):hover {
+    background-color: var(--hover-bg, #f1f3f4);
+}
+
+.table-pagination-btn:disabled {
+    color: #b8bdc5;
+    cursor: default;
+}
+
+.table-pagination-btn:focus-visible {
+    outline: 2px solid var(--primary, #64748b);
+    outline-offset: 2px;
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 480px) {
+    .table-pagination {
+        gap: 10px;
+        margin-right: 0;
+    }
+
+    .table-pagination-info {
+        font-size: 12px;
+    }
+
+    .table-pagination-btn {
+        width: 32px;
+        height: 32px;
+    }
+}
+
  .btn-filter {
      display: flex;
      align-items: center;
