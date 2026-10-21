@@ -202,7 +202,7 @@ class ProyectosController extends Controller
             }
         }
 
-    public function create_historial(Request $request, $id) {
+    public function create_historial(Request $request, int $id) {
         $proyecto = Proyecto::find($id);
         $entidad = $proyecto;
         $nombreEntidad = $proyecto?->nombre;

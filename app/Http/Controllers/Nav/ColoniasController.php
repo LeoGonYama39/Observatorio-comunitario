@@ -32,23 +32,50 @@ class ColoniasController extends Controller
         return $view;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $problematicas = Problematica::select('id', 'nombre')->get();
+        $view = view("system.modules.colonias.create", compact('problematicas'));
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+    public function store(Request $request) {
+        try {
+            $validated = $this->getValidate($request);
+
+            $colonia = DB::transaction(function () use ($validated) {
+                $colonia = Colonia::create([
+                    'nombre'    => trim($validated['nombre']),
+                    'viviendas' => $validated['viviendas'] ?? null,
+                    'adultos'   => $validated['adultos'] ?? null,
+                    'ninos'     => $validated['ninos'] ?? null,
+                ]);
+                $colonia->problematicas()->sync($validated['problematicas'] ?? []);
+                return $colonia;
+            });
+
+            return redirect()
+                ->route('colonias.show', $colonia->id)
+                ->with('success', 'Colonia registrada con éxito.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
+        }
     }
 
-    public function show(Request $request, $id)
+    public function show(Request $request, int $id)
     {
         $datos = $this->getDatosShow($id);
 
@@ -73,7 +100,7 @@ class ColoniasController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Request $request, $id)
+    public function edit(Request $request, int $id)
     {
         $colonia = Colonia::find($id);
         $problematicas = Problematica::select('id', 'nombre')->get();
@@ -91,14 +118,13 @@ class ColoniasController extends Controller
         return $view;
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+
     public function update(Request $request, Colonia $colonia) {
         try {
             $validated = $this->getValidate($request);
 
             DB::transaction(function () use ($colonia, $validated, $request) {
+                $colonia->nombre = trim($validated['nombre']);
                 $colonia->viviendas = $validated['viviendas'];
                 $colonia->adultos = $validated['adultos'];
                 $colonia->ninos = $validated['ninos'];
@@ -119,15 +145,13 @@ class ColoniasController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(string $id)
     {
         //
     }
 
-    public function create_historial(Request $request, $id) {
+    public function create_historial(Request $request, int $id) {
         $colonia = Colonia::find($id);
         $entidad = $colonia;
         $nombreEntidad = $colonia?->nombre;
@@ -183,7 +207,7 @@ class ColoniasController extends Controller
         }
     }
 
-    public function destroy_historial($id) {
+    public function destroy_historial(int $id) {
         try {
             $historial = HistorialColonia::findOrFail($id);
             $proyecto = $historial->colonia->id;
@@ -235,7 +259,7 @@ class ColoniasController extends Controller
         return $colonias;
     }
 
-    private function getDatosShow($id){
+    private function getDatosShow(int $id){
         $colonia = Colonia::select(
             'id',
             'nombre',
@@ -295,15 +319,20 @@ class ColoniasController extends Controller
         ];
     }
 
-    private function getValidate($request) {
+    private function getValidate(Request $request) {
         return $request->validate([
-            'viviendas'    => ['required', 'integer', 'min:0', 'max:16777215'],
-            'adultos'    => ['required', 'integer', 'min:0', 'max:16777215'],
-            'ninos'    => ['required', 'integer', 'min:0', 'max:16777215'],
+            'nombre' => ['required', 'string', 'max:100'],
+            'viviendas'    => ['nullable', 'integer', 'min:0', 'max:16777215'],
+            'adultos'    => ['nullable', 'integer', 'min:0', 'max:16777215'],
+            'ninos'    => ['nullable', 'integer', 'min:0', 'max:16777215'],
 
             'problematicas' => ['nullable', 'array'],
             'problematicas.*' => ['integer', 'distinct', 'exists:problematicas,id'],
         ],[
+            'nombre.required' => 'El nombre de la colonia es obligatorio.',
+            'nombre.string' => 'El nombre de la colonia debe ser una cadena de texto.',
+            'nombre.max' => 'El nombre de la colonia no puede tener más de 100 caracteres.',
+
             'viviendas.integer' => 'El número de viviendas debe ser un número entero positivo.',
             'viviendas.min'     => 'El número de viviendas no puede ser negativo.',
             'viviendas.max'     => 'El número de viviendas no puede ser más de 16,777,215.',

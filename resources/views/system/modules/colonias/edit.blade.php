@@ -39,22 +39,29 @@
             <div class="form-card">
                 <div class="form-grid">
                     <div class="form-field">
+                        <label>Nombre <span class="required">*</span></label>
+                        <input type="text" name="nombre" class="form-input" maxlength="100"
+                               value="{{ old('nombre', $colonia->nombre) }}">
+                        @error('nombre') <span class="field-error">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div class="form-field">
                         <label>Viviendas</label>
-                        <input type="number" min="0" max="16777215" name="viviendas" class="form-input"
+                        <input type="number" name="viviendas" class="form-input"
                                value="{{ old('viviendas', $colonia->viviendas) }}">
                         @error('viviendas') <span class="field-error">{{ $message }}</span> @enderror
                     </div>
 
                     <div class="form-field">
                         <label>Adultos</label>
-                        <input type="number" min="0" max="16777215" name="adultos" class="form-input"
+                        <input type="number" name="adultos" class="form-input"
                                value="{{ old('adultos', $colonia->adultos) }}">
                         @error('adultos') <span class="field-error">{{ $message }}</span> @enderror
                     </div>
 
                     <div class="form-field">
                         <label>Niños</label>
-                        <input type="number" min="0" max="16777215" name="ninos" class="form-input"
+                        <input type="number" name="ninos" class="form-input"
                                value="{{ old('ninos', $colonia->ninos) }}">
                         @error('ninos') <span class="field-error">{{ $message }}</span> @enderror
                     </div>
