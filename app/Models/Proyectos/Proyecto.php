@@ -27,6 +27,7 @@ class Proyecto extends Model
         'prioritario',
         'alcance',
         'evaluacion',
+        'observacion',
         'estado',           //[NN]
         'auditable',
         'pobl_obj_low',

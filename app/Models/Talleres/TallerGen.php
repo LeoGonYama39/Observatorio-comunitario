@@ -19,6 +19,7 @@ class TallerGen extends Model
         'anio',
         'temporada',
         'evaluacion',
+        'observacion',
     ];
 
     protected $appends = [

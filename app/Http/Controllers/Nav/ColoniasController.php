@@ -146,9 +146,23 @@ class ColoniasController extends Controller
     }
 
 
-    public function destroy(string $id)
-    {
-        //
+    public function destroy(string $id) {
+        try {
+            $colonia = Colonia::findOrFail($id);
+            $nombre = $colonia->nombre;
+            $colonia->delete();
+            
+            return redirect()
+            ->route('colonias.index')
+            ->with('success', "Colonia ({$nombre}) eliminada con éxito.");
+            } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+                return redirect()
+                ->route('colonias.index')
+                ->with('error', 'El registro que intentas eliminar no existe.');
+            } catch (\Throwable $e) {
+                return back()
+                ->with('error', 'Ocurrió un error al intentar eliminar el registro: ' . $e->getMessage());
+            }
     }
 
     public function create_historial(Request $request, int $id) {

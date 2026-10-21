@@ -99,7 +99,7 @@ class ProyectosController extends Controller
         }
     }
 
-    public function show(Request $request, $id) {
+    public function show(Request $request, int $id) {
         $datos = $this->getDatosShow($id);
 
         $view = view(
@@ -117,7 +117,7 @@ class ProyectosController extends Controller
         return $view;
     }
 
-    public function edit(Request $request, $id) {
+    public function edit(Request $request, int $id) {
         $datosUsuario = new DatosUsuario();
         $proyecto = Proyecto::find($id);
         $datos = $this->getDropDownOptions($datosUsuario);
@@ -184,23 +184,23 @@ class ProyectosController extends Controller
     }
 
     public function destroy(string $id) {
-            try {
-                $proyecto = Proyecto::findOrFail($id);
-                $nombre = $proyecto->nombre;
-                $proyecto->delete();
-
-                return redirect()
-                    ->route('proyectos.index')
-                    ->with('success', "Proyecto ({$nombre}) eliminado con éxito.");
+        try {
+            $proyecto = Proyecto::findOrFail($id);
+            $nombre = $proyecto->nombre;
+            $proyecto->delete();
+            
+            return redirect()
+            ->route('proyectos.index')
+            ->with('success', "Proyecto ({$nombre}) eliminado con éxito.");
             } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
                 return redirect()
-                    ->route('proyectos.index')
-                    ->with('error', 'El registro que intentas eliminar no existe.');
+                ->route('proyectos.index')
+                ->with('error', 'El registro que intentas eliminar no existe.');
             } catch (\Throwable $e) {
                 return back()
-                    ->with('error', 'Ocurrió un error al intentar eliminar el registro: ' . $e->getMessage());
+                ->with('error', 'Ocurrió un error al intentar eliminar el registro: ' . $e->getMessage());
             }
-        }
+    }
 
     public function create_historial(Request $request, int $id) {
         $proyecto = Proyecto::find($id);
