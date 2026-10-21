@@ -266,33 +266,31 @@ class PComunidadController extends Controller
     }
 
 
-    ///// Funciones de apoyo/////////////////
+    //----------------------------------------------
+    //              Funciones
+    //----------------------------------------------
 
     //Obtiene los datos para la tabla index.
     private function getDatosIndex() {
-        return PComunidad::leftJoin(
-            'colonia',                  // tabla que quiero unir
-            'p_comunidad.colonia_id',   // FK
-            '=',                        // operador
-            'colonia.id'                // PK
-        )
-        ->select('p_comunidad.id',
-                 'p_comunidad.nombre',
-                 'p_comunidad.ap_pat',
-                 'p_comunidad.ap_mat',
-                 'p_comunidad.birth_date',
-                 'p_comunidad.genero',
-                 'p_comunidad.lider',
-                 'p_comunidad.saberes',
-                 'p_comunidad.colonia_otro',
-                 'colonia.nombre AS colonia')
+        return PComunidad::with('colonia:id,nombre')
+        ->select('id',
+                 'nombre',
+                 'ap_pat',
+                 'ap_mat',
+                 'colonia_id',
+                 'birth_date',
+                 'genero',
+                 'lider',
+                 'saberes',
+                 'colonia_otro',
+                 'temporada',
+                 'anio')
         ->orderBy('nombre')
         ->get();
     }
 
-    private function getDatosShow($id) {
+    private function getDatosShow(int $id) {
         $usuaria = $this->getUsuariaByID($id);
-
         if(!$usuaria) return null;
 
         $actividades = collect();
@@ -366,7 +364,7 @@ class PComunidadController extends Controller
         return compact('usuaria', 'actividades');
     }
 
-    private function getUsuariaByID($id)
+    private function getUsuariaByID(int $id)
     {
         return PComunidad::with([
             'colonia',
@@ -413,7 +411,7 @@ class PComunidadController extends Controller
             ->first();
     }
 
-    private function getDropDownOptions($datosUsuario) {
+    private function getDropDownOptions(DatosUsuario $datosUsuario) {
         $generos = $datosUsuario->getEnumValues('p_comunidad', 'genero');
         $estadoCivil = $datosUsuario->getEnumValues('p_comunidad', 'estado_civil');
         $nvEscolar = $datosUsuario->getEnumValues('p_comunidad', 'nv_escolar');
@@ -447,7 +445,7 @@ class PComunidadController extends Controller
         );
     }
 
-    private function getValitadate($request, $messages, $datosUsuario, $esColoniaOtro, $esAlcaldiaOtros){
+    private function getValitadate(Request $request, array $messages, DatosUsuario $datosUsuario, bool $esColoniaOtro, bool $esAlcaldiaOtros){
         return $request->validate([
                 'nombre'  => ['required', 'string', 'max:40'],
                 'ap_pat'  => ['required', 'string', 'max:40'],

@@ -64,7 +64,6 @@ class PExterno extends Authenticatable
         'ultima_participacion'
     ];
 
-
     public function getUltimaParticipacionAttribute()
     {
         return $this->participaciones()

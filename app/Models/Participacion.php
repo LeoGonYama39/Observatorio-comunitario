@@ -78,11 +78,6 @@ class Participacion extends Model
 		return $this->hasMany(RolProyectoExterno::class, 'participacion_id');
 	}*/
 
-	public function rol_taller_externos()
-	{
-		return $this->hasMany(RolTallerExterno::class, 'participacion_id');
-	}
-
 	/*public function seguimiento_externos()
 	{
 		return $this->hasMany(SeguimientoExterno::class, 'participacion_id');

@@ -116,6 +116,7 @@ class PComunidad extends Model
         'categ_categ',
         'colonia_mostrar',
         'alcaldia_mostrar',
+        'activo',
     ];
 
     //Función para obtener la edad, con la fecha de nacimiento guardada
@@ -124,12 +125,30 @@ class PComunidad extends Model
         return \Carbon\Carbon::parse($this->birth_date)->age;
     }
 
+    public function getActivoAttribute()
+    {
+        //Filtro para los de las participaciones pasadas
+        $ahora = Carbon::now();
+        $anioActual = $ahora->year;
+        $mesActual = $ahora->month;
+
+        //Filtro anual
+        if($this->anio < $anioActual) return false;
+
+        //Filtro de temporada
+        if ($this->temporada === 'primavera' && $mesActual > 5) return false;
+
+        //Si la participación es activa
+        return true;
+    }
+
     public function getColoniaMostrarAttribute()
     {
-        if ($this->colonia !== null) {
-            return $this->colonia->nombre;
-        }
-        return $this->colonia_otro;
+        return match (true) {     
+            (bool)$this->colonia_id => $this->colonia->nombre ?? 'No encontró la colonia',
+            (bool)$this->colonia_otro => $this->colonia_otro ?? 'No encontró el otro colonia',
+            default => '',
+        };
     }
 
     public function getAlcaldiaMostrarAttribute()
@@ -154,16 +173,12 @@ class PComunidad extends Model
         switch ($this->categ_categ) {
             case "lider_saberes":
                 return 'Líder y dir. de saberes';
-                break;
             case "lider":
                 return "Líder comunitario";
-                break;
             case "saberes":
                 return "Directorio de saberes";
-                break;
             default:
                 return $this->genero === 'masculino' ? 'Usuario' : 'Usuaria';
-                break;
         }
     }
 
@@ -172,21 +187,6 @@ class PComunidad extends Model
 	{
 		return $this->belongsTo(Colonia::class, 'colonia_id');
 	}
-
-	/*public function a_juridicas()
-	{
-		return $this->hasMany(AJuridica::class, 'comunidad_id');
-	}*/
-
-	/*public function casos()
-	{
-		return $this->hasMany(Caso::class, 'comunidad_id');
-	}*/
-
-	/*public function caso_tutors()
-	{
-		return $this->hasMany(CasoTutor::class, 'comunidad_id');
-	}*/
 
     public function difuciones()
     {
@@ -245,26 +245,6 @@ class PComunidad extends Model
             'comunidad_id'
         );
     }
-
-	/*public function rol_evento_comunidads()
-	{
-		return $this->hasMany(RolEventoComunidad::class, 'comunidad_id');
-	}*/
-
-	/*public function rol_taller_comunidads()
-	{
-		return $this->hasMany(RolTallerComunidad::class, 'comunidad_id');
-	}*/
-
-	/*public function taller_grupos()
-	{
-		return $this->hasMany(TallerGrupo::class, 'comunidad_id');
-	}*/
-
-	/*public function talleres_proc_grup_grupos()
-	{
-		return $this->hasMany(TalleresProcGrupGrupo::class, 'comunidad_id');
-	}*/
 
     public function talleresComoTallerista()
     {
