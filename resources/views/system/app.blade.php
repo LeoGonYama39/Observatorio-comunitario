@@ -34,6 +34,7 @@
 <div class="sidebar-backdrop" id="sidebarBackdrop">
 </div>
 @include('system.parts.alerts.loading')
+<script src="{{ asset('js/scriptFiltro.js') }}"></script>
 <script src="{{ asset('js/scriptTablas.js') }}"></script>
 <script src="{{ asset('js/SidebarControll.js') }}"></script>
 <script src="{{ asset('js/scriptListaAlumnos.js') }}"></script>

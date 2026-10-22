@@ -601,3 +601,81 @@ dialog.confirm-modal::backdrop {
         animation-duration: 2.4s;
     }
 }
+
+/* ============ POPOVER DE FILTROS ============ */
+.filter-dropdown-container {
+    position: relative;
+}
+
+.filter-popover {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 340px;
+    background: var(--white);
+    border: 1.5px solid var(--mist);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+    padding: 24px;
+    z-index: 100;
+}
+
+.filter-popover-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.filter-popover-header h3 {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--ink);
+}
+
+.filter-clear-btn {
+    background: none;
+    border: none;
+    font-family: var(--font-main);
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--steel);
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.15s ease;
+}
+
+.filter-clear-btn:hover {
+    color: #b3261e; /* Color rojo de alerta/destructivo del sistema */
+}
+
+.filter-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filter-section-title {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--steel);
+    margin-bottom: 4px;
+}
+
+.filter-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 160px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+/* Ajuste específico para que los form-checkbox-row dentro del popover compacten márgenes */
+.filter-checkbox-group .form-checkbox-row {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+}
