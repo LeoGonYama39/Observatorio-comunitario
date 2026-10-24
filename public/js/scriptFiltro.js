@@ -1,11 +1,5 @@
 //Estados de los filtros
-let activeFiltersState = {
-    estados: [],
-    categorias: [],
-    colonias: [],
-    edadMin: 0,
-    edadMax: 99
-};
+let activeFiltersState = {};
 
 // Abrir y cerrar el menú flotante
 function toggleFilterDropdown(e) {
@@ -23,6 +17,7 @@ document.addEventListener('click', function(e) {
 
     if (!container.contains(e.target) && !popover.hidden) {
         popover.hidden = true;
+        syncInputsWithActiveState();
     }
 });
 
@@ -62,47 +57,38 @@ function runFiltering() {
     const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
     const matchingRows = allRows.filter(row => {
-        // Búsqueda por nombre (se actualiza por escribir algo)
+        // 1. Buscador de texto
         if (searchTerm) {
             const nameEl = row.querySelector('.person-name');
-            if (!nameEl || !nameEl.textContent.toLowerCase().includes(searchTerm)) {
+            if (!nameEl || !nameEl.textContent.toLowerCase().includes(searchTerm)) return false;
+        }
+
+        // 2. Filtro especial de edad (solo si está activo)
+        if (activeFiltersState._edad) {
+            const rowEdad = parseInt(row.dataset.edad);
+            if (!isNaN(rowEdad)) {
+                if (rowEdad < activeFiltersState._edad.min || rowEdad > activeFiltersState._edad.max) {
+                    return false;
+                }
+            } else if (activeFiltersState._edad.min > 0) {
                 return false;
             }
         }
 
-        // Estado (para usuarias, activo o no)
-        const rowActivo = row.dataset.activo || '';
-        if (activeFiltersState.estados.length > 0 && !activeFiltersState.estados.includes(rowActivo)) {
-            return false;
-        }
-
-        // Rango de edad
-        const rowEdad = parseInt(row.dataset.edad);
-        if (!isNaN(rowEdad)) {
-            if (rowEdad < activeFiltersState.edadMin || rowEdad > activeFiltersState.edadMax) return false;
-        } else if (activeFiltersState.edadMin > 0) {
-            return false;
-        }
-
-        // Colonia
-        const rowColonia = (row.dataset.colonia || '').toLowerCase();
-        if (activeFiltersState.colonias.length > 0 && !activeFiltersState.colonias.includes(rowColonia)) {
-            return false;
-        }
-
-        // E) Categoría (confirmada)
-        const rowCateg = (row.dataset.categ || '').toLowerCase();
-        if (activeFiltersState.categorias.length > 0) {
-            let matchCateg = false;
-            if (rowCateg === 'lider_saberes') {
-                matchCateg = activeFiltersState.categorias.includes('lider') || 
-                             activeFiltersState.categorias.includes('saberes');
-            } else {
-                matchCateg = activeFiltersState.categorias.includes(rowCateg);
+        // 3. Filtros dinámicos basados en data-* (universidad, colonia, activo, rol, etc.)
+        for (const [tipo, valoresSeleccionados] of Object.entries(activeFiltersState)) {
+            if (tipo === '_edad' || valoresSeleccionados.length === 0) continue;
+            const rowValue = (row.dataset[tipo] || '').toLowerCase();
+            
+            //Caso especial: lider_saberes puede ser para lider o saberes
+            if (tipo === 'categ' && rowValue === 'lider_saberes') {
+                const match = valoresSeleccionados.includes('lider') || valoresSeleccionados.includes('saberes');
+                if (!match) return false;
+                continue;
             }
-
-            if (!matchCateg) return false;
+            if (!valoresSeleccionados.includes(rowValue)) return false;
         }
+
         return true;
     });
 
@@ -118,67 +104,82 @@ function runFiltering() {
 }
 
 function applyClientFilters() {
-    // Guarda el estado actual de los controles del popover en el estado confirmado
-    activeFiltersState.estados = Array.from(document.querySelectorAll('.filter-cb[data-filter="activo"]:checked')).map(cb => cb.value);
-    activeFiltersState.categorias = Array.from(document.querySelectorAll('.filter-cb[data-filter="categ"]:checked')).map(cb => cb.value.toLowerCase());
-    activeFiltersState.colonias = Array.from(document.querySelectorAll('.filter-cb[data-filter="colonia"]:checked')).map(cb => cb.value.toLowerCase());
-    activeFiltersState.edadMin = parseInt(document.getElementById('edadRangeLow')?.value || 0);
-    activeFiltersState.edadMax = parseInt(document.getElementById('edadRangeHigh')?.value || 99);
+    activeFiltersState = {};
 
-    // Actualiza el badge numérico en el botón de filtro
-    const totalCount = activeFiltersState.estados.length +
-                       activeFiltersState.categorias.length +
-                       activeFiltersState.colonias.length +
-                       (activeFiltersState.edadMin > 0 || activeFiltersState.edadMax < 99 ? 1 : 0);
+    // 1. Agrupar automáticamente todos los checkboxes marcados por su data-filter
+    document.querySelectorAll('.filter-cb:checked').forEach(cb => {
+        const tipo = cb.dataset.filter; // ej: 'activo', 'colonia', 'universidad', 'categ'
+        if (!tipo) return;
+
+        if (!activeFiltersState[tipo]) {
+            activeFiltersState[tipo] = [];
+        }
+        activeFiltersState[tipo].push(cb.value.toLowerCase());
+    });
+
+    // 2. Si la vista actual tiene slider de edad, leerlo de forma segura
+    const lowInput = document.getElementById('edadRangeLow');
+    const highInput = document.getElementById('edadRangeHigh');
+    if (lowInput && highInput) {
+        const min = parseInt(lowInput.value);
+        const max = parseInt(highInput.value);
+        if (min > 0 || max < 99) {
+            activeFiltersState._edad = { min, max };
+        }
+    }
+
+    // 3. Calcular total para el badge
+    let totalCount = 0;
+    for (const [key, val] of Object.entries(activeFiltersState)) {
+        totalCount += key === '_edad' ? 1 : val.length;
+    }
     updateFilterBadgeCount(totalCount);
-
-    // Aplica el filtrado a la tabla
     runFiltering();
 
-    // Cierra el popover
     const popover = document.getElementById('filterPopover');
     if (popover) popover.hidden = true;
 }
 
-// 3. Evento del botón "Borrar filtros"
+/////Para borrar los filtros
 function clearClientFilters() {
-    // Desmarca los elementos visuales del popover
-    document.querySelectorAll('.filter-cb').forEach(cb => cb.checked = false);
-
-    const lowInput = document.getElementById('edadRangeLow');
-    const highInput = document.getElementById('edadRangeHigh');
-    if (lowInput && highInput) {
-        lowInput.value = 0;
-        highInput.value = 99;
-        updateFilterEdadRange();
-    }
-
-    // Restablece el estado confirmado
-    activeFiltersState = {
-        estados: [],
-        categorias: [],
-        colonias: [],
-        edadMin: 0,
-        edadMax: 99
-    };
-
+    clearFilterOptions();
+    activeFiltersState = {};
     updateFilterBadgeCount(0);
     runFiltering();
 }
 
-// Botón "Borrar filtros"
-function clearClientFilters() {
+function clearFilterOptions(){
     document.querySelectorAll('.filter-cb').forEach(cb => cb.checked = false);
+
     const lowInput = document.getElementById('edadRangeLow');
     const highInput = document.getElementById('edadRangeHigh');
     if (lowInput && highInput) {
         lowInput.value = 0;
         highInput.value = 99;
-        updateFilterEdadRange();
+        if (typeof updateFilterEdadRange === 'function') updateFilterEdadRange();
     }
-    applyClientFilters();
 }
 
+function syncInputsWithActiveState() {
+    document.querySelectorAll('.filter-cb').forEach(cb => {
+        const tipo = cb.dataset.filter;
+        if (!tipo) return;
+        const valoresConfirmados = activeFiltersState[tipo] || [];
+        cb.checked = valoresConfirmados.includes(cb.value.toLowerCase());
+    });
+
+    const lowInput = document.getElementById('edadRangeLow');
+    const highInput = document.getElementById('edadRangeHigh');
+    if (lowInput && highInput) {
+        const edadConfig = activeFiltersState._edad || { min: 0, max: 99 };
+        lowInput.value = edadConfig.min;
+        highInput.value = edadConfig.max;
+
+        if (typeof updateFilterEdadRange === 'function') {
+            updateFilterEdadRange();
+        }
+    }
+}
 // Badge numérico en el botón de filtro
 function updateFilterBadgeCount(count) {
     const badge = document.getElementById('filterActiveCount');
