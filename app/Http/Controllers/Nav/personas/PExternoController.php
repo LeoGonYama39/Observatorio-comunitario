@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Nav\personas;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sup\DatosUsuario;
 use App\Models\Areas\Responsabilidad;
+use App\Models\listas\Institucion;
 use Illuminate\Http\Request;
 use App\Models\PExterno;
 use App\Models\Participacion;
@@ -48,42 +49,10 @@ class PExternoController extends Controller
     }
 
     public function store(Request $request) {
-        $datosUsuario = new DatosUsuario();
-        $opTemporada = $datosUsuario->getEnumValues(
-            "participaciones",
-            "temporada"
-        );
-        $opTipo = $datosUsuario->getEnumValues("participaciones", "tipo");
-
         $agregarParticipacion = $request->boolean("agregar_participacion");
 
         try {
-            $messages = $this->getMessages();
-
-            $validated = $request->validate(
-                [
-                    "nombre" => ["required", "string", "max:40"],
-                    "ap_pat" => ["required", "string", "max:40"],
-                    "ap_mat" => ["nullable", "string", "max:40"],
-                    "responsabilidad_id" => ["nullable","exists:responsabilidad,id"],
-                    "universidad" => ["nullable", "string", "max:100"],
-                    "correo" => ["nullable", "string", "max:100"],
-                    "matricula" => ["nullable", "string", "max:30"],
-                    "carrera" => ["nullable", "string", "max:50"],
-
-                    "agregar_participacion" => ["nullable", "boolean"],
-                    "temporada" => [Rule::requiredIf($agregarParticipacion), "nullable", "string", Rule::in($opTemporada)],
-                    "anio" => [Rule::requiredIf($agregarParticipacion), "nullable", "digits:4", "integer", "min:1901", "max:2155"],
-                    "aport" => ["nullable", "string"],
-                    "tipo" => [Rule::requiredIf($agregarParticipacion), "nullable", "string", Rule::in($opTipo)],
-
-                    'crear_acceso' => ['nullable', 'boolean'],
-                    'usuario' => [Rule::requiredIf($request->boolean('crear_acceso')), 'nullable', 'string', 'max:20', Rule::unique('p_externo', 'usuario')],
-                    'password' => [Rule::requiredIf($request->boolean('crear_acceso')),'nullable', 'string', 'min:6', 'max:255'],
-                ],
-                $messages
-            );
-
+            $validated = $this->getValidate($request, "crear_externo");
             $externo = DB::transaction(function () use ($request, $validated, $agregarParticipacion) {
                 $crearAcceso = $request->boolean('crear_acceso');    
                 $externo = PExterno::create([
@@ -91,7 +60,7 @@ class PExternoController extends Controller
                     "ap_pat" => trim($validated["ap_pat"]),
                     "ap_mat" => !empty($validated["ap_mat"]) ? trim($validated["ap_mat"]) : null,
                     "responsabilidad_id" =>$validated["responsabilidad_id"] ?? null,
-                    "universidad" => !empty($validated["universidad"]) ? trim($validated["universidad"]) : null,
+                    "universidad_id" => !empty($validated["universidad_id"]) ? trim($validated["universidad_id"]) : null,
                     "correo" => !empty($validated["correo"]) ? trim($validated["correo"]) : null,
                     "matricula" => !empty($validated["matricula"]) ? trim($validated["matricula"]) : null,
                     "carrera" => !empty($validated["carrera"]) ? trim($validated["carrera"]) : null,
@@ -128,7 +97,7 @@ class PExternoController extends Controller
         }
     }
 
-    public function show(Request $request, $id) {
+    public function show(Request $request, int $id) {
         $datos = $this->getDatosShow($id);
 
         $view = view("system.modules.personas.p_externo.show", array_merge($datos ?? ["externo" => null]));
@@ -146,7 +115,6 @@ class PExternoController extends Controller
 
     public function edit(Request $request, int $id) {
         $datos = $this->getDatosEdit($id);
-
         $view = view("system.modules.personas.p_externo.edit", array_merge($datos ?? ["externo" => null]));
 
         if ($request->ajax()) {
@@ -162,35 +130,18 @@ class PExternoController extends Controller
 
     public function update(Request $request, PExterno $personas_externo) {
         try {
-            // ¿En qué estado queda el acceso al sistema después de este update?
             $teniaAcceso = !is_null($personas_externo->usuario);
             $eliminarAcceso = $request->boolean('eliminar_acceso');
             $crearAcceso = $request->boolean('crear_acceso');
             $accesoActivo = !$eliminarAcceso && (($teniaAcceso || $crearAcceso));
 
-            $messages = $this->getMessages();
-            $validated = $request->validate(
-                [
-                    "nombre" => ["required", "string", "max:40"],
-                    "ap_pat" => ["required", "string", "max:40"],
-                    "ap_mat" => ["nullable", "string", "max:40"],
-                    "responsabilidad_id" => [ "nullable", "exists:responsabilidad,id"],
-                    "universidad" => ["nullable", "string", "max:100"],
-                    "correo" => ["nullable", "string", "max:100"],
-                    "matricula" => ["nullable", "string", "max:30"],
-                    "carrera" => ["nullable", "string", "max:50"],
-
-                    'usuario' => [Rule::requiredIf($accesoActivo), 'nullable', 'string', 'max:20', Rule::unique('p_externo', 'usuario')->ignore($personas_externo->id)],
-                    'password' => [Rule::requiredIf($accesoActivo && !$teniaAcceso), 'nullable', 'string', 'min:6', 'max:255',],
-                ],
-                $messages
-            );
+            $validated = $this->getValidate($request, "editar_externo", $personas_externo);
 
             $personas_externo->nombre = trim($validated["nombre"]);
             $personas_externo->ap_pat = trim($validated["ap_pat"]);
             $personas_externo->ap_mat = !empty($validated["ap_mat"]) ? trim($validated["ap_mat"]) : null;
             $personas_externo->responsabilidad_id = !empty($validated["responsabilidad_id"]) ? $validated["responsabilidad_id"] : null;
-            $personas_externo->universidad = !empty($validated["universidad"]) ? trim($validated["universidad"]) : null;
+            $personas_externo->universidad_id = !empty($validated["universidad_id"]) ? trim($validated["universidad_id"]) : null;
             $personas_externo->correo = !empty($validated["correo"]) ? trim($validated["correo"]) : null;
             $personas_externo->matricula = !empty($validated["matricula"])  ? trim($validated["matricula"]) : null;
             $personas_externo->carrera = !empty($validated["carrera"]) ? trim($validated["carrera"]) : null;
@@ -256,7 +207,7 @@ class PExternoController extends Controller
         }
     }
 
-    public function create_participacion(Request $request, $id) {
+    public function create_participacion(Request $request, int $id) {
         $datosUsuario = new DatosUsuario();
         $datos = $this->getDatosCreateParticipacion($id, $datosUsuario);
 
@@ -275,32 +226,8 @@ class PExternoController extends Controller
     }
 
     public function store_participacion(Request $request, PExterno $externo) {
-        $datosUsuario = new DatosUsuario();
-        $opTemporada = $datosUsuario->getEnumValues("participaciones","temporada");
-        $opTipo = $datosUsuario->getEnumValues("participaciones", "tipo");
-
         try {
-            $messages = $this->getMessages();
-            $validated = $request->validate(
-                [
-                    "temporada" => [
-                        "required",
-                        "string",
-                        Rule::in($opTemporada),
-                    ],
-                    "anio" => [
-                        "required",
-                        "digits:4",
-                        "integer",
-                        "min:1901",
-                        "max:2155",
-                    ],
-                    "aport" => ["nullable", "string"],
-                    "tipo" => ["required", "string", Rule::in($opTipo)],
-                ],
-                $messages
-            );
-
+            $validated = $this->getValidate($request, "participacion");
             Participacion::create([
                 "externo_id" => $externo->id,
                 "temporada" => $validated["temporada"],
@@ -327,7 +254,7 @@ class PExternoController extends Controller
         }
     }
 
-    public function edit_participacion(Request $request, $participacion) {
+    public function edit_participacion(Request $request, int $participacion) {
         $datosUsuario = new DatosUsuario();
         $participacion = Participacion::find($participacion);
         $datos = $this->getDropDownOptions($datosUsuario);
@@ -347,30 +274,8 @@ class PExternoController extends Controller
     }
 
     public function update_participacion(Request $request, Participacion $participacion) {
-        $datosUsuario = new DatosUsuario();
-        $opTemporada = $datosUsuario->getEnumValues("participaciones", "temporada");
-        $opTipo = $datosUsuario->getEnumValues("participaciones", "tipo");
         try {
-            $messages = $this->getMessages();
-            $validated = $request->validate(
-                [
-                    "temporada" => [
-                        "required",
-                        "string",
-                        Rule::in($opTemporada),
-                    ],
-                    "anio" => [
-                        "required",
-                        "digits:4",
-                        "integer",
-                        "min:1901",
-                        "max:2155",
-                    ],
-                    "aport" => ["nullable", "string"],
-                    "tipo" => ["required", "string", Rule::in($opTipo)],
-                ],
-                $messages
-            );
+            $validated = $this->getValidate($request, "participacion");
 
             $participacion->temporada = trim($validated["temporada"]);
             $participacion->anio = trim($validated["anio"]);
@@ -422,15 +327,15 @@ class PExternoController extends Controller
     //Obtiene los datos para la tabla index
     private function getDatosIndex()
     {
-        return PExterno::select("id",
-                "nombre",
-                "ap_pat",
-                "ap_mat",
-                "universidad",)
+        return PExterno::with('universidad:id,nombre')
+        ->select(
+            "id",
+            "nombre",
+            "ap_pat",
+            "ap_mat",
+            'universidad_id')
             ->orderBy("nombre")
             ->get();
-
-
     }
 
     private function getDatosShow(int $id)
@@ -465,7 +370,7 @@ class PExternoController extends Controller
         return compact("externo", "participaciones", "respons", "area");
     }
 
-    private function getDatosEdit($id)
+    private function getDatosEdit(int $id)
     {
         $externo = $this->getExternoByID($id);
         if (!$externo) {
@@ -477,10 +382,11 @@ class PExternoController extends Controller
             "responsabilidad.area_id"
         )->get();
 
-        return compact("externo", "responsabilidades");
+        $universidades = Institucion::select('id', 'nombre')->where('universidad', true)->get();
+        return compact("externo", "responsabilidades", "universidades");
     }
 
-    private function getDatosCreateParticipacion($id, $datosUsuario)
+    private function getDatosCreateParticipacion(int $id, DatosUsuario $datosUsuario)
     {
         $externo = $this->getExternoByIDCompact($id);
         if (!$externo) {
@@ -495,7 +401,7 @@ class PExternoController extends Controller
         return compact("externo", "opTipo", "opTemporada");
     }
 
-    private function getDropDownOptions($datosUsuario)
+    private function getDropDownOptions(DatosUsuario $datosUsuario)
     {
         $opTipo = $datosUsuario->getEnumValues("participaciones", "tipo");
         $opTemporada = $datosUsuario->getEnumValues(
@@ -508,17 +414,20 @@ class PExternoController extends Controller
             "responsabilidad.area_id"
         )->get();
 
-        return compact("opTipo", "opTemporada", "responsabilidades");
+        $universidades = Institucion::select('id', 'nombre')->where('universidad', true)->get();
+
+        return compact("opTipo", "opTemporada", "responsabilidades", "universidades");
     }
 
     private function getExternoByID(int $id)
     {
-        return PExterno::select(
+        return PExterno::with('universidad:id,nombre')
+        ->select(
             "id",
             "nombre",
             "ap_pat",
             "ap_mat",
-            "universidad",
+            "universidad_id",
             "responsabilidad_id", //Necesario para posteriormente hacer la búsqueda de resposabilidad
             "correo",
             "matricula",
@@ -532,6 +441,84 @@ class PExternoController extends Controller
         return PExterno::select("id", "nombre", "ap_pat", "ap_mat")->find($id);
     }
 
+    private function getValidate(Request $request, string $formulario, ?PExterno $externo = null): array {
+        $messages = $this->getMessages();
+
+        // Reglas comunes para los datos personales.
+        $reglasPersona = [
+            "nombre" => ["required", "string", "max:40"],
+            "ap_pat" => ["required", "string", "max:40"],
+            "ap_mat" => ["nullable", "string", "max:40"],
+            "responsabilidad_id" => ["nullable", "exists:responsabilidad,id",],
+            "universidad_id" => ["nullable",
+                Rule::exists((new Institucion())->getTable(), "id")
+                    ->where("universidad", true),
+            ],
+            "correo" => ["nullable", "string", "max:100"],
+            "matricula" => ["nullable", "string", "max:30"],
+            "carrera" => ["nullable", "string", "max:50"],
+        ];
+
+        // Reglas comunes para las participaciones.
+        $datosUsuario = new DatosUsuario();
+
+        $opTemporada = $datosUsuario->getEnumValues("participaciones", "temporada");
+        $opTipo = $datosUsuario->getEnumValues("participaciones", "tipo");
+        $reglasParticipacion = [
+            "temporada" => ["required", "string", Rule::in($opTemporada),],
+            "anio" => ["required", "digits:4", "integer", "min:1901", "max:2155", ],
+            "aport" => ["nullable", "string"],
+            "tipo" => ["required", "string", Rule::in($opTipo),],
+        ];
+
+        // Seleccionamos las reglas según el formulario.
+        switch ($formulario) {
+            case "crear_externo":
+                $agregarParticipacion = $request->boolean("agregar_participacion");
+                $crearAcceso = $request->boolean("crear_acceso");
+                $reglas = array_merge($reglasPersona, [
+                    "agregar_participacion" => ["nullable", "boolean"],
+                    "temporada" => [Rule::requiredIf($agregarParticipacion), "nullable", "string", Rule::in($opTemporada),],
+                    "anio" => [Rule::requiredIf($agregarParticipacion), "nullable", "digits:4", "integer", "min:1901", "max:2155",],
+                    "aport" => ["nullable", "string"],
+                    "tipo" => [Rule::requiredIf($agregarParticipacion), "nullable", "string", Rule::in($opTipo),],
+
+                    "crear_acceso" => ["nullable", "boolean"],
+                    "usuario" => [Rule::requiredIf($crearAcceso), "nullable", "string", "max:20", Rule::unique("p_externo", "usuario"),],
+                    "password" => [Rule::requiredIf($crearAcceso), "nullable", "string", "min:6", "max:255",],
+                ]);
+                break;
+
+            case "editar_externo":
+                if (!$externo) {
+                    throw new \InvalidArgumentException(
+                        "Se necesita el externo para validar su edición."
+                    );
+                }
+
+                $teniaAcceso = !is_null($externo->usuario);
+                $eliminarAcceso = $request->boolean("eliminar_acceso");
+                $crearAcceso = $request->boolean("crear_acceso");
+                $accesoActivo = !$eliminarAcceso && ($teniaAcceso || $crearAcceso);
+
+                $reglas = array_merge($reglasPersona, [
+                    "usuario" => [Rule::requiredIf($accesoActivo), "nullable", "string", "max:20", Rule::unique("p_externo", "usuario")->ignore($externo->id),],
+                    "password" => [Rule::requiredIf($accesoActivo && !$teniaAcceso), "nullable", "string", "min:6", "max:255",],
+                ]);
+                break;
+
+            case "participacion":
+                $reglas = $reglasParticipacion;
+                break;
+
+            default:
+                throw new \InvalidArgumentException(
+                    "Tipo de formulario no válido: {$formulario}"
+                );
+        }
+        return $request->validate($reglas, $messages);
+    }
+
     private function getMessages()
     {
         return [
@@ -541,7 +528,7 @@ class PExternoController extends Controller
             "ap_pat.max"                => "El apellido paterno no puede tener más de 40 caracteres",
             "ap_mat.max"                => "El apellido materno no puede tener más de 40 caracteres",
             "responsabilidad_id.exists" => "La responsabilidad seleccionada no es válida",
-            "universidad.max"           => "La universidad no puede tener más de 100 caracteres",
+            "universidad_id.exists"     => "La universidad seleccionada no es válida",
             "correo.max"                => "El correo no puede tener más de 100 caracteres",
             "matricula.max"             => "La matrícula no puede tener más de 30 caracteres",
             "carrera.max"               => "La carrera no puede tener más de 50 caracteres",

@@ -11,5 +11,10 @@ class Institucion extends Model
 
     protected $fillable = [
         'nombre',
+        'universidad'
     ];
+
+    protected $casts = [
+		'universidad' => 'bool'
+	];
 }

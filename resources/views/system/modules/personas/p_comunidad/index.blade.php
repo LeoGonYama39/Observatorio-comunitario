@@ -47,7 +47,6 @@
                 </svg>
             </button>
 
-            <!-- Ventana flotante de filtros en cliente -->
             <div class="filter-popover" id="filterPopover" hidden>
                 <div class="filter-popover-header">
                     <h3>Filtrar personas usuarias</h3>
@@ -55,9 +54,7 @@
                 </div>
 
                 <div class="filter-grid-layout">
-                    <!-- COLUMNA IZQUIERDA: Estado, Edad y Categoría -->
                     <div class="filter-col">
-                        <!-- Estado -->
                         <div class="filter-section">
                             <label class="filter-section-title">Estado</label>
                             <div class="filter-checkbox-group">
@@ -74,7 +71,6 @@
 
                         <hr class="form-separator">
 
-                        <!-- Rango de Edad (0 a 99) -->
                         <div class="filter-section">
                             <label class="filter-section-title">Rango de edad</label>
                             <div class="range-slider">
@@ -91,7 +87,6 @@
 
                         <hr class="form-separator">
 
-                        <!-- Categoría -->
                         <div class="filter-section">
                             <label class="filter-section-title">Categoría</label>
                             <div class="filter-checkbox-group">
@@ -111,7 +106,6 @@
                         </div>
                     </div>
 
-                    <!-- COLUMNA DERECHA: Colonias con scroll interno -->
                     <div class="filter-col">
                         <div class="filter-section">
                             <label class="filter-section-title">Colonia</label>

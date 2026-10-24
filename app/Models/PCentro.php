@@ -97,33 +97,4 @@ class PCentro extends Authenticatable
 		return $this->hasMany(Responsabilidad::class, 'centro_id');
 	}
 
-	/*public function rol_evento_centros()
-	{
-		return $this->hasMany(RolEventoCentro::class, 'centro_id');
-	}*/
-
-	public function rol_proyecto_centros()
-	{
-		return $this->hasMany(RolProyectoCentro::class, 'centro_id');
-	}
-
-	/*public function rol_taller_centros()
-	{
-		return $this->hasMany(RolTallerCentro::class, 'centro_id');
-	}*/
-
-	/*public function seguimiento_centros()
-	{
-		return $this->hasMany(SeguimientoCentro::class, 'centro_id');
-	}*/
-
-	/*public function tallerista_centros()
-	{
-		return $this->hasMany(TalleristaCentro::class, 'centro_id');
-	}*/
-
-	/*public function tallerista_proc_grup_centros()
-	{
-		return $this->hasMany(TalleristaProcGrupCentro::class, 'centro_id');
-	}*/
 }

@@ -41,23 +41,69 @@
             <input type="text" placeholder="Buscar por nombre…" />
         </div>
 
-        <button class="btn-filter" type="button">
-            <svg width="15" height="15" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="1.8"
-                stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 6h16" />
-                <path d="M7 12h10" />
-                <path d="M10 18h4" />
-            </svg>
+        <div class="filter-dropdown-container">
+            <button class="btn-filter" type="button" id="filterDropdownBtn" onclick="toggleFilterDropdown(event)">
+                <svg width="15" height="15" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 6h16" />
+                    <path d="M7 12h10" />
+                    <path d="M10 18h4" />
+                </svg>
+                Filtro
+                <span class="filter-badge-count" id="filterActiveCount" hidden>0</span>
+                <svg width="13" height="13" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 9l6 6 6-6" />
+                </svg>
+            </button>
 
-            Filtro
+            <div class="filter-popover" id="filterPopover" hidden>
+                <div class="filter-popover-header">
+                    <h3>Filtrar personas externas</h3>
+                    <button type="button" class="filter-clear-btn" onclick="clearClientFilters()">Borrar filtros</button>
+                </div>
 
-            <svg width="13" height="13" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <path d="M6 9l6 6 6-6" />
-            </svg>
-        </button>
+                <div class="filter-grid-layout">
+                    <div class="filter-col">
+                        <div class="filter-section">
+                            <label class="filter-section-title">Última participación</label>
+                            <div class="filter-checkbox-group">
+                                <div class="form-checkbox-row">
+                                    <input type="checkbox" id="filtro_activo" class="filter-cb" data-filter="activo" value="activo">
+                                    <label for="filtro_activo">Servicio Social</label>
+                                </div>
+                                <div class="form-checkbox-row">
+                                    <input type="checkbox" id="filtro_inactivo" class="filter-cb" data-filter="activo" value="inactivo">
+                                    <label for="filtro_inactivo">Prácticas profecionales</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filter-col">
+                        <div class="filter-section">
+                            <label class="filter-section-title">Universidad</label>
+                            <div class="filter-checkbox-group filter-scrollable-list">
+
+                                    <div class="form-checkbox-row">
+                                        <input type="checkbox" id="colonia_{{ 1 }}" class="filter-cb" data-filter="colonia" value="{{ 1 }}">
+                                        <label for="colonia_{{ 1 }}">{{ 1 }}</label>
+                                    </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-popover-footer">
+                    <button type="button" class="btn-new filter-apply-btn" onclick="applyClientFilters()">
+                        Aplicar filtros
+                    </button>
+                </div>
+            </div>
+        </div>
 
         <div class="table-pagination">
             <span class="table-pagination-info">
@@ -99,7 +145,7 @@
                     </td>
                     <td>
                     <span class="area-tag {{ $externo->universidad ? '' : 'empty' }}">
-                        {{ $externo->universidad ?? '—' }}
+                        {{ $externo->universidad->nombre ?? '—' }}
                     </span>
                     </td>
                 </tr>

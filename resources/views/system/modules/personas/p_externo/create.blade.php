@@ -44,11 +44,7 @@
                     @error('ap_mat') <span class="field-error">{{ $message }}</span> @enderror
                 </div>
 
-                <div class="form-field">
-                    <label>Universidad</label>
-                    <input type="text" name="universidad" class="form-input" value="{{ old('universidad') }}">
-                    @error('universidad') <span class="field-error">{{ $message }}</span> @enderror
-                </div>
+                @include('system.parts.forms.enum_select_id', ['name' => 'universidad_id', 'label' => 'Universidad', 'options' => $universidades])
 
                 <div class="form-field">
                     <label>Carrera</label>
@@ -68,27 +64,7 @@
                     @error('correo') <span class="field-error">{{ $message }}</span> @enderror
                 </div>
 
-                <div class="form-field">
-                    <label>Responsabilidad</label>
-                    <div class="select-shell">
-                        <select name="responsabilidad_id" class="form-select">
-                            <option value="">Sin asignar</option>
-                            @if (empty($responsabilidades))
-                                <option value="">Error al buscar las opciones</option>
-                            @else
-                                @foreach($responsabilidades as $responsabilidad)
-                                    <option value="{{ $responsabilidad->id }}" {{ old('responsabilidad_id') == $responsabilidad->id ? 'selected' : '' }}>
-                                        {{ $responsabilidad->nombre }} @if($responsabilidad->area) ({{ $responsabilidad->area->nombre }}) @endif
-                                    </option>
-                                @endforeach
-                            @endif
-                        </select>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M6 9l6 6 6-6"/>
-                        </svg>
-                    </div>
-                    @error('responsabilidad_id') <span class="field-error">{{ $message }}</span> @enderror
-                </div>
+                @include('system.parts.forms.enum_select_id', ['name' => 'responsabilidad_id', 'label' => 'Responsabilidad', 'options' => $responsabilidades])
             </div>
 
             <div class="form-checkbox-row">

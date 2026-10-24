@@ -7,9 +7,8 @@
 namespace App\Models;
 
 use App\Models\Areas\Responsabilidad;
-use Carbon\Carbon;
+use App\Models\listas\Institucion;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
@@ -52,7 +51,7 @@ class PExterno extends Authenticatable
 		'ap_pat',
 		'ap_mat',
 		'responsabilidad_id',
-		'universidad',
+		'universidad_id',
 		'correo',
 		'matricula',
 		'carrera',
@@ -75,6 +74,11 @@ class PExterno extends Authenticatable
 	public function responsabilidad()
 	{
 		return $this->belongsTo(Responsabilidad::class);
+	}
+
+	public function universidad()
+	{
+		return $this->belongsTo(Institucion::class);
 	}
 
 	public function participaciones()

@@ -80,7 +80,7 @@
                             Universidad
                         </label>
                         <div class="value {{ $externo->universidad ? '' : 'empty' }}">
-                            {{ $externo->universidad ?? '-' }}
+                            {{ $externo->universidad->nombre ?? '-' }}
                         </div>
                     </div>
                     <div class="info-field">
