@@ -14,7 +14,6 @@ class PCentroController extends Controller
     public function index(Request $request)
     {
         $centros = $this->getDatosIndex();
-
         $view = view("system.modules.personas.p_centro.index", compact('centros'));
 
         if ($request->ajax()) {

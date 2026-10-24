@@ -20,8 +20,9 @@ class PComunidadController extends Controller
     public function index(Request $request)
     {
         $usuarias = $this->getDatosIndex();
-
-        $view = view("system.modules.personas.p_comunidad.index", compact('usuarias'));
+        $support = new DatosUsuario();
+        $colonias = $support->getAllColonias();
+        $view = view("system.modules.personas.p_comunidad.index", compact('usuarias', 'colonias'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();

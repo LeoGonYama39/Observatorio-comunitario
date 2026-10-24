@@ -605,17 +605,33 @@ dialog.confirm-modal::backdrop {
 /* ============ POPOVER DE FILTROS ============ */
 .filter-dropdown-container {
     position: relative;
+    display: inline-block;
+}
+
+.filter-badge-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ink);
+    color: var(--white);
+    font-size: 11px;
+    font-weight: 700;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    margin-left: 2px;
 }
 
 .filter-popover {
     position: absolute;
     top: calc(100% + 8px);
     left: 0;
-    width: 340px;
+    width: 580px;
+    max-width: 90vw;
     background: var(--white);
     border: 1.5px solid var(--mist);
     border-radius: var(--radius-lg);
-    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
     padding: 24px;
     z-index: 100;
 }
@@ -624,29 +640,52 @@ dialog.confirm-modal::backdrop {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 18px;
+    margin-bottom: 20px;
 }
 
 .filter-popover-header h3 {
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 800;
     color: var(--ink);
+    letter-spacing: -0.01em;
 }
 
 .filter-clear-btn {
     background: none;
     border: none;
     font-family: var(--font-main);
-    font-size: 12.5px;
+    font-size: 13px;
     font-weight: 600;
     color: var(--steel);
     cursor: pointer;
-    padding: 0;
+    padding: 4px;
     transition: color 0.15s ease;
 }
 
 .filter-clear-btn:hover {
-    color: #b3261e; /* Color rojo de alerta/destructivo del sistema */
+    color: #b3261e;
+}
+
+/* Cuadrícula de 2 columnas */
+.filter-grid-layout {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 24px;
+    align-items: start;
+}
+
+@media (max-width: 650px) {
+    .filter-popover {
+        width: 320px;
+    }
+    .filter-grid-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.filter-col {
+    display: flex;
+    flex-direction: column;
 }
 
 .filter-section {
@@ -661,21 +700,47 @@ dialog.confirm-modal::backdrop {
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--steel);
-    margin-bottom: 4px;
 }
 
 .filter-checkbox-group {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    max-height: 160px;
-    overflow-y: auto;
-    padding-right: 4px;
 }
 
-/* Ajuste específico para que los form-checkbox-row dentro del popover compacten márgenes */
+/* Reseteo del estilo de checkbox para que no herede margins de formularios grandes */
 .filter-checkbox-group .form-checkbox-row {
     margin-top: 0;
     padding-top: 0;
     border-top: none;
+}
+
+/* Scroll para la columna de Colonias */
+.filter-scrollable-list {
+    max-height: 270px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.filter-scrollable-list::-webkit-scrollbar {
+    width: 5px;
+}
+.filter-scrollable-list::-webkit-scrollbar-track {
+    background: var(--pearl);
+    border-radius: 4px;
+}
+.filter-scrollable-list::-webkit-scrollbar-thumb {
+    background: var(--mist);
+    border-radius: 4px;
+}
+
+.filter-popover-footer {
+    margin-top: 22px;
+    padding-top: 16px;
+    border-top: 1.5px solid var(--mist-soft);
+}
+
+.filter-apply-btn {
+    width: 100%;
+    justify-content: center;
 }

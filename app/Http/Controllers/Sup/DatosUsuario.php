@@ -6,40 +6,39 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\Colonia;
 
 class DatosUsuario {
 
-    public function getDatosUsuario()
-{
-    if (Auth::guard('centro')->check()) {
-        $persona = Auth::guard('centro')->user();
-        $tipo = 'centro';
+    public function getDatosUsuario() {
+        if (Auth::guard('centro')->check()) {
+            $persona = Auth::guard('centro')->user();
+            $tipo = 'centro';
 
-    } elseif (Auth::guard('externo')->check()) {
-        $persona = Auth::guard('externo')->user();
-        $tipo = 'externo';
+        } elseif (Auth::guard('externo')->check()) {
+            $persona = Auth::guard('externo')->user();
+            $tipo = 'externo';
 
-    } else {
+        } else {
+            return [
+                null,
+                null,
+            ];
+        }
+
+        $otros = new \stdClass();
+
+        $otros->tipo = $tipo;
+        $otros->initNombre = strtoupper(substr($persona->nombre, 0, 1));
+        $otros->initApPat = strtoupper(substr($persona->ap_pat, 0, 1));
+
         return [
-            null,
-            null,
+            $persona,
+            $otros,
         ];
     }
 
-    $otros = new \stdClass();
-
-    $otros->tipo = $tipo;
-    $otros->initNombre = strtoupper(substr($persona->nombre, 0, 1));
-    $otros->initApPat = strtoupper(substr($persona->ap_pat, 0, 1));
-
-    return [
-        $persona,
-        $otros,
-    ];
-}
-
-    public function getEnumValues($tabla, $columna)
-    {
+    public function getEnumValues($tabla, $columna) {
         $resultado = DB::select("
         SELECT COLUMN_TYPE
         FROM INFORMATION_SCHEMA.COLUMNS
@@ -74,6 +73,10 @@ class DatosUsuario {
             'comentario.required'   => 'El comentario es obligatorio',
             'comentario.string'     => 'El comentario tiene que ser texto',
         ]);
+    }
+
+    public function getAllColonias(){
+        return Colonia::select('id', 'nombre')->get();
     }
 
 }

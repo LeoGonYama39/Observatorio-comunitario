@@ -5,55 +5,11 @@
 //Función para inicializar el buscado por texto y filtrar la búsqueda
 function initTableSearch() {
     document.querySelectorAll('.table-search input').forEach(searchInput => {
-        // Evita duplicar el evento si la vista se vuelve a inicializar.
         if (searchInput.dataset.initialized === 'true') return;
         searchInput.dataset.initialized = 'true';
 
-        const toolbar = searchInput.closest('.table-toolbar');
-
-        // En el index, la tabla está inmediatamente después de la barra.
-        const nextElement = toolbar?.nextElementSibling;
-
-        let table = nextElement?.matches('.table-card')
-            ? nextElement.querySelector('table')
-            : null;
-
-        // Alternativa para vistas que tengan otra estructura.
-        if (!table) {
-            const scope = searchInput.closest('.entity-picker')
-                || document.getElementById('mainContent');
-
-            table = scope?.querySelector('.table-card table') ?? null;
-        }
-
-        if (!table) return;
-
-        const rows = Array.from(table.querySelectorAll('tbody tr'));
-
-        // Estado inicial: todas las filas coinciden.
-        table._filteredRows = rows;
-
         searchInput.addEventListener('input', function () {
-            const search = this.value.toLowerCase().trim();
-
-            // Obtiene únicamente las filas cuyo nombre coincide.
-            table._filteredRows = rows.filter(row => {
-                const name = row.querySelector('.person-name');
-
-                if (!name) return false;
-
-                return name.textContent.toLowerCase().includes(search);
-            });
-
-            // Reinicia la paginación y actualiza el contador.
-            if (table._paginationReset) {
-                table._paginationReset();
-            } else {
-                // Respaldo si la paginación no está inicializada.
-                rows.forEach(row => {
-                    row.hidden = !table._filteredRows.includes(row);
-                });
-            }
+            runFiltering();
         });
     });
 }
