@@ -17,8 +17,9 @@ class PExternoController extends Controller
 {
     public function index(Request $request) {
         $externos = $this->getDatosIndex();
+        [$responsabilidades, $universidades, $opParticipaciones] = $this->getOpcionesFiltro();
 
-        $view = view("system.modules.personas.p_externo.index", compact("externos"));
+        $view = view("system.modules.personas.p_externo.index", compact("externos", "universidades", "opParticipaciones"));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -376,13 +377,7 @@ class PExternoController extends Controller
         if (!$externo) {
             return null;
         }
-        $responsabilidades = Responsabilidad::select(
-            "responsabilidad.id",
-            "responsabilidad.nombre",
-            "responsabilidad.area_id"
-        )->get();
-
-        $universidades = Institucion::select('id', 'nombre')->where('universidad', true)->get();
+        [$responsabilidades, $universidades] = $this->getOpcionesFiltro();
         return compact("externo", "responsabilidades", "universidades");
     }
 
@@ -408,13 +403,8 @@ class PExternoController extends Controller
             "participaciones",
             "temporada"
         );
-        $responsabilidades = Responsabilidad::select(
-            "responsabilidad.id",
-            "responsabilidad.nombre",
-            "responsabilidad.area_id"
-        )->get();
 
-        $universidades = Institucion::select('id', 'nombre')->where('universidad', true)->get();
+        [$responsabilidades, $universidades] = $this->getOpcionesFiltro();
 
         return compact("opTipo", "opTemporada", "responsabilidades", "universidades");
     }
@@ -436,9 +426,22 @@ class PExternoController extends Controller
         )->find($id);
     }
 
-    private function getExternoByIDCompact(int $id)
-    {
+    private function getExternoByIDCompact(int $id) {
         return PExterno::select("id", "nombre", "ap_pat", "ap_mat")->find($id);
+    }
+
+    private function getOpcionesFiltro(){
+        $responsabilidades = Responsabilidad::select(
+            "responsabilidad.id",
+            "responsabilidad.nombre",
+            "responsabilidad.area_id"
+        )->get();
+        $universidades = Institucion::select('id', 'nombre')->where('universidad', true)->get();
+        
+        $datosUsuario = new DatosUsuario();
+        $opParticipaciones = $datosUsuario->getEnumValues("participaciones", "tipo");
+
+        return [$responsabilidades, $universidades, $opParticipaciones];
     }
 
     private function getValidate(Request $request, string $formulario, ?PExterno $externo = null): array {
@@ -519,8 +522,7 @@ class PExternoController extends Controller
         return $request->validate($reglas, $messages);
     }
 
-    private function getMessages()
-    {
+    private function getMessages() {
         return [
             "nombre.required"           => "El nombre es obligatorio",
             "nombre.max"                => "El nombre no puede tener más de 40 caracteres",

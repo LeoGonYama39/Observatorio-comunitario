@@ -1264,6 +1264,13 @@
  tbody tr:not(:last-child) td {
      border-bottom: 1px solid var(--mist-soft);
 }
+tbody tr.row-highlight {
+    background-color: var(--mist-soft);
+}
+
+tbody tr.row-highlight:hover {
+    background-color: var(--mist);
+}
  tbody td {
      padding: 16px 28px;
      vertical-align: middle;

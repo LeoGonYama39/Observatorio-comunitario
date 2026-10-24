@@ -160,7 +160,8 @@
             </thead>
             <tbody>
                 @foreach ($usuarias as $usuaria)
-                    <tr data-url="{{ route('personas-usuarias.show', $usuaria->id) }}" 
+                    <tr class="{{ $usuaria->activo ? 'row-highlight' : '' }}"
+                        data-url="{{ route('personas-usuarias.show', $usuaria->id) }}" 
                         data-edad="{{ $usuaria->edad ?? '' }}"
                         data-colonia="{{ $usuaria->colonia_mostrar ?? '' }}" 
                         data-categ="{{ $usuaria->categ_categ ?? '' }}"

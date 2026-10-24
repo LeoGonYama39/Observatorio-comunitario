@@ -70,13 +70,19 @@
                         <div class="filter-section">
                             <label class="filter-section-title">Última participación</label>
                             <div class="filter-checkbox-group">
+                                 @foreach ($opParticipaciones as  $participacion)
+                                    <div class="form-checkbox-row">
+                                        <input type="checkbox" id="participacion_{{ $participacion }}" class="filter-cb" data-filter="participacion" value="{{ $participacion }}">
+                                        <label for="participacion_{{ $participacion }}">{{ str_replace("_", " ", ucfirst($participacion)) }}</label>
+                                    </div>
+                                @endforeach
                                 <div class="form-checkbox-row">
-                                    <input type="checkbox" id="filtro_activo" class="filter-cb" data-filter="activo" value="activo">
-                                    <label for="filtro_activo">Servicio Social</label>
+                                    <input type="checkbox" id="participacion_no_activo" class="filter-cb" data-filter="participacion" value="no_activo">
+                                    <label for="participacion_no_activo">No activo</label>
                                 </div>
                                 <div class="form-checkbox-row">
-                                    <input type="checkbox" id="filtro_inactivo" class="filter-cb" data-filter="activo" value="inactivo">
-                                    <label for="filtro_inactivo">Prácticas profecionales</label>
+                                    <input type="checkbox" id="participacion_no" class="filter-cb" data-filter="participacion" value="-">
+                                    <label for="participacion_no">Sin participación</label>
                                 </div>
                             </div>
                         </div>
@@ -86,12 +92,16 @@
                         <div class="filter-section">
                             <label class="filter-section-title">Universidad</label>
                             <div class="filter-checkbox-group filter-scrollable-list">
-
+                                @foreach ($universidades as  $universidad)
                                     <div class="form-checkbox-row">
-                                        <input type="checkbox" id="colonia_{{ 1 }}" class="filter-cb" data-filter="colonia" value="{{ 1 }}">
-                                        <label for="colonia_{{ 1 }}">{{ 1 }}</label>
+                                        <input type="checkbox" id="universidad_{{ $universidad->id }}" class="filter-cb" data-filter="universidad" value="{{ $universidad->nombre }}">
+                                        <label for="universidad_{{ $universidad->id }}">{{ $universidad->nombre }}</label>
                                     </div>
-
+                                @endforeach
+                                <div class="form-checkbox-row">
+                                    <input type="checkbox" id="universidad_no" class="filter-cb" data-filter="universidad" value="-">
+                                    <label for="universidad_no">Sin universidad</label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -136,7 +146,8 @@
             <tbody>
             @foreach ($externos as $externo)
                 <tr data-url="{{ route('personas-externo.show', $externo->id) }}"
-                    data-tipo="{{ $externo->ultima_participacion->tipo_categ ?? 'sin_participacion' }}">
+                    data-participacion="{{ $externo->ultima_participacion->tipo_categ ?? '-' }}"
+                    data-universidad="{{ $externo->universidad->nombre ?? '—' }}">
                     <td>
                         <div class="person-name">
                             {{ $externo->nombre }} {{ $externo->ap_pat }} {{ $externo->ap_mat }}
