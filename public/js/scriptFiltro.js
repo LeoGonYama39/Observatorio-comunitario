@@ -145,6 +145,8 @@ function clearClientFilters() {
     activeFiltersState = {};
     updateFilterBadgeCount(0);
     runFiltering();
+    const popover = document.getElementById('filterPopover');
+    if (popover) popover.hidden = true;
 }
 
 function clearFilterOptions(){

@@ -5,6 +5,7 @@
 namespace App\Http\Controllers\Nav;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Sup\DatosUsuario;
 use App\Models\Educacion\InscripcionEducativa;
 use App\Models\Educacion\InscripcionCurso;
 use App\Models\Educacion\Curso;
@@ -20,15 +21,25 @@ class EducacionController extends Controller
 
     public function index(Request $request, string $nivel)
     {
+        $support = new DatosUsuario;
         $config = $this->configEducacion($nivel);
 
+        $tipo = $config['tipo'];
+        $estados = $support->getEnumValues('inscripcion_curso', 'estado');
         $inscripciones = $this->getDatosIndex($config['tipo'], $config['otro_tipo']);
         $etiqueta = $config['etiqueta'];
         $rutaCreate = route($config['ruta'] . '.create');
+        $cursos = $this->getCursosPorNivel($tipo);
 
         $view = view(
             'system.modules.educacion.index',
-            compact('inscripciones', 'etiqueta', 'rutaCreate')
+            compact(
+                'inscripciones',
+                'etiqueta',
+                'rutaCreate',
+                'tipo',
+                'estados',
+                'cursos')
         );
 
         if ($request->ajax()) {
@@ -484,6 +495,7 @@ class EducacionController extends Controller
 
                     $estado = $curso->estado;
                     $nombreCurso = $curso->curso->nombre;
+                    $idCurso = $curso->curso->id;
                     $avance = "$acreditadas de $total acreditadas";
                 } else {
                     // ¿Tiene algún curso de educación media-superior?
@@ -498,6 +510,7 @@ class EducacionController extends Controller
                         : 'Sin curso registrado';
 
                     $nombreCurso = null;
+                    $idCurso = null;
                     $avance = null;
                 }
 
@@ -518,6 +531,7 @@ class EducacionController extends Controller
                     'ap_pat' => $persona->ap_pat,
                     'ap_mat' => $persona->ap_mat,
                     'estado' => $estado,
+                    'curso_id' => $idCurso,
                     'curso' => $nombreCurso,
                     'avance' => $avance,
                     'url' => $urlShow,
@@ -675,4 +689,8 @@ class EducacionController extends Controller
             : self::TEMPORADA_OTONO;
     }
     
+    private function getCursosPorNivel(string $nivel){
+        return Curso::where('tipo', $nivel)->get();
+    }
+
 }

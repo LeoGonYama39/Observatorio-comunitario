@@ -44,7 +44,7 @@ class Proyecto extends Model
         'fecha_form_inicio',
         'fecha_form_fin',
         'areas',
-        'pobl_obj'
+        'pobl_obj',
     ];
     public function getPoblObjAttribute() {
         if ($this->pobl_obj_low !== null && $this->pobl_obj_high !== null) {

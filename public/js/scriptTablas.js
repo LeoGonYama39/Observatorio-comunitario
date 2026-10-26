@@ -72,7 +72,11 @@ function initTablePagination() {
             const desde = total > 0 ? startIndex + 1 : 0;
             const hasta = endIndex;
 
-            info.textContent = `${desde}–${hasta} de ${total}`;
+            if(total == 0){
+                info.textContent = 'Sin resultados';
+            } else {
+                info.textContent = `${desde}–${hasta} de ${total}`;
+            }
 
             // Habilita o deshabilita las flechas.
             prevBtn.disabled = currentPage === 1;

@@ -6,12 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sup\DatosUsuario;
 use App\Models\Areas\Eje;
 use App\Models\Colonia;
-use App\Models\listas\Institucion;
+use App\Models\Areas\Area;
 use App\Models\listas\Problematica;
-use App\Models\Participacion;
-use App\Models\PCentro;
-use App\Models\PComunidad;
-use App\Models\PExterno;
 use App\Models\Proyectos\HistorialProyecto;
 use Illuminate\Http\Request;
 use App\Models\Proyectos\Proyecto;
@@ -21,9 +17,12 @@ use Illuminate\Validation\Rule;
 class ProyectosController extends Controller
 {
     public function index(Request $request){
-        $proyectos = $this->getDatosIndex();
+        $support = new DatosUsuario();
+        $estados = $support->getEnumValues('proyecto', 'estado');
 
-        $view = view("system.modules.proyectos.index",compact('proyectos'));
+        $proyectos = $this->getDatosIndex();
+        $areas = Area::all();
+        $view = view("system.modules.proyectos.index",compact('proyectos', 'estados', 'areas'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
