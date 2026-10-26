@@ -11,19 +11,6 @@ use App\Models\Talleres\Taller;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * Class Eje
- *
- * @property int $id
- * @property string|null $nombre
- *
- * @property Collection|Evento[] $eventos
- * @property Collection|Proyecto[] $proyectos
- * @property Collection|Responsabilidad[] $responsabilidads
- * @property Collection|Taller[] $tallers
- *
- * @package App\Models\Areas
- */
 class Eje extends Model
 {
 	protected $table = 'eje';
@@ -34,13 +21,9 @@ class Eje extends Model
 	];
 
     protected $appends = [
-      'responsabilidades_formato'
+      'responsabilidades_formato',
+      'responsabilidades_ids',
     ];
-
-	/*public function eventos()
-	{
-		return $this->belongsToMany(Evento::class, 'evento_eje');
-	}*/
 
 	public function proyectos()
 	{
@@ -63,6 +46,12 @@ class Eje extends Model
         return $this->responsabilidades
             ->pluck('nombre')
             ->implode(' · ');
+    }
+
+    public function getResponsabilidadesIdsAttribute()
+    {
+        $responsabilidades = $this->responsabilidades->pluck('id');
+        return $responsabilidades->isEmpty() ? '-' : $responsabilidades->join(',');
     }
 
 	public function talleres()

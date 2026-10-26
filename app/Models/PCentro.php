@@ -63,9 +63,7 @@ class PCentro extends Authenticatable
     {
         $areas = $this->areas->map(fn($a) => 'a_' . $a->id);
         $responsabilidades = $this->responsabilidades->map(fn($r) => 'r_' . $r->id);
-
         $todos = $areas->toBase()->concat($responsabilidades);
-
         return $todos->isEmpty() ? '-' : $todos->join(',');
     }
 

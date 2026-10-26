@@ -13,8 +13,9 @@ class EjesController extends Controller
 {
     public function index(Request $request) {
         $ejes = $this->getDatosIndex();
+        $responsabilidades = Responsabilidad::all();
 
-        $view = view("system.modules.ejes.index", compact('ejes'));
+        $view = view("system.modules.ejes.index", compact('ejes', 'responsabilidades'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
