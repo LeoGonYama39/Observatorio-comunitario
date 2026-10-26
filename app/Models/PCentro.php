@@ -8,35 +8,8 @@ namespace App\Models;
 
 use App\Models\Areas\Area;
 use App\Models\Areas\Responsabilidad;
-use App\Models\Proyectos\RolProyectoCentro;
-use App\Models\Talleres\RolTallerCentro;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-/**
- * Class PCentro
- *
- * @property int $id
- * @property string $nombre
- * @property string $ap_pat
- * @property string|null $ap_mat
- * @property string|null $cargo
- * @property string|null $usuario
- * @property string|null $password
- * @property string|null $remember_token
- *
- * @property Collection|Area[] $areas
- * @property Collection|Responsabilidad[] $responsabilidads
- * @property Collection|RolEventoCentro[] $rol_evento_centros
- * @property Collection|RolProyectoCentro[] $rol_proyecto_centros
- * @property Collection|RolTallerCentro[] $rol_taller_centros
- * @property Collection|SeguimientoCentro[] $seguimiento_centros
- * @property Collection|TalleristaCentro[] $tallerista_centros
- * @property Collection|TalleristaProcGrupCentro[] $tallerista_proc_grup_centros
- *
- * @package App\Models
- */
 class PCentro extends Authenticatable
 {
 	protected $table = 'p_centro';
@@ -57,7 +30,9 @@ class PCentro extends Authenticatable
 		'remember_token'
 	];
 
-    protected $appends = ['a_cargo_de'];
+    protected $appends = [
+        'a_cargo_de',
+        'areas_ids',];
 
     //----------------------------
     //      Getters de appends
@@ -82,6 +57,16 @@ class PCentro extends Authenticatable
             $areas,
             $responsabilidades,
         ])->filter()->join(' · ');
+    }
+
+    public function getAreasIdsAttribute()
+    {
+        $areas = $this->areas->map(fn($a) => 'a_' . $a->id);
+        $responsabilidades = $this->responsabilidades->map(fn($r) => 'r_' . $r->id);
+
+        $todos = $areas->toBase()->concat($responsabilidades);
+
+        return $todos->isEmpty() ? '-' : $todos->join(',');
     }
 
     //----------------------------

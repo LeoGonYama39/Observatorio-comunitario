@@ -158,7 +158,7 @@ class ParticipantesController extends Controller {
             return (object) [
                 'id' => $externo->id, // id del EXTERNO, ya no de la participación
                 'nombre' => trim("$externo->nombre $externo->ap_pat $externo->ap_mat"),
-                'subtitle' => $externo->universidad->nombre,
+                'subtitle' => $externo->universidad->nombre ?? '',
                 'participacion_id' => $participacionReciente->id,
             ];
         })->filter()->values();

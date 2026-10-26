@@ -57,13 +57,13 @@ function runFiltering() {
     const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
     const matchingRows = allRows.filter(row => {
-        // 1. Buscador de texto
+        // Buscador de texto
         if (searchTerm) {
             const nameEl = row.querySelector('.person-name');
             if (!nameEl || !nameEl.textContent.toLowerCase().includes(searchTerm)) return false;
         }
 
-        // 2. Filtro especial de edad (solo si está activo)
+        // Filtro especial de edad (solo si está activo)
         if (activeFiltersState._edad) {
             const rowEdad = parseInt(row.dataset.edad);
             if (!isNaN(rowEdad)) {
@@ -75,20 +75,22 @@ function runFiltering() {
             }
         }
 
-        // 3. Filtros dinámicos basados en data-* (universidad, colonia, activo, rol, etc.)
+        // Filtros dinámicos basados en data-*
         for (const [tipo, valoresSeleccionados] of Object.entries(activeFiltersState)) {
             if (tipo === '_edad' || valoresSeleccionados.length === 0) continue;
-            const rowValue = (row.dataset[tipo] || '').toLowerCase();
-            
-            //Caso especial: lider_saberes puede ser para lider o saberes
-            if (tipo === 'categ' && rowValue === 'lider_saberes') {
+
+            const rowRawValue = (row.dataset[tipo] || '').toLowerCase().trim();
+            //Excepciones
+            //lider_saberes en usuarios, puede servir tanto con lider o saberes
+            if (tipo === 'categ' && rowRawValue === 'lider_saberes') {  
                 const match = valoresSeleccionados.includes('lider') || valoresSeleccionados.includes('saberes');
                 if (!match) return false;
                 continue;
             }
-            if (!valoresSeleccionados.includes(rowValue)) return false;
+            const rowValoresArray = rowRawValue.split(',').map(v => v.trim());
+            const tieneCoincidencia = valoresSeleccionados.some(val => rowValoresArray.includes(val));
+            if (!tieneCoincidencia) return false;
         }
-
         return true;
     });
 
@@ -106,9 +108,8 @@ function runFiltering() {
 function applyClientFilters() {
     activeFiltersState = {};
 
-    // 1. Agrupar automáticamente todos los checkboxes marcados por su data-filter
     document.querySelectorAll('.filter-cb:checked').forEach(cb => {
-        const tipo = cb.dataset.filter; // ej: 'activo', 'colonia', 'universidad', 'categ'
+        const tipo = cb.dataset.filter;
         if (!tipo) return;
 
         if (!activeFiltersState[tipo]) {
@@ -117,7 +118,6 @@ function applyClientFilters() {
         activeFiltersState[tipo].push(cb.value.toLowerCase());
     });
 
-    // 2. Si la vista actual tiene slider de edad, leerlo de forma segura
     const lowInput = document.getElementById('edadRangeLow');
     const highInput = document.getElementById('edadRangeHigh');
     if (lowInput && highInput) {
@@ -128,7 +128,6 @@ function applyClientFilters() {
         }
     }
 
-    // 3. Calcular total para el badge
     let totalCount = 0;
     for (const [key, val] of Object.entries(activeFiltersState)) {
         totalCount += key === '_edad' ? 1 : val.length;

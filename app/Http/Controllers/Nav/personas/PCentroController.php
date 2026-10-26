@@ -8,13 +8,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use App\Models\PCentro;
+use App\Models\Areas\Area;
 
 class PCentroController extends Controller
 {
     public function index(Request $request)
     {
+        $support = new DatosUsuario;
         $centros = $this->getDatosIndex();
-        $view = view("system.modules.personas.p_centro.index", compact('centros'));
+        $cargos = $support->getEnumValues('p_centro', 'cargo');
+        $areas = Area::all();
+        $view = view("system.modules.personas.p_centro.index", compact('centros', 'cargos', 'areas'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
