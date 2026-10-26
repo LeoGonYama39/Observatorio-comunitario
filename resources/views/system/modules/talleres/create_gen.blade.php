@@ -52,6 +52,14 @@
                         @enderror
                     </div>
 
+                    <div class="form-field">
+                        <label>Observación</label>
+                        <textarea name="observacion" class="form-textarea textarea-large" rows="5">{{ old('observacion') }}</textarea>
+                        @error('observacion')
+                        <span class="field-error">{{ $message }}</span>
+                        @enderror
+                    </div>
+
                 </div>
             </div>
 

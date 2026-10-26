@@ -68,12 +68,13 @@ class ProyectosController extends Controller
                     'estado'        => trim($validated['estado']),
                     'fecha_inicio'  => $validated['fecha_inicio'],
                     'fecha_fin'     => $validated['fecha_fin'] ?? null,
-                    'antecedentes'  => $limpiar($validated['antecedentes'] ?? null),
-                    'objetivos'     => $limpiar($validated['objetivos'] ?? null),
-                    'alcance'       => $limpiar($validated['alcance'] ?? null),
-                    'evaluacion'    => $limpiar($validated['evaluacion'] ?? null),
-                    'repo'          => $limpiar($validated['repo'] ?? null),
-                    'auditable'     => $limpiar($validated['auditable'] ?? null),
+                    'antecedentes'  => $limpiar($validated['antecedentes']),
+                    'objetivos'     => $limpiar($validated['objetivos']),
+                    'alcance'       => $limpiar($validated['alcance']),
+                    'evaluacion'    => $limpiar($validated['evaluacion']),
+                    'observacion'   => $limpiar($validated['observacion']),
+                    'repo'          => $limpiar($validated['repo']),
+                    'auditable'     => $limpiar($validated['auditable']),
                     'prioritario'   => $request->boolean('prioritario'),
                     'pobl_obj_low'  => $validated['pobl_obj_low'] ?? null,
                     'pobl_obj_high' => $validated['pobl_obj_high'] ?? null,
@@ -147,19 +148,20 @@ class ProyectosController extends Controller
             $validated = $this->getValidate($request, $this->getMessages(), $datosUsuario);
 
             $proyecto = DB::transaction(function () use ($proyecto, $validated, $request, $limpiar) {
-                $proyecto->nombre = trim($validated['nombre']);
-                $proyecto->estado = trim($validated['estado']);
-                $proyecto->fecha_inicio = $validated['fecha_inicio'];
-                $proyecto->fecha_fin = $validated['fecha_fin'] ?? null;
-                $proyecto->antecedentes = $limpiar($validated['antecedentes'] ?? null);
-                $proyecto->objetivos = $limpiar($validated['objetivos'] ?? null);
-                $proyecto->alcance = $limpiar($validated['alcance'] ?? null);
-                $proyecto->evaluacion = $limpiar($validated['evaluacion'] ?? null);
-                $proyecto->repo = $limpiar($validated['repo'] ?? null);
-                $proyecto->auditable = $limpiar($validated['auditable'] ?? null);
-                $proyecto->prioritario = $request->boolean('prioritario');
-                $proyecto->pobl_obj_low = $validated['pobl_obj_low'] ?? null;
-                $proyecto->pobl_obj_high = $validated['pobl_obj_high'] ?? null;
+                $proyecto->nombre =         trim($validated['nombre']);
+                $proyecto->estado =         trim($validated['estado']);
+                $proyecto->fecha_inicio =   $validated['fecha_inicio'];
+                $proyecto->fecha_fin =      $validated['fecha_fin'] ?? null;
+                $proyecto->antecedentes =   $limpiar($validated['antecedentes']);
+                $proyecto->objetivos =      $limpiar($validated['objetivos']);
+                $proyecto->alcance =        $limpiar($validated['alcance']);
+                $proyecto->evaluacion =     $limpiar($validated['evaluacion']);
+                $proyecto->observacion =    $limpiar($validated['observacion']);
+                $proyecto->repo =           $limpiar($validated['repo']);
+                $proyecto->auditable =      $limpiar($validated['auditable']);
+                $proyecto->prioritario =    $request->boolean('prioritario');
+                $proyecto->pobl_obj_low =   $validated['pobl_obj_low'] ?? null;
+                $proyecto->pobl_obj_high =  $validated['pobl_obj_high'] ?? null;
 
                 $proyecto->save();
 
@@ -258,7 +260,7 @@ class ProyectosController extends Controller
         }
     }
 
-    public function destroy_historial($id) {
+    public function destroy_historial(int $id) {
         try {
             $historial = HistorialProyecto::findOrFail($id);
             $proyecto = $historial->proyecto->id;
@@ -296,7 +298,7 @@ class ProyectosController extends Controller
             ->get();
     }
 
-    private function getDatosShow($id){
+    private function getDatosShow(int $id){
         $proyecto = Proyecto::find($id);
         if(!$proyecto) return null;
         $colonias = $proyecto->colonias()
@@ -349,76 +351,6 @@ class ProyectosController extends Controller
         );
     }
 
-    private function getDatosAddParticipantes($id) {
-        $proyecto = $this->getDatosProyectoByIDCompact($id);
-        if(!$proyecto) return null;
-
-        $centros = $this->getPCentro();
-        $externos = $this->getPExterno();
-        $usuarias = $this->getPComunidad();
-        $instituciones = $this->getInstitucion();
-
-        return compact(
-            'proyecto',
-            'centros',
-            'externos',
-            'usuarias',
-            'instituciones',
-        );
-    }
-
-    private function getDatosProyectoByIDCompact($id){
-        return Proyecto::select(
-            'id',
-            'nombre',
-        )->find($id);
-    }
-
-    private function getPCentro(){
-        return PCentro::select(
-            'id',
-            'nombre',
-            'ap_pat',
-            'ap_mat',
-            'cargo',
-        )->orderBy('nombre')
-            ->get();
-    }
-
-    private function getPExterno() {
-        return PExterno::with('participaciones')
-            ->whereHas('participaciones')
-            ->select(
-                'id',
-                'nombre',
-                'ap_pat',
-                'ap_mat',
-                'universidad',
-            )
-            ->orderBy('nombre')
-            ->get();
-    }
-
-    private function getPComunidad() {
-        return PComunidad::select(
-            'id',
-            'nombre',
-            'ap_pat',
-            'ap_mat',
-            'colonia_id',
-        )
-            ->where('lider', true)
-            ->orderBy('nombre')
-            ->get();
-    }
-
-    private function getInstitucion() {
-        return Institucion::select(
-            'id',
-            'nombre',
-        )->orderBy('nombre')->get();
-    }
-
     private function getDropDownOptions(DatosUsuario $datosUsuario) {
         $colonias = Colonia::select('id', 'nombre')->get();
         $ejes = Eje::select('id', 'nombre')->get();
@@ -448,10 +380,16 @@ class ProyectosController extends Controller
             'fecha_fin.date' => 'La fecha de fin no es válida.',
             'fecha_fin.after_or_equal' => 'La fecha de fin debe ser igual o posterior a la fecha de inicio.',
 
-            'antecedentes.string' => 'Los antecedentes deben ser texto.',
-            'objetivos.string' => 'Los objetivos deben ser texto.',
-            'alcance.string' => 'El alcance debe ser texto.',
-            'evaluacion.string' => 'La evaluación debe ser texto.',
+            'antecedentes.string'   => 'Los antecedentes deben ser texto.',
+            'antecedentes.max'      => 'El límite para antecedentes es de 5000 caracteres.',
+            'objetivos.string'      => 'Los objetivos deben ser texto.',
+            'objetivos.max'         => 'El límite para objetivos es de 5000 caracteres.',
+            'alcance.string'        => 'El alcance debe ser texto.',
+            'alcance.max'           => 'El límite para alcance es de 5000 caracteres.',
+            'evaluacion.string'     => 'La evaluación debe ser texto.',
+            'evaluacion.max'        => 'El límite para evaluacion es de 5000 caracteres.',
+            'observacion.string'    => 'La observacion debe ser texto.',
+            'observacion.max'       => 'El límite para observaciones es de 5000 caracteres.',
 
             'repo.string' => 'El enlace del repositorio debe ser texto.',
             'repo.max' => 'El enlace del repositorio no puede tener más de 2048 caracteres.',
@@ -489,16 +427,17 @@ class ProyectosController extends Controller
         ];
     }
 
-    private function getValidate(Request $request, $messages, DatosUsuario $datosUsuario) {
+    private function getValidate(Request $request, array $messages, DatosUsuario $datosUsuario) {
         return $request->validate([
             'nombre'        => ['required', 'string', 'max:50'],
             'estado'        => ['required', 'string', Rule::in($datosUsuario->getEnumValues('proyecto', 'estado'))],
             'fecha_inicio'  => ['required', 'date'],
             'fecha_fin'     => ['nullable', 'date', 'after_or_equal:fecha_inicio'],
-            'antecedentes'  => ['nullable', 'string'],
-            'objetivos'     => ['nullable', 'string'],
-            'alcance'       => ['nullable', 'string'],
-            'evaluacion'    => ['nullable', 'string'],
+            'antecedentes'  => ['nullable', 'string', 'max:5000'],
+            'objetivos'     => ['nullable', 'string', 'max:5000'],
+            'alcance'       => ['nullable', 'string', 'max:5000'],
+            'evaluacion'    => ['nullable', 'string', 'max:5000'],
+            'observacion'   => ['nullable', 'string', 'max:5000'],
             'repo'          => ['nullable', 'url', 'max:2048'],
             'auditable'     => ['nullable', 'url', 'max:2048'],
 

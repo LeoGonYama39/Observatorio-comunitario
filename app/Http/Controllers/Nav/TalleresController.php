@@ -82,7 +82,7 @@ class TalleresController extends Controller
         }
     }
 
-    public function show(Request $request, $id) {
+    public function show(Request $request, int $id) {
         $datos = $this->getDatosShow($id);
 
         $view = view(
@@ -100,7 +100,7 @@ class TalleresController extends Controller
         return $view;
     }
 
-    public function edit(Request $request, $id) {
+    public function edit(Request $request, int $id) {
         $datosUsuario = new DatosUsuario();
         $datos = $this->getDatosEdit($id, $datosUsuario);
 
@@ -199,7 +199,7 @@ class TalleresController extends Controller
     }
 
     //Obtiene los datos para la ficha show
-    private function getDatosShow($id)
+    private function getDatosShow(int $id)
     {
         $taller = Taller::with([
             'ejes.responsabilidades.area',
@@ -252,7 +252,8 @@ class TalleresController extends Controller
                 'anio',
                 'anio',
                 'temporada',
-                'evaluacion'
+                'evaluacion',
+                'observacion',
             )
             ->orderByDesc('anio')
             ->orderByDesc('temporada')
@@ -268,14 +269,14 @@ class TalleresController extends Controller
         );
     }
 
-    private function getOptions($datosUsuario){
+    private function getOptions(DatosUsuario $datosUsuario){
         $ejes = Eje::select('id', 'nombre')->get();
         $estado = $datosUsuario->getEnumValues('taller', 'estado');
 
         return compact('ejes', 'estado');
     }
 
-    private function getValidate($request) {
+    private function getValidate(Request $request) {
         $datosUsuario = new DatosUsuario();
 
         return $request->validate([
@@ -283,9 +284,9 @@ class TalleresController extends Controller
             'estado'        => ['required', 'string', Rule::in($datosUsuario->getEnumValues('taller', 'estado'))],
             'repo'          => ['nullable', 'url', 'max:2048'],
             'auditable'     => ['nullable', 'url', 'max:2048'],
-            'objetivos'     => ['nullable', 'string'],
-            'alcance'       => ['nullable', 'string'],
-            'evaluacion'    => ['nullable', 'string'],
+            'objetivos'     => ['nullable', 'string', 'max:5000'],
+            'alcance'       => ['nullable', 'string', 'max:5000'],
+            'evaluacion'    => ['nullable', 'string', 'max:5000'],
 
             'pobl_obj_low'  => ['nullable', 'integer', 'min:3', 'max:60'],
             'pobl_obj_high' => ['nullable', 'integer', 'min:3', 'max:60', 'gte:pobl_obj_low'],
@@ -300,10 +301,12 @@ class TalleresController extends Controller
             'estado.required' => 'El estado es obligatorio.',
             'estado.in' => 'El estado seleccionado no es válido.',
 
-            'antecedentes.string' => 'Los antecedentes deben ser texto.',
-            'objetivos.string' => 'Los objetivos deben ser texto.',
-            'alcance.string' => 'El alcance debe ser texto.',
-            'evaluacion.string' => 'La evaluación debe ser texto.',
+            'objetivos.string'      => 'Los objetivos deben ser texto.',
+            'objetivos.max'         => 'El límite para objetivos es de 5000 caracteres.',
+            'alcance.string'        => 'El alcance debe ser texto.',
+            'alcance.max'           => 'El límite para alcance es de 5000 caracteres.',
+            'evaluacion.string'     => 'La evaluación debe ser texto.',
+            'evaluacion.max'        => 'El límite para evaluacion es de 5000 caracteres.',
 
             'repo.string' => 'El enlace del repositorio debe ser texto.',
             'repo.max' => 'El enlace del repositorio no puede tener más de 2048 caracteres.',
@@ -329,7 +332,7 @@ class TalleresController extends Controller
         ]);
     }
 
-    private function getDatosEdit($id, $datosUsuario){
+    private function getDatosEdit(int $id, DatosUsuario $datosUsuario){
         $taller = Taller::find($id);
         if(!$taller) return null;
 

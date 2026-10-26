@@ -63,33 +63,31 @@
                     <h3>
                         Antecedentes
                     </h3>
-                    <p class="{{ $proyecto->antecedentes ? '' : 'empty' }}">
-                        {{ $proyecto->antecedentes ?? '-' }}
-                    </p>
+                    <p class="{{ $proyecto->antecedentes ? 'text-multiline' : 'empty' }}">{{ $proyecto->antecedentes ?? '-' }}</p>
                 </div>
                 <div class="doc-section">
                     <h3>
                         Objetivos
                     </h3>
-                    <p class="{{ $proyecto->objetivos ? '' : 'empty' }}">
-                        {{ $proyecto->objetivos ?? '-' }}
-                    </p>
+                    <p class="{{ $proyecto->objetivos ? 'text-multiline' : 'empty' }}">{{ $proyecto->objetivos ?? '-' }}</p>
                 </div>
                 <div class="doc-section">
                     <h3>
                         Alcance
                     </h3>
-                    <p class="{{ $proyecto->alcance ? '' : 'empty' }}">
-                        {{ $proyecto->alcance ?? '-' }}
-                    </p>
+                    <p class="{{ $proyecto->alcance ? 'text-multiline' : 'empty' }}">{{ $proyecto->alcance ?? '-' }}</p>
                 </div>
                 <div class="doc-section">
                     <h3>
                         Evaluación
                     </h3>
-                    <p class="{{ $proyecto->evaluacion ? '' : 'empty' }}">
-                        {{ $proyecto->evaluacion ?? '-' }}
-                    </p>
+                    <p class="{{ $proyecto->evaluacion ? 'text-multiline' : 'empty' }}">{{ $proyecto->evaluacion ?? '-' }}</p>
+                </div>
+                <div class="doc-section">
+                    <h3>
+                        Observación
+                    </h3>
+                    <p class="{{ $proyecto->observacion ? 'text-multiline' : 'empty' }}">{{ $proyecto->observacion ?? '-' }}</p>
                 </div>
             </div>
             <div class="meta-card">
@@ -324,9 +322,7 @@
                             <div class="timeline-date">
                                 {{ $historia->fecha_formateada ?? '-' }}
                             </div>
-                            <p class="timeline-text">
-                                {{ $historia->comentario ?? '-' }}
-                            </p>
+                            <p class="timeline-text">{{ $historia->comentario ?? '-' }}</p>
                         </div>
                         @include('system.parts.alerts.confirm_delete', [
                             'modalId' => 'modalEliminarHistorial' . $historia->id,

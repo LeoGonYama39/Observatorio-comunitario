@@ -470,7 +470,7 @@ class PExternoController extends Controller
         $reglasParticipacion = [
             "temporada" => ["required", "string", Rule::in($opTemporada),],
             "anio" => ["required", "digits:4", "integer", "min:1901", "max:2155", ],
-            "aport" => ["nullable", "string"],
+            "aport" => ["nullable", "string", 'max:5000'],
             "tipo" => ["required", "string", Rule::in($opTipo),],
         ];
 
@@ -483,7 +483,7 @@ class PExternoController extends Controller
                     "agregar_participacion" => ["nullable", "boolean"],
                     "temporada" => [Rule::requiredIf($agregarParticipacion), "nullable", "string", Rule::in($opTemporada),],
                     "anio" => [Rule::requiredIf($agregarParticipacion), "nullable", "digits:4", "integer", "min:1901", "max:2155",],
-                    "aport" => ["nullable", "string"],
+                    "aport" => ["nullable", "string", 'max:5000'],
                     "tipo" => [Rule::requiredIf($agregarParticipacion), "nullable", "string", Rule::in($opTipo),],
 
                     "crear_acceso" => ["nullable", "boolean"],
@@ -543,6 +543,8 @@ class PExternoController extends Controller
             "anio.max"                  => "El año debe ser menor o igual a 2155",
             "tipo.required"             => "El tipo de participación es obligatoria",
             "tipo.in"                   => "El tipo de participación seleccionado no es válido",
+            'aport.string'              => 'Las aportaciones deben ser texto.',
+            'aport.max'                 => 'El límite para aportaciones es de 5000 caracteres.',
         
             'usuario.required'  => 'El nombre de usuario es obligatorio al crear el acceso',
             'usuario.max'       => 'El usuario no puede superar los 20 caracteres',

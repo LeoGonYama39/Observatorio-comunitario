@@ -105,6 +105,13 @@
                                   rows="5">{{ old('evaluacion', $proyecto->evaluacion) }}</textarea>
                         @error('evaluacion') <span class="field-error">{{ $message }}</span> @enderror
                     </div>
+
+                    <div class="form-field">
+                        <label>Observación</label>
+                        <textarea name="observacion" class="form-textarea textarea-large"
+                                  rows="5">{{ old('observacion', $proyecto->observacion) }}</textarea>
+                        @error('observacion') <span class="field-error">{{ $message }}</span> @enderror
+                    </div>
                 </div>
                 <hr class="form-separator">
                 <div class="form-field full-width">

@@ -1097,6 +1097,7 @@
      font-weight: 500;
      color: var(--graphite);
      line-height: 1.55;
+     white-space: pre-line;
 }
  .type-eyebrow {
      display: inline-flex;

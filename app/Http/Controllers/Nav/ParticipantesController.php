@@ -151,22 +151,14 @@ class ParticipantesController extends Controller {
             'subtitle' => $p->colonia_otro ?? ($p->colonia->nombre ?? null),
         ]);
 
-        $instituciones = Institucion::all()->map(fn ($i) => (object) [
-            'id' => $i->id,
-            'nombre' => $i->nombre,
-            'subtitle' => null,
-        ]);
-
         $personasExterno = PExterno::all()->map(function ($externo) {
             $participacionReciente = $externo->ultima_participacion;
-            if (!$participacionReciente) {
-                return null; // sin ninguna participación, no se puede vincular a un proyecto
-            }
+            if (!$participacionReciente) return null;
 
             return (object) [
                 'id' => $externo->id, // id del EXTERNO, ya no de la participación
                 'nombre' => trim("$externo->nombre $externo->ap_pat $externo->ap_mat"),
-                'subtitle' => $externo->universidad,
+                'subtitle' => $externo->universidad->nombre,
                 'participacion_id' => $participacionReciente->id,
             ];
         })->filter()->values();

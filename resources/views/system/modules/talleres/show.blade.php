@@ -55,25 +55,19 @@
                     <h3>
                         Objetivos
                     </h3>
-                    <p class="{{ $taller->objetivos ? '' : 'empty' }}">
-                        {{ $taller->objetivos ?? '-' }}
-                    </p>
+                    <p class="{{ $taller->objetivos ? 'text-multiline' : 'empty' }}">{{ $taller->objetivos ?? '-' }}</p>
                 </div>
                 <div class="doc-section">
                     <h3>
                         Alcance
                     </h3>
-                    <p class="{{ $taller->alcance ? '' : 'empty' }}">
-                        {{ $taller->alcance ?? '-' }}
-                    </p>
+                    <p class="{{ $taller->alcance ? 'text-multiline' : 'empty' }}">{{ $taller->alcance ?? '-' }}</p>
                 </div>
                 <div class="doc-section">
                     <h3>
                         Evaluación
                     </h3>
-                    <p class="{{ $taller->evaluacion ? '' : 'empty' }}">
-                        {{ $taller->evaluacion ?? '-' }}
-                    </p>
+                    <p class="{{ $taller->evaluacion ? 'text-multiline' : 'empty' }}">{{ $taller->evaluacion ?? '-' }}</p>
                 </div>
             </div>
             <div class="meta-card">
@@ -342,15 +336,12 @@
                             <span class="mini-label">
                                 Evaluación
                             </span>
-                            @if (!empty($generacion->evaluacion))
-                                <p>
-                                    {{ $generacion->evaluacion }}
-                                </p>
-                            @else
-                                <p class="empty">
-                                    -
-                                </p>
-                            @endif
+                            <p class="{{ $generacion->evaluacion ? 'text-multiline' : 'empty' }}">{{ $generacion->evaluacion ?? '-'}}</p>
+                            <br>
+                            <span class="mini-label">
+                                Observación
+                            </span>
+                            <p class="{{ $generacion->observacion ? 'text-multiline' : 'empty' }}">{{ $generacion->observacion ?? '-'}}</p>
                         </div>
                         <div class="header-actions" style="margin: 10px 0 0;">
                             <a href="{{ route('talleres.grupo.edit', $generacion->id) }}"

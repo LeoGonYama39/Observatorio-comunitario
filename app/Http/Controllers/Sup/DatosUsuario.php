@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Sup;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -38,7 +37,7 @@ class DatosUsuario {
         ];
     }
 
-    public function getEnumValues($tabla, $columna) {
+    public function getEnumValues(string $tabla, string $columna) {
         $resultado = DB::select("
         SELECT COLUMN_TYPE
         FROM INFORMATION_SCHEMA.COLUMNS
@@ -66,12 +65,13 @@ class DatosUsuario {
     public function getValidateHistorial(Request $request) {
         return $request->validate([
             'fecha'         => ['required', 'date'],
-            'comentario'    => ['required', 'string'],
+            'comentario'    => ['required', 'string', 'max:5000'],
         ], [
             'fecha.required'        => 'La fecha es obligatoria',
             'fecha.date'            => 'La fecha no es válida',
             'comentario.required'   => 'El comentario es obligatorio',
             'comentario.string'     => 'El comentario tiene que ser texto',
+            'comentario.max'        => 'El límite para comentario es de 5000 caracteres.',
         ]);
     }
 

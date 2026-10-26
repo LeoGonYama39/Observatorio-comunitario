@@ -744,3 +744,7 @@ dialog.confirm-modal::backdrop {
     width: 100%;
     justify-content: center;
 }
+
+.text-multiline {
+    white-space: pre-line;
+}

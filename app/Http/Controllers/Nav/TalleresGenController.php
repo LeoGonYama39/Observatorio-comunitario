@@ -19,7 +19,7 @@ use Illuminate\Validation\Rule;
 
 class TalleresGenController extends Controller
 {
-    public function create_gen(Request $request, $taller) {
+    public function create_gen(Request $request, int $taller) {
         $datosUsuario = new DatosUsuario();
         $taller = Taller::find($taller);
         $opTemporada = $datosUsuario->getEnumValues("participaciones","temporada");
@@ -43,10 +43,11 @@ class TalleresGenController extends Controller
         try {
             $validated = $this->getValidateGen($request);
             TallerGen::create([
-                'taller_id'        => $taller->id,
-                'anio'        => trim($validated['anio']),
-                'temporada'        => trim($validated['temporada']),
-                'evaluacion'     => $limpiar($validated['evaluacion'] ?? null),
+                'taller_id'     => $taller->id,
+                'anio'          => trim($validated['anio']),
+                'temporada'     => trim($validated['temporada']),
+                'evaluacion'    => $limpiar($validated['evaluacion']),
+                'observacion'   => $limpiar($validated['observacion']),
             ]);
 
 
@@ -103,13 +104,15 @@ class TalleresGenController extends Controller
 
     public function update_grupo(Request $request, TallerGen $grupo)
     {
+        $limpiar = fn ($valor) => filled($valor) ? trim($valor) : null;
         try {
             $validated = $this->getValidateGen($request);
 
-            DB::transaction(function () use ($validated, $request, $grupo) {
-                $grupo->anio = $validated['anio'];
-                $grupo->temporada = $validated['temporada'];
-                $grupo->evaluacion = $validated['evaluacion'] ?? null;
+            DB::transaction(function () use ($validated, $request, $grupo, $limpiar) {
+                $grupo->anio        = $validated['anio'];
+                $grupo->temporada   = $validated['temporada'];
+                $grupo->evaluacion  = $limpiar($validated['evaluacion']);
+                $grupo->observacion = $limpiar($validated['observacion']);
                 $grupo->save();
 
                 $idsGrupo = $request->input('grupo', []);
@@ -146,7 +149,8 @@ class TalleresGenController extends Controller
         return $request->validate([
             "temporada"     => ["required", "string", Rule::in($opTemporada)],
             "anio"          => ["required", "digits:4", "integer", "min:1901", "max:2155"],
-            'evaluacion'    => ['nullable', 'string'],
+            'evaluacion'    => ['nullable', 'string', 'max:5000'],
+            'observacion'   => ['nullable', 'string', 'max:5000'],
 
             'grupo'         => ['nullable', 'array'],
             'grupo.*'       => ['integer', 'distinct', 'exists:p_comunidad,id'],
@@ -160,7 +164,11 @@ class TalleresGenController extends Controller
             "anio.digits"               => "El año debe tener 4 dígitos",
             "anio.min"                  => "El año debe ser mayor o igual a 1901",
             "anio.max"                  => "El año debe ser menor o igual a 2155",
-            'evaluacion.string'         => 'La evaluación debe ser texto.',
+
+            'evaluacion.string'     => 'La evaluacion deben ser texto.',
+            'evaluacion.max'        => 'El límite para evaluación es de 5000 caracteres.',
+            'observacion.string'    => 'La observación debe ser texto.',
+            'observacion.max'       => 'El límite para observación es de 5000 caracteres.',
 
             'grupo.array'       => 'La lista de participantes no es válida.',
             'grupo.*.integer'   => 'Uno de los participantes seleccionados no es válido.',

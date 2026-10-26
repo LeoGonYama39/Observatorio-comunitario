@@ -186,9 +186,7 @@
                             <div class="timeline-date">
                                 {{ $historia->fecha_formateada ?? '-' }}
                             </div>
-                            <p class="timeline-text">
-                                {{ $historia->comentario ?? '-' }}
-                            </p>
+                            <p class="timeline-text">{{ $historia->comentario ?? '-' }}</p>
                         </div>
                         @include('system.parts.alerts.confirm_delete', [
                             'modalId' => 'modalEliminarHistorial' . $historia->historial_id,
