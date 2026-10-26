@@ -65,7 +65,7 @@ $inscripciones: lista de inscripciones educativas, cada elemento debe tener:
             </button>
         <div class="filter-popover" id="filterPopover" hidden>
                 <div class="filter-popover-header">
-                    <h3>Filtrar para educación {{ $tipo }}</h3>
+                    <h3>Filtrar para educación {{ str_replace('_', ' ', $tipo) }}</h3>
                     <button type="button" class="filter-clear-btn" onclick="clearClientFilters()">Borrar filtros</button>
                 </div>
 

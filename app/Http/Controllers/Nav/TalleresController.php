@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Nav;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sup\DatosUsuario;
+use App\Models\Areas\Area;
 use App\Models\Areas\Eje;
 use Illuminate\Http\Request;
 use App\Models\Talleres\Taller;
@@ -13,9 +14,16 @@ use Illuminate\Validation\Rule;
 class TalleresController extends Controller
 {
     public function index(Request $request) {
+        $datosUsuario = new DatosUsuario();    
+        $estados = $datosUsuario->getEnumValues('taller', 'estado');
+        $areas = Area::all();
         $talleres = $this->getDatosIndex();
-
-        $view = view("system.modules.talleres.index", compact('talleres'));
+        $view = view("system.modules.talleres.index", 
+        compact(
+            'talleres',
+            'estados',
+            'areas')
+        );
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
