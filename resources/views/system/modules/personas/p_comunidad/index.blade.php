@@ -169,7 +169,8 @@
                 @foreach ($usuarias as $usuaria)
                     <tr class="{{ $usuaria->activo ? 'row-highlight' : '' }}"
                         data-url="{{ route('personas-usuarias.show', $usuaria->id) }}"
-                        data-edad="{{ $usuaria->edad ?? '' }}" data-colonia="{{ $usuaria->colonia_mostrar ?? '' }}"
+                        data-edad="{{ $usuaria->edad ?? '' }}"
+                        data-colonia="{{ $usuaria->colonia_mostrar ?? '' }}"
                         data-categ="{{ $usuaria->categ_categ ?? '' }}"
                         data-activo="{{ $usuaria->activo ? 'activo' : 'inactivo' }}">
                         <td>
