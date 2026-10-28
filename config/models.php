@@ -25,7 +25,7 @@ return [
         |
         */
 
-        'path' => app_path('Models/listas'),
+        'path' => app_path('Models/Psicopedagogia/atencion_individual'),
 
         /*
         |--------------------------------------------------------------------------
@@ -38,7 +38,7 @@ return [
         |
         */
 
-        'namespace' => 'App\Models\listas',
+        'namespace' => 'App\Models\Psicopedagogia\atencion_individual',
 
         /*
         |--------------------------------------------------------------------------
@@ -99,7 +99,7 @@ return [
         |
         */
 
-        'timestamps' => true,
+        'timestamps' => false,
 
         // 'timestamps' => [
         //     'enabled' => true,
