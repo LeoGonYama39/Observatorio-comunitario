@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\PComunidad;
 
 class Expediente extends Model
@@ -37,5 +38,11 @@ class Expediente extends Model
             'expediente_id',
             'comunidad_id'
         )->withPivot('parentesco');
+    }
+
+    public function casoMasReciente(): HasOne
+    {
+        return $this->hasOne(Caso::class, 'expediente_id')
+            ->latestOfMany('init');
     }
 }

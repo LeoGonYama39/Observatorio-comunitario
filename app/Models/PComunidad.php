@@ -17,54 +17,11 @@ use App\Models\Talleres\TallerGen;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\Psicopedagogia\atencion_individual\Expediente;
 
-/**
- * Class PComunidad
- *
- * @property int $id
- * @property string $nombre
- * @property string $ap_pat
- * @property string|null $ap_mat
- * @property string|null $genero
- * @property Carbon|null $birth_date
- * @property string|null $estado_civil
- * @property int|null $num_hijos
- * @property string|null $nv_escolar
- * @property string|null $ocupacion
- * @property string|null $direccion
- * @property int|null $colonia_id
- * @property string|null $colonia_otro
- * @property string|null $alcaldia
- * @property string|null $alcaldia_otro
- * @property string|null $telefono_casa
- * @property string|null $telefono_celular
- * @property string|null $correo
- * @property string|null $ingreso_mensual
- * @property string|null $tipo_hogar
- * @property string|null $tipo_vivienda
- * @property int|null $habitantes_menos_18
- * @property int|null $habitantes_mas_18
- * @property int|null $habitantes_mas_60
- * @property bool $lider
- * @property string|null $saberes
- *
- * @property Colonium|null $colonium
- * @property Collection|AJuridica[] $a_juridicas
- * @property Collection|Caso[] $casos
- * @property Collection|CasoTutor[] $caso_tutors
- * @property Collection|ComunidadDifucion[] $comunidad_difucions
- * @property Collection|ComunidadNoTrabaja[] $comunidad_no_trabajas
- * @property Collection|ComunidadPersonasDependen[] $comunidad_personas_dependens
- * @property Collection|ComunidadServicioMedico[] $comunidad_servicio_medicos
- * @property Collection|ComunidadSustento[] $comunidad_sustentos
- * @property InscripcionesEducativa|null $inscripciones_educativa
- * @property Collection|RolEventoComunidad[] $rol_evento_comunidads
- * @property Collection|RolTallerComunidad[] $rol_taller_comunidads
- * @property Collection|TallerGrupo[] $taller_grupos
- * @property Collection|TalleresProcGrupGrupo[] $talleres_proc_grup_grupos
- *
- * @package App\Models
- */
+
 class PComunidad extends Model
 {
 	protected $table = 'p_comunidad';
@@ -182,11 +139,16 @@ class PComunidad extends Model
         }
     }
 
+    //--------------------------------
+    //          Relaciones
+    //--------------------------------
 
     public function colonia()
 	{
 		return $this->belongsTo(Colonia::class, 'colonia_id');
 	}
+
+    //Relaciones para el formulario
 
     public function difuciones()
     {
@@ -238,6 +200,8 @@ class PComunidad extends Model
         );
     }
 
+    //Relaciones con educación
+
     public function inscripcionEducativa()
     {
         return $this->hasOne(
@@ -245,6 +209,8 @@ class PComunidad extends Model
             'comunidad_id'
         );
     }
+
+    //Relaciones con talleres
 
     public function talleresComoTallerista()
     {
@@ -274,5 +240,21 @@ class PComunidad extends Model
             'comunidad_id',
             'taller_gen_id'
         )->withPivot('baja');
+    }
+
+    //Relaciones con atención personal
+    public function expediente(): HasOne
+    {
+        return $this->hasOne(Expediente::class, 'comunidad_id');
+    }
+
+    public function expedientesComoTutor(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Expediente::class,
+            'expediente_tutor',
+            'comunidad_id',
+            'expediente_id'
+        )->withPivot('parentesco');
     }
 }

@@ -21,7 +21,11 @@ class SeguimientoCaso extends Model
     ];
 
     protected $casts = [
-        'fecha' => 'datetime',
+        'fecha' => 'date',
+    ];
+
+    protected $appends = [
+        'fecha_formateada',
     ];
 
     public function caso(): BelongsTo
@@ -47,5 +51,15 @@ class SeguimientoCaso extends Model
             'seguimiento_caso_id',
             'participacion_id'
         );
+    }
+
+    //------------------------------
+    //              Getters
+    //------------------------------
+    public function getFechaFormateadaAttribute(): ?string {
+        if(!$this->init) return null;
+        return $this->init
+            ->locale('es')
+            ->translatedFormat('j \d\e F \d\e Y');
     }
 }

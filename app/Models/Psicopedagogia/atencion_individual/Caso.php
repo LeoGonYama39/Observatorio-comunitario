@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Caso extends Model
 {
@@ -25,8 +26,12 @@ class Caso extends Model
     ];
 
     protected $casts = [
-        'init' => 'datetime',
+        'init' => 'date',
         'canalizado' => 'boolean',
+    ];
+
+    protected $appends = [
+        'fecha_formateada',
     ];
 
     public function expediente(): BelongsTo
@@ -47,5 +52,22 @@ class Caso extends Model
             'caso_id',
             'padec_caso_id'
         );
+    }
+
+    //----------------------------------
+    //          Getters
+    //----------------------------------
+
+    public function seguimientoMasReciente(): HasOne
+    {
+        return $this->hasOne(SeguimientoCaso::class, 'caso_id')
+            ->latestOfMany('fecha');
+    }
+
+    public function getFechaFormateadaAttribute(): ?string {
+        if(!$this->init) return null;
+        return $this->init
+            ->locale('es')
+            ->translatedFormat('j \d\e F \d\e Y');
     }
 }

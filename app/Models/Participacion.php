@@ -7,8 +7,8 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Participacion extends Model
 {
@@ -67,29 +67,4 @@ class Participacion extends Model
 	{
 		return $this->belongsTo(PExterno::class, 'externo_id');
 	}
-
-	/*public function rol_evento_externos()
-	{
-		return $this->hasMany(RolEventoExterno::class, 'participacion_id');
-	}*/
-
-	/*public function rol_proyecto_externos()
-	{
-		return $this->hasMany(RolProyectoExterno::class, 'participacion_id');
-	}*/
-
-	/*public function seguimiento_externos()
-	{
-		return $this->hasMany(SeguimientoExterno::class, 'participacion_id');
-	}*/
-
-	/*public function tallerista_externos()
-	{
-		return $this->hasMany(TalleristaExterno::class, 'participacion_id');
-	}*/
-
-	/*public function tallerista_proc_grup_externos()
-	{
-		return $this->hasMany(TalleristaProcGrupExterno::class, 'participacion_id');
-	}*/
 }
