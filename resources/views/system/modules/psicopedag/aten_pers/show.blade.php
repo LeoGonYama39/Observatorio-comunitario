@@ -124,7 +124,7 @@
                             <p>Abierto el {{ $caso->fecha_formateada ?? $caso->init?->format('d/m/Y') }} · Temporada {{ ucfirst($caso->temporada) }}</p>
                         </div>
                         <div class="header-actions">
-                            <a class="btn-outline">
+                            <a class="btn-outline" href="{{ route('aten_pers.caso.edit', $caso->id) }}" data-url="{{ route('aten_pers.caso.edit', $caso->id) }}">
                                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M12 20h9" />
                                     <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />

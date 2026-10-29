@@ -225,6 +225,57 @@ class AtenPersController extends Controller
         }
     }
 
+    public function edit_caso(Request $request, int $caso) {
+        $datos = $this->getDatosEditCaso($caso);
+        $view = view('system.modules.psicopedag.aten_pers.edit_caso', 
+            array_merge($datos ?? ['caso' => null]));
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
+    }
+
+    public function update_caso (Request $request, Caso $caso) {
+        $limpiar = fn ($valor) => filled($valor) ? trim($valor) : null;
+        try {
+            $validated = $this->getValidate($request, true);
+
+            DB::transaction(function () use ($limpiar, $request, $caso, $validated) {
+                $caso->init = $validated['init'];
+                $caso->temporada = $this->temporadaDe($validated['init']);
+                $caso->tipo = $validated['tipo'];
+                $caso->estado = $validated['estado'];
+                $caso->peticion = $limpiar($validated['peticion']);
+                $caso->canalizado = $request->boolean('canalizado');
+                $caso->canalizado_site = $request->boolean('canalizado') 
+                        ? $limpiar($validated['canalizado_site'] ?? null) 
+                        : null;
+
+                $caso->save();
+
+                $caso->motivos()->sync($validated['motivos'] ?? []);
+            });
+
+            return redirect()
+                ->route('aten_pers.show', $caso->expediente->id)
+                ->with('success', 'Involucrados actualizados con éxito.');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+
+        } catch (\Throwable $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
+        }
+    }
+
     public function destroy_caso(string $id) {   //Borra un solo caso
         try {
                 $caso = Caso::findOrFail($id);
@@ -370,13 +421,19 @@ class AtenPersController extends Controller
     private function getDatosCreateCaso(int $id) {
         $expediente = Expediente::find($id);
         if (!$expediente) return null;
-        
-        $support = new DatosUsuario();
-        $estados = $support->getEnumValues('caso', 'estado');
-        $tipos = $support->getEnumValues('caso', 'tipo');
-        $motivos = ListPadecCaso::all();
+
+        [$estados, $tipos, $motivos] = $this->getOptionsEnums();
 
         return compact('expediente', 'estados', 'tipos', 'motivos');
+    }
+
+    private function getDatosEditCaso(int $id){
+        $caso = Caso::find($id);
+        if (!$caso) return null;
+
+        [$estados, $tipos, $motivos] = $this->getOptionsEnums();
+
+        return compact('caso', 'estados', 'tipos', 'motivos');
     }
 
     private function getDatosEdit(int $id) {
@@ -428,6 +485,15 @@ class AtenPersController extends Controller
                 'roles' => "Uno de los elementos seleccionados de $etiqueta ya no existe. Recarga la página e inténtalo de nuevo.",
             ]);
         }
+    }
+
+    private function getOptionsEnums() {
+        $support = new DatosUsuario();
+        $estados = $support->getEnumValues('caso', 'estado');
+        $tipos = $support->getEnumValues('caso', 'tipo');
+        $motivos = ListPadecCaso::all();
+
+        return [$estados, $tipos, $motivos];
     }
 
 }
