@@ -93,9 +93,9 @@ Route::middleware('auth:centro')->group(function () {
     /////Psicopegagogía
     //Atención individual
     Route::resource('/sistema/aten_pers', AtenPersController::class);
-    Route::get('sistema/aten_pers/{expediente}/caso', [AtenPersController::class, 'create_caso'])->name('aten_pers.caso.create');
-    Route::post('sistema/aten_pers/{expediente}/caso', [AtenPersController::class, 'store_caso'])->name('aten_pers.caso.store');
-    Route::delete('sistema/aten_pers/{expediente}/caso', [AtenPersController::class, 'destroy_caso'])->name('aten_pers.caso.destroy');
+    Route::get('/sistema/aten_pers/{expediente}/caso', [AtenPersController::class, 'create_caso'])->name('aten_pers.caso.create');
+    Route::post('/sistema/aten_pers/{expediente}/caso', [AtenPersController::class, 'store_caso'])->name('aten_pers.caso.store');
+    Route::delete('/sistema/aten_pers/{expediente}/caso', [AtenPersController::class, 'destroy_caso'])->name('aten_pers.caso.destroy');
 
     //Rutas para talleres
     Route::resource('/sistema/talleres', TalleresController::class);

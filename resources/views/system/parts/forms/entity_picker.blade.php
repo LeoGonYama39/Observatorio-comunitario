@@ -76,7 +76,7 @@
                         <div class="select-shell">
                             <select class="form-select" required name="roles_{{ $tipo }}[{{ $id }}][rol]"
                                     onchange="onEntityRolChange(this, 'otro_field_{{ $tipo }}_{{ $id }}')">
-                                <option value="">Seleccionar rol…</option>
+                                <option value="">Seleccionar…</option>
                                 @foreach($roles as $valor)
                                     <option value="{{ $valor }}" {{ ($pivot['rol'] ?? null) === $valor ? 'selected' : '' }}>{{ ucfirst(str_replace('_', ' ', $valor)) }}</option>
                                 @endforeach
@@ -86,7 +86,7 @@
                             </svg>
                         </div>
                         <input type="text" class="form-input" id="otro_field_{{ $tipo }}_{{ $id }}"
-                               name="roles_{{ $tipo }}[{{ $id }}][otros]" placeholder="Especificar otro rol" maxlength="30"
+                               name="roles_{{ $tipo }}[{{ $id }}][otros]" placeholder="Especificar otro..." maxlength="30"
                                value="{{ $pivot['otros'] ?? '' }}" {{ ($pivot['rol'] ?? '') === 'otro' ? '' : 'hidden' }}>
                     </div>
                 @else

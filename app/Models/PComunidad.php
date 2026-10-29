@@ -147,16 +147,20 @@ class PComunidad extends Model
     public function getParentescoNormalizadoAttribute(): ?string {
         $parentesco = $this->pivot?->parentesco;
 
-        if (!$parentesco) {
-            return null;
+        if (!$parentesco) return null;
+        if ($parentesco === 'otro') {
+            $otro = trim($this->pivot?->otro ?? '');
+            return filled($otro) ? $otro : 'Otro';
         }
 
         if ($this->genero === 'femenino') {
             return match ($parentesco) {
-                'tio'      => 'tía',
-                'abuelo'   => 'abuela',
-                'hermano'  => 'hermana',
-                default    => $parentesco,
+                'tio'     => 'tía',
+                'abuelo'  => 'abuela',
+                'hermano' => 'hermana',
+                'madre'   => 'madre',
+                'padre'   => 'padre',
+                default   => $parentesco,
             };
         }
 
@@ -279,6 +283,6 @@ class PComunidad extends Model
             'expediente_tutor',
             'comunidad_id',
             'expediente_id'
-        )->withPivot('parentesco');
+        )->withPivot('parentesco', 'otro');
     }
 }

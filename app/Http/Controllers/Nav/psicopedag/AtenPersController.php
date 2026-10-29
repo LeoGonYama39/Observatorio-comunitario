@@ -105,14 +105,49 @@ class AtenPersController extends Controller
         return $view;
     }
 
-    public function edit(string $id)
+    public function edit(Request $request, int $id)
     {
-        //
+        $datos = $this->getDatosEdit($id);
+        $view = view('system.modules.psicopedag.aten_pers.edit', 
+            array_merge($datos ?? ['expediente' => null]));
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
     }
 
-    public function update(Request $request, string $id)
-    {
-        //
+    public function update(Request $request, Expediente $aten_per) {
+        try {
+            $validated = $this->getValidateParentescos($request);
+
+            $this->validarIdsExisten($validated['roles_tutores'] ?? [], 'tutores');
+
+            DB::transaction(function () use ($request, $aten_per, $validated) {
+                $aten_per->contacto_emergencia = trim($validated['contacto_emergencia'] ?? null);
+                $aten_per->save();
+
+                $aten_per->tutores()->sync(
+                    $this->prepararSync($request->input('roles_tutores', [])));
+            });
+
+            return redirect()
+                ->route('aten_pers.show', $aten_per->id)
+                ->with('success', 'Involucrados actualizados con éxito.');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+
+        } catch (\Throwable $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
+        }
     }
 
     public function destroy(string $id) {   //Borra el expediente, o sea también casos, relaciones con tutores e historiales
@@ -311,6 +346,27 @@ class AtenPersController extends Controller
         return $request->validate($rules, $messages);
     }
 
+    private function getValidateParentescos(Request $request){
+        $sup = new DatosUsuario();
+        $parentescoOpciones = $sup->getEnumValues('expediente_tutor', 'parentesco');
+
+        $rules = [
+            'contacto_emergencia'   => ['nullable', 'string', 'max:20'],
+            'roles_tutores'         => ['nullable', 'array'],
+            'roles_tutores.*.rol'   => ['required', 'string', Rule::in($parentescoOpciones)],
+            'roles_tutores.*.otros' => ['nullable', 'string', 'max:30', 'required_if:roles_tutores.*.rol,otro'],
+        ];
+        $messages = [
+            'contacto_emergencia.max' => 'El contacto de emergencia no puede tener más de 20 caracteres.',
+            'roles_tutores.*.rol.required'        => 'Falta elegir el parentesco para alguno de los seleccionados como tutores.',
+            'roles_tutores.*.rol.in'              => 'Uno de los tipos de parentesco seleccionados no es válido.',
+            'roles_tutores.*.otros.max'          => 'El campo "otro" no puede tener más de 30 caracteres.',
+            'roles_tutores.*.otros.required_if'  => 'Especifica el parentesco cuando eliges "Otro".',
+        ];
+
+        return $request->validate($rules, $messages);
+    }
+
     private function getDatosCreateCaso(int $id) {
         $expediente = Expediente::find($id);
         if (!$expediente) return null;
@@ -323,10 +379,55 @@ class AtenPersController extends Controller
         return compact('expediente', 'estados', 'tipos', 'motivos');
     }
 
+    private function getDatosEdit(int $id) {
+        $sup = new DatosUsuario();
+        $expediente = Expediente::find($id);
+        if (!$expediente) return null;
+
+        $personasComunidad = PComunidad::with('colonia')
+        ->get()
+        ->map(fn ($p) => (object) [
+            'id' => $p->id,
+            'nombre' => trim("$p->nombre $p->ap_pat $p->ap_mat"),
+            'subtitle' => $p->colonia_otro ?? ($p->colonia->nombre ?? null),
+        ]);
+
+        $seleccionados = $expediente->tutores()->get()->mapWithKeys(fn ($p) => [$p->id => ['rol' => $p->pivot->parentesco, 'otros' => $p->pivot->otro ?? '']])->toArray();
+
+        $parentescoOpciones = $sup->getEnumValues('expediente_tutor', 'parentesco');
+
+        return compact('expediente', 'personasComunidad', 'seleccionados', 'parentescoOpciones');
+    }
+
     private function temporadaDe(string $fecha): string {
         return Carbon::parse($fecha)->month <= 6
             ? self::TEMPORADA_PRIMAVERA
             : self::TEMPORADA_OTONO;
+    }
+
+    private function prepararSync(array $roles): array {
+        $resultado = [];
+        foreach ($roles as $id => $datos) {
+            $resultado[$id] = [
+                'parentesco'   => $datos['rol'],
+                'otro' => $datos['rol'] === 'otro' ? trim(($datos['otros'] ?? null)) : null,
+            ];
+        }
+        return $resultado;
+    }
+
+    private function validarIdsExisten(array $roles, string $etiqueta): void {
+        if (empty($roles)) return;
+
+        $ids = array_keys($roles);
+        $existentes = PComunidad::whereIn('id', $ids)->pluck('id')->all();
+        $faltantes = array_diff($ids, $existentes);
+
+        if (!empty($faltantes)) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'roles' => "Uno de los elementos seleccionados de $etiqueta ya no existe. Recarga la página e inténtalo de nuevo.",
+            ]);
+        }
     }
 
 }

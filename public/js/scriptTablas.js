@@ -182,7 +182,7 @@ function addEntityCard(tipo, id, nombre, subtitle, participacionId, conRoles = t
             '<div class="select-shell">' +
             '<select class="form-select" required name="roles_' + tipo + '[' + id + '][rol]" ' +
             'onchange="onEntityRolChange(this, \'' + otroFieldId + '\')">' +
-            '<option value="">Seleccionar rol…</option>' +
+            '<option value="">Seleccionar…</option>' +
             opcionesHtml +
             '</select>' +
             '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
@@ -190,7 +190,7 @@ function addEntityCard(tipo, id, nombre, subtitle, participacionId, conRoles = t
             '</svg>' +
             '</div>' +
             '<input type="text" class="form-input" id="' + otroFieldId + '" ' +
-            'name="roles_' + tipo + '[' + id + '][otros]" placeholder="Especificar otro rol" maxlength="30" hidden>' +
+            'name="roles_' + tipo + '[' + id + '][otros]" placeholder="Especificar otro..." maxlength="30" hidden>' +
             '</div>';
     } else {
         detalleHtml = '<input type="hidden" name="' + tipo + '[]" value="' + id + '">';

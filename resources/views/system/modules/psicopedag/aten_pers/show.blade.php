@@ -49,7 +49,7 @@
         <div class="info-card" style="margin-bottom: 32px;">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
                 <h3 style="margin: 0;">Contacto de emergencia y Tutores</h3>
-                <a class="btn-outline btn-small">
+                <a class="btn-outline btn-small" href="{{ route('aten_pers.edit', $expediente->id) }}" data-url="{{ route('aten_pers.edit', $expediente->id) }}">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 20h9" />
                         <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
