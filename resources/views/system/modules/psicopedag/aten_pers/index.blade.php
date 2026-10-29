@@ -3,6 +3,7 @@
 @section('title', 'Atención individual')
 
 @section('content')
+    @include('system.parts.alerts.alerts')
     <div class="content-header">
         <div>
             <h1>
@@ -12,14 +13,14 @@
                 Casos de atención psicopedagógica del centro
             </p>
         </div>
-        <button class="btn-new">
+        <a class="btn-new" href="{{ route('aten_pers.create') }}" data-url="{{ route('aten_pers.create') }}">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"
                 stroke-linejoin="round">
                 <path d="M12 5v14" />
                 <path d="M5 12h14" />
             </svg>
             Nuevo registro
-        </button>
+        </a>
     </div>
     <div class="table-toolbar">
         <div class="table-search">
@@ -149,7 +150,7 @@
                             </span>
                         </td>
                         <td>
-                            <span class="area-tag {{ ucfirst(str_replace('_', ' ', $expediente->casoMasReciente ? '' : 'empty')) }}">
+                            <span class="area-tag {{ $expediente->casoMasReciente ? '' : 'empty' }}">
                                 {{ ucfirst(str_replace('_', ' ', $expediente->casoMasReciente?->tipo ?? '-')) }}
                             </span>
                         </td>

@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sup\DatosUsuario;
 use App\Models\Psicopedagogia\atencion_individual\Expediente;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\RequestMatcher\ExpressionRequestMatcher;
+use Illuminate\Validation\Rule;
+use App\Models\PComunidad;
 
 class AtenPersController extends Controller
 {
@@ -32,14 +33,52 @@ class AtenPersController extends Controller
         return $view;
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        //
+        [$personasComunidad, $yaRegistrados] = $this->getUsuarias();
+
+        $view = view("system.modules.psicopedag.aten_pers.create",
+                compact('personasComunidad',
+                        'yaRegistrados'));
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
     }
 
-    public function store(Request $request)
-    {
-        //
+    public function store(Request $request) {
+        $limpiar = fn ($valor) => filled($valor) ? trim($valor) : null;
+        try {
+            $validated = $this->getValidate($request);
+            $expediente = Expediente::create([
+                'comunidad_id'          => $validated['comunidad_id'],
+                'contacto_emergencia'   => $limpiar($validated['contacto_emergencia']),
+            ]);
+            return redirect()
+                ->route('aten_pers.show', $expediente->id)
+                ->with('success', 'Persona registrada con éxito.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Illuminate\Database\QueryException $e) {
+            if (($e->errorInfo[1] ?? null) === 1062) {
+                return back()
+                    ->withInput()
+                    ->with('error', 'Esta persona ya tiene un expediente.');
+            }
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
+        } catch (\Throwable $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
+        }
     }
 
     public function show(Request $request, int $id)
@@ -69,9 +108,42 @@ class AtenPersController extends Controller
         //
     }
 
-    public function destroy(string $id)
+    public function destroy(string $id) {   //Borra el expediente, o sea también casos, relaciones con tutores e historiales
+        try {
+                $expediente = Expediente::findOrFail($id);
+                $nombre = $expediente->comunidad->nombre . ' ' . $expediente->comunidad->ap_pat . ' ' . $expediente->comunidad->ap_mat;
+                $expediente->delete();
+
+                return redirect()
+                ->route('aten_pers.index')
+                ->with('success', "Expediente psicopegagógico de {$nombre} eliminado con éxito");
+                } 
+                catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+                    return redirect()
+                    ->route('aten_pers.index')
+                    ->with('error', 'El registro que intentas eliminar no existe.');
+                } catch (\Throwable $e) {
+                    return back()
+                    ->with('error', 'Ocurrió un error al intentar eliminar el registro: ' . $e->getMessage());
+            }
+    }
+
+    public function create_caso(Request $request, int $expediente)
     {
-        //
+        $datos = $this->getDatosCreateCaso($expediente);
+
+        $view = view('system.modules.psicopedag.aten_pers.create_caso', 
+            array_merge($datos ?? ['expediente' => null]));
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
     }
 
     //---------------------------------
@@ -103,4 +175,92 @@ class AtenPersController extends Controller
         if (!$expediente) return null;
         return $expediente;
     }
+
+    private function getUsuarias(){
+        $personasComunidad = PComunidad::with('colonia')->orderBy('nombre')->get()->map(fn ($p) => (object) [
+            'id' => $p->id,
+            'nombre' => trim("$p->nombre $p->ap_pat $p->ap_mat"),
+            'subtitle' => $p->colonia_otro ?? ($p->colonia->nombre ?? null),
+            'detalles' => [
+                'Edad' => $p->edad ? $p->edad . ' años' : null,
+                'Nivel escolar' => $p->nv_escolar ? ucfirst(str_replace('_', ' ', $p->nv_escolar)) : null,
+            ],
+        ]);
+
+        $yaRegistrados = Expediente::pluck('comunidad_id')->all();
+
+        return [$personasComunidad, $yaRegistrados];
+    }
+
+    private function getValidate(Request $request, bool $esCaso = false) {
+        $support = new DatosUsuario();
+
+        $rules = [
+            'contacto_emergencia' => ['nullable', 'string', 'max:20'],
+        ];
+
+        if ($esCaso) {//Campos de la tabla 'caso'
+            $rules['expediente_id']   = ['required', 'integer', 'exists:expediente,id'];
+            $rules['comunidad_id']    = ['sometimes', 'required', 'integer', 'exists:p_comunidad,id'];
+            $rules['init']            = ['required', 'date'];
+            $rules['tipo']            = ['required', 'string', Rule::in($support->getEnumValues('caso', 'tipo'))];
+            $rules['estado']          = ['required', 'string', Rule::in($support->getEnumValues('caso', 'estado'))];
+            $rules['peticion']        = ['nullable', 'string', 'max:5000'];
+            $rules['canalizado']      = ['required', 'boolean'];
+            $rules['canalizado_site'] = ['required_if:canalizado,1,true', 'nullable', 'string', 'max:255'];
+
+            $rules['motivos']         = ['nullable', 'array'];
+            $rules['motivos.*']       = ['integer', 'exists:list_padec_caso,id'];
+        } else {        //Creación del expediente raíz
+            $rules['comunidad_id']    = ['required', 'integer', 'exists:p_comunidad,id', 'unique:expediente,comunidad_id'];
+        }
+
+        $messages = [
+            'comunidad_id.required' => 'Selecciona a una persona de la comunidad.',
+            'comunidad_id.integer'  => 'La persona seleccionada no es válida.',
+            'comunidad_id.exists'   => 'La persona seleccionada ya no existe.',
+            'comunidad_id.unique'   => 'Esta persona ya cuenta con un expediente registrado.',
+
+            'contacto_emergencia.max' => 'El contacto de emergencia no puede tener más de 20 caracteres.',
+
+            'expediente_id.required' => 'El expediente asociado es obligatorio.',
+            'expediente_id.integer'  => 'El expediente no es válido.',
+            'expediente_id.exists'   => 'El expediente seleccionado no existe.',
+
+            'init.required' => 'La fecha de inicio es obligatoria.',
+            'init.date'     => 'La fecha de inicio no es válida.',
+
+            'tipo.required' => 'El tipo de caso es obligatorio.',
+            'tipo.in'       => 'El tipo de caso seleccionado no es válido.',
+
+            'estado.required' => 'El estado del caso es obligatorio.',
+            'estado.in'       => 'El estado del caso seleccionado no es válido.',
+
+            'peticion.max' => 'La petición de la persona no puede exceder los 5000 caracteres.',
+
+            'canalizado.required' => 'Indica si el caso fue canalizado.',
+            'canalizado.boolean'  => 'El valor de canalización no es válido.',
+
+            'canalizado_site.required_if' => 'Especifica la institución o lugar al que se canalizó.',
+            'canalizado_site.max'         => 'El lugar de canalización no puede exceder los 255 caracteres.',
+
+            'motivos.array'     => 'Los motivos seleccionados no tienen un formato válido.',
+            'motivos.*.integer' => 'El identificador del motivo no es válido.',
+            'motivos.*.exists'  => 'Uno de los motivos seleccionados no existe en el catálogo.',
+        ];
+
+        return $request->validate($rules, $messages);
+    }
+
+    private function getDatosCreateCaso(int $id) {
+        $expediente = Expediente::find($id);
+        if (!$expediente) return null;
+        
+        $support = new DatosUsuario();
+        $estados = Rule::in($support->getEnumValues('caso', 'estado'));
+        $tipos = Rule::in($support->getEnumValues('caso', 'tipo'));
+
+        return compact('expediente', 'estados', 'tipos');
+    }
+
 }

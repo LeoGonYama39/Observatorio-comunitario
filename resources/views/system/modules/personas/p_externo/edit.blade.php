@@ -73,7 +73,7 @@
                         @error('ap_mat') <span class="field-error">{{ $message }}</span> @enderror
                     </div>
 
-                    @include('system.parts.forms.enum_select_id', ['name' => 'universidad_id', 'label' => 'Universidad', 'options' => $universidades, 'old_option' => $externo->universidad_id])
+                    @include('system.parts.forms.enum_select', ['name' => 'universidad_id', 'label' => 'Universidad', 'options' => $universidades, 'old_option' => $externo->universidad_id, 'usarId' => true])
 
                     <div class="form-field">
                         <label>Carrera</label>
@@ -96,7 +96,7 @@
                         @error('correo') <span class="field-error">{{ $message }}</span> @enderror
                     </div>
 
-                    @include('system.parts.forms.enum_select_id', ['name' => 'responsabilidad_id', 'label' => 'Responsabilidad', 'options' => $responsabilidades, 'old_option' => $externo->responsabilidad_id])
+                    @include('system.parts.forms.enum_select', ['name' => 'responsabilidad_id', 'label' => 'Responsabilidad', 'options' => $responsabilidades, 'old_option' => $externo->responsabilidad_id, 'usarId' => true])
                 
                 </div>
                 <hr class="form-separator">

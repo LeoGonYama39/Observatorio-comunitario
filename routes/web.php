@@ -39,7 +39,6 @@ Route::middleware('auth:centro')->group(function () {
     Route::resource('/sistema/personas-usuarias', PComunidadController::class);
     Route::resource('/sistema/a-juridicas', AJuridicasController::class);
     Route::resource('/sistema/a-familiares', AFamiliaresController::class);
-    Route::resource('/sistema/aten_pers', AtenPersController::class);
     Route::resource('/sistema/proc_grup', ProcGrupController::class);
     Route::resource('/sistema/eventos', EventosController::class);
 
@@ -90,6 +89,11 @@ Route::middleware('auth:centro')->group(function () {
     )->whereNumber('inscripcionCurso')
     ->whereNumber('materia')
     ->name('educacion.materia.toggle');
+
+    /////Psicopegagogía
+    //Atención individual
+    Route::resource('/sistema/aten_pers', AtenPersController::class);
+    Route::get('sistema/aten_pers/{expediente}/caso', [AtenPersController::class, 'create_caso'])->name('aten_pers.caso.create');
 
     //Rutas para talleres
     Route::resource('/sistema/talleres', TalleresController::class);

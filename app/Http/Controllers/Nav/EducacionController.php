@@ -19,8 +19,7 @@ class EducacionController extends Controller
     private const TEMPORADA_PRIMAVERA = 'primavera';
     private const TEMPORADA_OTONO     = 'otoño';
 
-    public function index(Request $request, string $nivel)
-    {
+    public function index(Request $request, string $nivel) {
         $support = new DatosUsuario;
         $config = $this->configEducacion($nivel);
 

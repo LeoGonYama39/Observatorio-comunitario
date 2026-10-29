@@ -54,26 +54,7 @@
                             <span class="field-error">{{ $message }}</span>
                         @enderror
                     </div>
-                    <div class="form-field">
-                        <label>Curso <span class="required">*</span></label>
-                        <div class="select-shell">
-                            <select name="cursos_id" class="form-select">
-                                <option value="">Sin especificar</option>
-                                @foreach ($cursos as $curso)
-                                    <option value="{{ $curso->id }}"
-                                        {{ (string) old('cursos_id') === (string) $curso->id ? 'selected' : '' }}>
-                                        {{ $curso->nombre }}</option>
-                                @endforeach
-                            </select>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M6 9l6 6 6-6" />
-                            </svg>
-                        </div>
-                        @error('cursos_id')
-                            <span class="field-error">{{ $message }}</span>
-                        @enderror
-                    </div>
+                    @include('system.parts.forms.enum_select', ['name' => 'cursos_id', 'label' => 'Curso', 'options' => $cursos, 'usarId' => true, 'obligatorio' => true])
                 </div>
             </div>
 
