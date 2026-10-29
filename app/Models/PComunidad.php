@@ -74,7 +74,12 @@ class PComunidad extends Model
         'colonia_mostrar',
         'alcaldia_mostrar',
         'activo',
+        'parentesco_normalizado',
     ];
+
+    //--------------------------------
+    //          Getters
+    //--------------------------------
 
     //Función para obtener la edad, con la fecha de nacimiento guardada
     public function getEdadAttribute() {
@@ -137,6 +142,25 @@ class PComunidad extends Model
             default:
                 return $this->genero === 'masculino' ? 'Usuario' : 'Usuaria';
         }
+    }
+
+    public function getParentescoNormalizadoAttribute(): ?string {
+        $parentesco = $this->pivot?->parentesco;
+
+        if (!$parentesco) {
+            return null;
+        }
+
+        if ($this->genero === 'femenino') {
+            return match ($parentesco) {
+                'tio'      => 'tía',
+                'abuelo'   => 'abuela',
+                'hermano'  => 'hermana',
+                default    => $parentesco,
+            };
+        }
+
+        return $parentesco;
     }
 
     //--------------------------------

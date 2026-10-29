@@ -54,7 +54,18 @@
                         <path d="M10 11v6" />
                         <path d="M14 11v6" />
                     </svg>
-                    Borrar
+                    Borrar caso
+                </button>
+                <button class="btn-danger">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 6h18" />
+                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                        <path d="M10 11v6" />
+                        <path d="M14 11v6" />
+                    </svg>
+                    Borrar expediente
                 </button>
             </div>
         </div>
@@ -133,13 +144,17 @@
                             <div class="value {{ $caso->canalizado ? '' : 'empty' }}">
                                 {{ $caso->canalizado ? $caso->canalizado_site : 'No' }}</div>
                         </div>
+                        <div class="info-field">
+                            <label>Contacto de emergencia</label>
+                            <div class="value {{ $expediente->contacto_emergencia ? '' : 'empty' }}">
+                                {{ $expediente->contacto_emergencia ?? '-' }}</div>
+                        </div>
                     </div>
                 </div>
                 <div class="doc-card" style="margin-bottom: 32px;">
                     <div class="doc-section">
                         <h3>Petición de la persona</h3>
-                        <p style="white-space: pre-line;" class="{{ $caso->peticion ? '' : 'empty' }}">
-                            {{ $caso->peticion }}</p>
+                        <p style="white-space: pre-line;" class="{{ $caso->peticion ? '' : 'empty' }}">{{ $caso->peticion }}</p>
                     </div>
                 </div>
 
@@ -156,26 +171,22 @@
                         Agregar tutor
                     </button>
                 </div>
-                <div class="table-card" style="margin-bottom: 32px;">
-                    <div style="padding: 6px 24px;">
-                        <div class="related-row">
-                            <span class="name">
-                                Alejandra Vidal Reyes
-                            </span>
-                            <span class="role-badge participante">
-                                Madre
-                            </span>
-                        </div>
-                        <div class="related-row">
-                            <span class="name">
-                                Marco Camposeco Ruiz
-                            </span>
-                            <span class="role-badge participante">
-                                Padre
-                            </span>
+                @forelse ($expediente->tutores as $tutor)
+                    <div class="table-card" style="margin-bottom: 32px;">
+                        <div style="padding: 6px 24px;">
+                            <div class="related-row">
+                                <span class="name">
+                                    {{ $tutor->nombre }} {{ $tutor->ap_pat }} {{ $tutor->ap_mat }}
+                                </span>
+                                <span class="role-badge participante">
+                                    {{ ucfirst($tutor->parentesco_normalizado ) }}
+                                </span>
+                            </div>
                         </div>
                     </div>
-                </div>
+                @empty
+                    
+                @endforelse
 
                 <div class="section-header">
                     <h3>
@@ -215,11 +226,6 @@
                                 </span>
                                 @empty
                                 <span class="attendee-chip">
-                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                                        <circle cx="9" cy="7" r="4" />
-                                    </svg>
                                     Sin registros
                                 </span>
                                 @endforelse

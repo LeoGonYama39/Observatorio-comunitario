@@ -45,4 +45,27 @@ class Expediente extends Model
         return $this->hasOne(Caso::class, 'expediente_id')
             ->latestOfMany('init');
     }
+
+    //--------------------------------
+    //          Getters
+    //--------------------------------
+
+    public function getParentescoNormalizadoAttribute(): ?string {
+        $parentesco = $this->pivot?->parentesco;
+
+        if (!$parentesco) return null;
+
+        if ($this->genero === 'femenino') {
+            return match ($parentesco) {
+                'tio' => 'tía',
+                'abuelo' => 'abuela',
+                'hermano' => 'hermana',
+                'madre' => 'madre',
+                'padre' => 'padre',
+                default => $parentesco,
+            };
+        }
+
+        return $parentesco;
+    }
 }
