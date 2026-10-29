@@ -26,6 +26,7 @@ class SeguimientoCaso extends Model
 
     protected $appends = [
         'fecha_formateada',
+        'atendieron',
     ];
 
     public function caso(): BelongsTo
@@ -57,9 +58,34 @@ class SeguimientoCaso extends Model
     //              Getters
     //------------------------------
     public function getFechaFormateadaAttribute(): ?string {
-        if(!$this->init) return null;
-        return $this->init
+        if(!$this->fecha) return null;
+        return $this->fecha
             ->locale('es')
             ->translatedFormat('j \d\e F \d\e Y');
+    }
+
+    public function getAtendieronAttribute(): array {
+        $centros = $this->centros()
+            ->get()
+            ->map(fn ($centro) => [
+                'id' => $centro->id,
+                'nombre' => $centro->nombre,
+                'ap_pat' => $centro->ap_pat,
+                'ap_mat' => $centro->ap_mat,
+                'tipo' => 'centro',
+            ]);
+
+        $externos = $this->participaciones()
+            ->with('externo')
+            ->get()
+            ->map(fn ($participacion) => [
+                'id' => $participacion->id,
+                'nombre' => $participacion->externo->nombre ?? null,
+                'ap_pat' => $participacion->externo->ap_pat ?? null,
+                'ap_mat' => $participacion->externo->ap_mat ?? null,
+                'tipo' => 'externo',
+            ]);
+
+        return $centros->concat($externos)->values()->all();
     }
 }

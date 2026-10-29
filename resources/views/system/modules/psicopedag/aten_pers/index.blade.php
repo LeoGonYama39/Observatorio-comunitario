@@ -131,7 +131,7 @@
             </thead>
             <tbody>
                 @foreach ($expedientes as $expediente)
-                    <tr data-url="{{ route('aten_pers.show', 1) }}"
+                    <tr data-url="{{ route('aten_pers.show', $expediente->id) }}"
                         data-estado="{{ $expediente->casoMasReciente?->estado ?? '-' }}"
                         data-tipo="{{ $expediente->casoMasReciente?->tipo ?? '-' }}">
                         <td>

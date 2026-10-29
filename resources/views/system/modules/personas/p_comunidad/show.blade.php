@@ -343,5 +343,4 @@
     @else
         @include('system.parts.alerts.not_found', ['route' => route('personas-usuarias.index')])
     @endif
-
 @endsection
