@@ -253,7 +253,13 @@
                             @endforelse
                         </div>
                     </div>
-
+                    @include('system.parts.alerts.confirm_delete', [
+                        'modalId' => 'modalEliminarCaso_' . $caso->id,
+                        'titulo' => '¿Eliminar caso de atención?',
+                        'mensaje' => 'Esta acción no se puede deshacer. Se eliminará el caso de tipo :nombre y todas sus notas de seguimiento.',
+                        'nombre' => ucfirst(str_replace('_', ' ', $caso->tipo)),
+                        'ruta' => route('aten_pers.caso.destroy', $caso->id),
+                    ])
                 </div>
             @endforeach
 

@@ -9,7 +9,7 @@
             ? str_replace('_', ' - ', $v)
             : \Illuminate\Support\Str::ucfirst(str_replace('_', ' ', $v));
     @endphp
-
+    @include('system.parts.alerts.alerts')
     <div class="breadcrumb">
         <a href="{{ route('personas-usuarias.index') }}" data-url="{{ route('personas-usuarias.index') }}"
            class="return-index">

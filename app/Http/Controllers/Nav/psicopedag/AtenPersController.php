@@ -8,9 +8,16 @@ use App\Models\Psicopedagogia\atencion_individual\Expediente;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\PComunidad;
+use App\Models\Psicopedagogia\atencion_individual\Caso;
+use App\Models\Psicopedagogia\atencion_individual\ListPadecCaso;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class AtenPersController extends Controller
 {
+    private const TEMPORADA_PRIMAVERA = 'primavera';
+    private const TEMPORADA_OTONO     = 'otoño';
+
     public function index(Request $request)
     {
         $support = new DatosUsuario;
@@ -146,6 +153,64 @@ class AtenPersController extends Controller
         return $view;
     }
 
+    public function store_caso (Request $request, Expediente $expediente) {
+        $limpiar = fn ($valor) => filled($valor) ? trim($valor) : null;
+        try {
+            $validated = $this->getValidate($request, true);
+
+            DB::transaction(function () use ($validated, $expediente, $limpiar, $request) {
+
+                $caso = Caso::create([
+                    'expediente_id' => $expediente->id,
+                    'init'          => $validated['init'],
+                    'temporada'     => $this->temporadaDe($validated['init']),
+                    'tipo'          => $validated['tipo'],
+                    'estado'        => $validated['estado'],
+                    'peticion'      => $limpiar($validated['peticion']),
+                    'canalizado'    => $request->boolean('canalizado'),
+                    'canalizado_site' => $request->boolean('canalizado') 
+                        ? $limpiar($validated['canalizado_site'] ?? null) 
+                        : null,
+                ]);
+
+                $caso->motivos()->sync($validated['motivos'] ?? []);
+            });
+
+            return redirect()
+                ->route('aten_pers.show', $expediente->id)
+                ->with('success', 'Curso y materias registrados con éxito.');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+
+        } catch (\Throwable $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
+        }
+    }
+
+    public function destroy_caso(string $id) {   //Borra un solo caso
+        try {
+                $caso = Caso::findOrFail($id);
+                $id = $caso->expediente->id;
+                $nombre = ucfirst(str_replace('_', ' ', $caso->tipo));
+                $caso->delete();
+
+                return redirect()
+                ->route('aten_pers.show', $id)
+                ->with('success', "Caso de {$nombre} eliminado con éxito.");
+                } 
+                catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+                    return redirect()
+                    ->route('aten_pers.index')
+                    ->with('error', 'El registro que intentas eliminar no existe.');
+                } catch (\Throwable $e) {
+                    return back()
+                    ->with('error', 'Ocurrió un error al intentar eliminar el registro: ' . $e->getMessage());
+            }
+    }
+
     //---------------------------------
     //          Funciones
     //---------------------------------
@@ -200,13 +265,12 @@ class AtenPersController extends Controller
         ];
 
         if ($esCaso) {//Campos de la tabla 'caso'
-            $rules['expediente_id']   = ['required', 'integer', 'exists:expediente,id'];
             $rules['comunidad_id']    = ['sometimes', 'required', 'integer', 'exists:p_comunidad,id'];
             $rules['init']            = ['required', 'date'];
             $rules['tipo']            = ['required', 'string', Rule::in($support->getEnumValues('caso', 'tipo'))];
             $rules['estado']          = ['required', 'string', Rule::in($support->getEnumValues('caso', 'estado'))];
             $rules['peticion']        = ['nullable', 'string', 'max:5000'];
-            $rules['canalizado']      = ['required', 'boolean'];
+            $rules['canalizado']      = ['nullable', 'boolean'];
             $rules['canalizado_site'] = ['required_if:canalizado,1,true', 'nullable', 'string', 'max:255'];
 
             $rules['motivos']         = ['nullable', 'array'];
@@ -223,10 +287,6 @@ class AtenPersController extends Controller
 
             'contacto_emergencia.max' => 'El contacto de emergencia no puede tener más de 20 caracteres.',
 
-            'expediente_id.required' => 'El expediente asociado es obligatorio.',
-            'expediente_id.integer'  => 'El expediente no es válido.',
-            'expediente_id.exists'   => 'El expediente seleccionado no existe.',
-
             'init.required' => 'La fecha de inicio es obligatoria.',
             'init.date'     => 'La fecha de inicio no es válida.',
 
@@ -238,7 +298,6 @@ class AtenPersController extends Controller
 
             'peticion.max' => 'La petición de la persona no puede exceder los 5000 caracteres.',
 
-            'canalizado.required' => 'Indica si el caso fue canalizado.',
             'canalizado.boolean'  => 'El valor de canalización no es válido.',
 
             'canalizado_site.required_if' => 'Especifica la institución o lugar al que se canalizó.',
@@ -257,10 +316,17 @@ class AtenPersController extends Controller
         if (!$expediente) return null;
         
         $support = new DatosUsuario();
-        $estados = Rule::in($support->getEnumValues('caso', 'estado'));
-        $tipos = Rule::in($support->getEnumValues('caso', 'tipo'));
+        $estados = $support->getEnumValues('caso', 'estado');
+        $tipos = $support->getEnumValues('caso', 'tipo');
+        $motivos = ListPadecCaso::all();
 
-        return compact('expediente', 'estados', 'tipos');
+        return compact('expediente', 'estados', 'tipos', 'motivos');
+    }
+
+    private function temporadaDe(string $fecha): string {
+        return Carbon::parse($fecha)->month <= 6
+            ? self::TEMPORADA_PRIMAVERA
+            : self::TEMPORADA_OTONO;
     }
 
 }

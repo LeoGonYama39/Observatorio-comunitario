@@ -102,6 +102,19 @@ async function toggleMateria(box) {
     }
 }
 
+function toggleCanalizadoField(checkbox) {
+    const field = document.getElementById('canalizado_site_field');
+    if (!field) return;
+
+    field.hidden = !checkbox.checked;
+    syncFieldGroupDisabled(field);
+
+    if (!checkbox.checked) {
+        const input = field.querySelector('input');
+        if (input) input.value = '';
+    }
+}
+
 //Sincroniza el atributo disabled de los inputs dentro de un bloque con su estado hidden,
 //para que los campos ocultos no se manden en el POST
 function syncFieldGroupDisabled(container) {

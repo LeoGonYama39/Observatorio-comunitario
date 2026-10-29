@@ -13,6 +13,7 @@
 @section('title', 'Nuevo registro en educación')
 
 @section('content')
+@include('system.parts.alerts.alerts')
     <div class="breadcrumb">
         <a href="{{ $rutaIndex }}" data-url="{{ $rutaIndex }}" class="return-index">
             {{ ucfirst($etiqueta) }}
