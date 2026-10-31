@@ -48,7 +48,7 @@
     <form method="POST" action="{{ route('aten_pers.update', $expediente->id) }}">
         @csrf
         @method('PUT')
-        
+
         <h3 class="form-section-title">Datos generales</h3>
         <div class="form-card">
                 <h3 class="form-section-title">Datos para expediente</h3>
@@ -61,7 +61,7 @@
                 </div>
             </div>
 
-        <div class="entity-picker-grid" data-roles-proyecto="{{ json_encode($parentescoOpciones) }}">
+        <div class="entity-picker-grid" data-roles-proyecto="{{ json_encode($parentescoOpciones) }}" style="grid-template-columns: repeat(1, minmax(0, 1fr))">
             @include('system.parts.forms.entity_picker', [
             'tipo' => 'tutores',
             'label' => 'Tutores',

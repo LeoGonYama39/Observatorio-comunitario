@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Sistema\Psicopegagogia\atencion_personal;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sup\SupportController;
+use App\Models\Personas\PCentro;
+use App\Models\Personas\PExterno;
 use App\Models\Psicopedagogia\atencion_individual\Caso;
 use App\Models\Psicopedagogia\atencion_individual\Expediente;
 use App\Models\Psicopedagogia\atencion_individual\ListPadecCaso;
+use App\Models\Psicopedagogia\atencion_individual\SeguimientoCaso;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -143,6 +146,76 @@ class CasoController extends Controller
         }
     }
 
+    public function create_seguimiento(Request $request, int $caso) {
+        $datos = $this->getDatosCreateSeguimiento($caso);
+
+        $view = view('system.modules.psicopedag.aten_pers.create_seguimiento',
+            array_merge($datos ?? ['caso' => null]));
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
+    }
+
+    public function store_seguimiento (Request $request, Caso $caso) {
+        $limpiar = fn ($valor) => filled($valor) ? trim($valor) : null;
+        try {
+            $validated = $this->getValidateSeguimiento($request);
+
+            DB::transaction(function () use ($validated, $caso, $limpiar, $request) {
+
+                $seguimiento = SeguimientoCaso::create([
+                    'caso_id'   => $caso->id,
+                    'fecha'     => $validated['fecha'],
+                    'nota'      => $limpiar($validated['nota']),
+                ]);
+
+                $seguimiento->centros()->sync($validated['centro'] ?? []);
+                $participacionIds = collect($validated['roles_externo'] ?? [])->pluck('participacion_id')->all();
+                $seguimiento->participaciones()->sync($participacionIds);
+            });
+
+            return redirect()
+                ->route('aten_pers.show', $caso->expediente->id)
+                ->with('success', 'Seguimiento registrado con éxito.');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+
+        } catch (\Throwable $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al guardar en la base de datos: ' . $e->getMessage());
+        }
+    }
+
+    public function destroy_seguimiento(string $seguimiento) {   //Borra un solo caso
+        try {
+            $seguimiento = SeguimientoCaso::findOrFail($seguimiento);
+            $id = $seguimiento->caso->expediente->id;
+            $nombre = $seguimiento->fecha_formateada;
+            $seguimiento->delete();
+
+            return redirect()
+                ->route('aten_pers.show', $id)
+                ->with('success', "Seguimiento del {$nombre} eliminado con éxito.");
+        }
+        catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return redirect()
+                ->route('aten_pers.index')
+                ->with('error', 'El registro que intentas eliminar no existe.');
+        } catch (\Throwable $e) {
+            return back()
+                ->with('error', 'Ocurrió un error al intentar eliminar el registro: ' . $e->getMessage());
+        }
+    }
+
     //-----------------------------
     //          Funciones
     //-----------------------------
@@ -205,6 +278,41 @@ class CasoController extends Controller
         return $request->validate($rules, $messages);
     }
 
+    private function getValidateSeguimiento(Request $request) {
+        return $request->validate([
+            'fecha'         => ['required', 'date'],
+            'nota'          => ['required', 'string', 'max:5000'],
+            'centro'        => ['nullable', 'array'],
+            'centro.*'      => ['integer', 'distinct', 'exists:p_centro,id'],
+
+            'externo'       => ['nullable', 'array'],
+            'externo.*'     => ['integer', 'distinct', 'exists:p_externo,id'],
+            'roles_externo' => ['nullable', 'array'],
+            'roles_externo.*.participacion_id' => ['required', 'integer', 'distinct', 'exists:participaciones,id'],
+        ], [
+            'fecha.required'        => 'La fecha es obligatoria',
+            'fecha.date'            => 'La fecha no es válida',
+            'comentario.required'   => 'El comentario es obligatorio',
+            'comentario.string'     => 'El comentario tiene que ser texto',
+            'comentario.max'        => 'El límite para comentario es de 5000 caracteres.',
+
+            'centro.array'          => 'La lista de personas del Centro no es válida.',
+            'centro.*.integer'      => 'Una de las personas del Centro seleccionadas no es válida.',
+            'centro.*.distinct'     => 'Hay personas del Centro repetidas.',
+            'centro.*.exists'       => 'Una de las personas del Centro seleccionadas ya no existe.',
+
+            'externo.array'         => 'La lista de personas externas no es válida.',
+            'externo.*.integer'     => 'Una de las personas externas seleccionadas no es válida.',
+            'externo.*.distinct'    => 'Hay personas externas repetidas.',
+            'externo.*.exists'      => 'Una de las personas externas seleccionadas ya no existe.',
+
+            'roles_externo.*.participacion_id.required' => 'Falta la participación a vincular de alguna persona externa.',
+            'roles_externo.*.participacion_id.integer'  => 'Una de las participaciones seleccionadas no es válida.',
+            'roles_externo.*.participacion_id.distinct' => 'Hay participaciones repetidas.',
+            'roles_externo.*.participacion_id.exists'   => 'Una de las participaciones seleccionadas ya no existe.',
+        ]);
+    }
+
     private function temporadaDe(string $fecha): string {
         return Carbon::parse($fecha)->month <= 6
             ? self::TEMPORADA_PRIMAVERA
@@ -227,5 +335,32 @@ class CasoController extends Controller
         $motivos = ListPadecCaso::all();
 
         return [$estados, $tipos, $motivos];
+    }
+
+    private function getDatosCreateSeguimiento(int $caso) {
+        $caso = Caso::find($caso);
+        if (!$caso) return null;
+
+        $personasCentro = PCentro::all()->map(fn ($p) => (object) [
+            'id' => $p->id,
+            'nombre' => trim("$p->nombre $p->ap_pat $p->ap_mat"),
+            'subtitle' => $p->cargo ? ucfirst(str_replace('_', ' ', $p->cargo)) : null,
+        ]);
+
+        $personasExterno = PExterno::all()->map(function ($externo) {
+            $participacionReciente = $externo->ultima_participacion;
+            if (!$participacionReciente) {
+                return null; // sin ninguna participación, no se puede vincular
+            }
+
+            return (object) [
+                'id' => $externo->id,
+                'nombre' => trim("$externo->nombre $externo->ap_pat $externo->ap_mat"),
+                'subtitle' => $externo->universidad->nombre ?? '',
+                'participacion_id' => $participacionReciente->id,
+            ];
+        })->filter()->values();
+
+        return compact('personasCentro', 'personasExterno', 'caso');
     }
 }

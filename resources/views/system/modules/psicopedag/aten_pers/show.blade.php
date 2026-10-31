@@ -89,8 +89,6 @@
         </div>
 
         @if ($expediente->casos->isNotEmpty())
-
-            {{-- Selector de casos (sólo visible si hay casos) --}}
             <div class="case-switcher">
                 <button type="button" class="case-nav-btn" id="casePrevBtn" onclick="changeCase(-1)" aria-label="Caso anterior" disabled>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -111,7 +109,7 @@
             </div>
 
             @foreach ($expediente->casos as $caso)
-                <div class="case-block" 
+                <div class="case-block"
                      data-case="{{ $loop->iteration }}"
                      data-sub-label="{{ ucfirst(str_replace('_', ' ', $caso->tipo)) }} · {{ ucfirst(str_replace('_', ' ', $caso->estado)) }}"
                      {{ $loop->iteration != 1 ? 'hidden' : '' }}>
@@ -199,12 +197,12 @@
 
                     <div class="section-header">
                         <h3>Historial y sesiones de seguimiento</h3>
-                        <a class="btn-outline btn-small">
+                        <a class="btn-outline btn-small" href="{{ route('aten_pers.seguimiento.create', $caso->id) }}" data-url="{{ route('aten_pers.seguimiento.create', $caso->id) }}">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M12 5v14" />
                                 <path d="M5 12h14" />
                             </svg>
-                            Nueva sesión
+                            Nuevo seguimiento
                         </a>
                     </div>
 
@@ -214,7 +212,7 @@
                                 <div class="timeline-item">
                                     <div class="timeline-dot"></div>
                                     <div class="timeline-date">
-                                        {{ $seguimiento->fecha_formateada ?? \Carbon\Carbon::parse($seguimiento->fecha)->format('d/m/Y') }}
+                                        {{ $seguimiento->fecha_formateada ?? 'Error en fecha' }}
                                     </div>
                                     <p class="timeline-text text-multiline">{{ trim($seguimiento->nota) }}</p>
 
@@ -234,15 +232,26 @@
                                     </div>
 
                                     {{-- Botón para eliminar sesión individual usando tu estilo del timeline --}}
-                                    <button type="button" 
-                                            class="timeline-delete-btn" 
-                                            title="Eliminar esta nota"
-                                            onclick="document.getElementById('modalEliminarSeguimiento_{{ $seguimiento->id }}').showModal()">
-                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M18 6 6 18"/><path d="M6 6l12 12"/>
+                                    <button type="button" class="timeline-delete-btn"
+                                            aria-label="Eliminar registro del seguimiento"
+                                            onclick="document.getElementById('modalEliminarHistorial{{ $seguimiento->id }}').showModal()">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                                             stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M3 6h18"/>
+                                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                                            <path d="M10 11v6"/>
+                                            <path d="M14 11v6"/>
                                         </svg>
                                     </button>
                                 </div>
+                                @include('system.parts.alerts.confirm_delete', [
+                                    'modalId' => 'modalEliminarHistorial' . $seguimiento->id,
+                                    'titulo' => '¿Eliminar nota de seguimiento?',
+                                    'mensaje' => 'Esta acción no se puede deshacer. Se eliminará la nota de seguimiento del :nombre',
+                                    'nombre' => $seguimiento->fecha_formateada,
+                                    'ruta' => route('aten_pers.seguimiento.destroy', $seguimiento->id),
+                                ])
 
                             @empty
                                 <div class="timeline-item">
@@ -285,7 +294,6 @@
             </div>
         @endif
 
-        {{-- Modal confirmación de borrado de TODO el expediente --}}
         @include('system.parts.alerts.confirm_delete', [
             'modalId' => 'modalEliminarExpediente',
             'titulo' => '¿Eliminar expediente completo?',

@@ -97,6 +97,9 @@ Route::middleware('auth:centro')->group(function () {
     Route::get('/sistema/aten_pers/{caso}/caso/edit', [CasoController::class, 'edit_caso'])->name('aten_pers.caso.edit');
     Route::put('/sistema/aten_pers/{caso}/caso/', [CasoController::class, 'update_caso'])->name('aten_pers.caso.update');
     Route::delete('/sistema/aten_pers/{expediente}/caso', [CasoController::class, 'destroy_caso'])->name('aten_pers.caso.destroy');
+    Route::get('/sistema/aten_pers/{caso}/seguimiento', [CasoController::class, 'create_seguimiento'])->name('aten_pers.seguimiento.create');
+    Route::post('/sistema/aten_pers/{caso}/seguimiento', [CasoController::class, 'store_seguimiento'])->name('aten_pers.seguimiento.store');
+    Route::delete('/sistema/aten_pers/{seguimiento}/seguimiento', [CasoController::class, 'destroy_seguimiento'])->name('aten_pers.seguimiento.destroy');
 
     //Rutas para talleres
     Route::resource('/sistema/talleres', TalleresController::class);
