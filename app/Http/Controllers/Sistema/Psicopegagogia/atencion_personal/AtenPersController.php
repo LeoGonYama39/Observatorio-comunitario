@@ -120,7 +120,7 @@ class AtenPersController extends Controller
         try {
             $validated = $this->getValidateParentescos($request);
 
-            $this->validarIdsExisten($validated['roles_tutores'] ?? [], 'tutores');
+            $this->validarIdsExisten($validated['roles_tutores'] ?? []);
 
             DB::transaction(function () use ($request, $aten_per, $validated) {
                 $aten_per->contacto_emergencia = trim($validated['contacto_emergencia'] ?? null);
@@ -210,27 +210,13 @@ class AtenPersController extends Controller
         return [$personasComunidad, $yaRegistrados];
     }
 
-    private function getValidate(Request $request, bool $esCaso = false) {
+    private function getValidate(Request $request) {
         $support = new SupportController();
 
         $rules = [
-            'contacto_emergencia' => ['nullable', 'string', 'max:20'],
+            'contacto_emergencia'   => ['nullable', 'string', 'max:20'],
+            'comunidad_id'          => ['required', 'integer', 'exists:p_comunidad,id', 'unique:expediente,comunidad_id'],
         ];
-
-        if ($esCaso) {//Campos de la tabla 'caso'
-            $rules['comunidad_id']    = ['sometimes', 'required', 'integer', 'exists:p_comunidad,id'];
-            $rules['init']            = ['required', 'date'];
-            $rules['tipo']            = ['required', 'string', Rule::in($support->getEnumValues('caso', 'tipo'))];
-            $rules['estado']          = ['required', 'string', Rule::in($support->getEnumValues('caso', 'estado'))];
-            $rules['peticion']        = ['nullable', 'string', 'max:5000'];
-            $rules['canalizado']      = ['nullable', 'boolean'];
-            $rules['canalizado_site'] = ['required_if:canalizado,1,true', 'nullable', 'string', 'max:255'];
-
-            $rules['motivos']         = ['nullable', 'array'];
-            $rules['motivos.*']       = ['integer', 'exists:list_padec_caso,id'];
-        } else {        //Creación del expediente raíz
-            $rules['comunidad_id']    = ['required', 'integer', 'exists:p_comunidad,id', 'unique:expediente,comunidad_id'];
-        }
 
         $messages = [
             'comunidad_id.required' => 'Selecciona a una persona de la comunidad.',
@@ -239,26 +225,6 @@ class AtenPersController extends Controller
             'comunidad_id.unique'   => 'Esta persona ya cuenta con un expediente registrado.',
 
             'contacto_emergencia.max' => 'El contacto de emergencia no puede tener más de 20 caracteres.',
-
-            'init.required' => 'La fecha de inicio es obligatoria.',
-            'init.date'     => 'La fecha de inicio no es válida.',
-
-            'tipo.required' => 'El tipo de caso es obligatorio.',
-            'tipo.in'       => 'El tipo de caso seleccionado no es válido.',
-
-            'estado.required' => 'El estado del caso es obligatorio.',
-            'estado.in'       => 'El estado del caso seleccionado no es válido.',
-
-            'peticion.max' => 'La petición de la persona no puede exceder los 5000 caracteres.',
-
-            'canalizado.boolean'  => 'El valor de canalización no es válido.',
-
-            'canalizado_site.required_if' => 'Especifica la institución o lugar al que se canalizó.',
-            'canalizado_site.max'         => 'El lugar de canalización no puede exceder los 255 caracteres.',
-
-            'motivos.array'     => 'Los motivos seleccionados no tienen un formato válido.',
-            'motivos.*.integer' => 'El identificador del motivo no es válido.',
-            'motivos.*.exists'  => 'Uno de los motivos seleccionados no existe en el catálogo.',
         ];
 
         return $request->validate($rules, $messages);
@@ -316,7 +282,7 @@ class AtenPersController extends Controller
         return $resultado;
     }
 
-    private function validarIdsExisten(array $roles, string $etiqueta): void {
+    private function validarIdsExisten(array $roles): void {
         if (empty($roles)) return;
 
         $ids = array_keys($roles);
@@ -325,7 +291,7 @@ class AtenPersController extends Controller
 
         if (!empty($faltantes)) {
             throw \Illuminate\Validation\ValidationException::withMessages([
-                'roles' => "Uno de los elementos seleccionados de $etiqueta ya no existe. Recarga la página e inténtalo de nuevo.",
+                'roles' => "Uno de los elementos seleccionados de tutores ya no existe. Recarga la página e inténtalo de nuevo.",
             ]);
         }
     }

@@ -156,27 +156,22 @@ class CasoController extends Controller
         return compact('expediente', 'estados', 'tipos', 'motivos');
     }
 
-    private function getValidate(Request $request, bool $esCaso = false) {
+    private function getValidate(Request $request) {
         $support = new SupportController();
 
         $rules = [
-            'contacto_emergencia' => ['nullable', 'string', 'max:20'],
+            'contacto_emergencia'   => ['nullable', 'string', 'max:20'],
+            'comunidad_id'          => ['sometimes', 'required', 'integer', 'exists:p_comunidad,id'],
+            'init'                  => ['required', 'date'],
+            'tipo'                  => ['required', 'string', Rule::in($support->getEnumValues('caso', 'tipo'))],
+            'estado'                => ['required', 'string', Rule::in($support->getEnumValues('caso', 'estado'))],
+            'peticion'              => ['nullable', 'string', 'max:5000'],
+            'canalizado'            => ['nullable', 'boolean'],
+            'canalizado_site'       => ['required_if:canalizado,1,true', 'nullable', 'string', 'max:255'],
+
+            'motivos'               => ['nullable', 'array'],
+            'motivos.*'             => ['integer', 'exists:list_padec_caso,id'],
         ];
-
-        if ($esCaso) {//Campos de la tabla 'caso'
-            $rules['comunidad_id']    = ['sometimes', 'required', 'integer', 'exists:p_comunidad,id'];
-            $rules['init']            = ['required', 'date'];
-            $rules['tipo']            = ['required', 'string', Rule::in($support->getEnumValues('caso', 'tipo'))];
-            $rules['estado']          = ['required', 'string', Rule::in($support->getEnumValues('caso', 'estado'))];
-            $rules['peticion']        = ['nullable', 'string', 'max:5000'];
-            $rules['canalizado']      = ['nullable', 'boolean'];
-            $rules['canalizado_site'] = ['required_if:canalizado,1,true', 'nullable', 'string', 'max:255'];
-
-            $rules['motivos']         = ['nullable', 'array'];
-            $rules['motivos.*']       = ['integer', 'exists:list_padec_caso,id'];
-        } else {        //Creación del expediente raíz
-            $rules['comunidad_id']    = ['required', 'integer', 'exists:p_comunidad,id', 'unique:expediente,comunidad_id'];
-        }
 
         $messages = [
             'comunidad_id.required' => 'Selecciona a una persona de la comunidad.',
