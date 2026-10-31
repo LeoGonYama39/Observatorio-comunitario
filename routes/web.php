@@ -1,25 +1,25 @@
 <?php
 
-use App\Http\Controllers\Nav\AreasController;
-use App\Http\Controllers\Nav\EjesController;
-use App\Http\Controllers\Nav\ParticipantesController;
-use App\Http\Controllers\Nav\TalleresGenController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Nav\personas\PCentroController;
-use App\Http\Controllers\Nav\personas\PExternoController;
-use App\Http\Controllers\Nav\personas\PComunidadController;
-use App\Http\Controllers\Nav\ProyectosController;
-use App\Http\Controllers\Nav\EducacionController;
-use App\Http\Controllers\Nav\juridica\AJuridicasController;
-use App\Http\Controllers\Nav\juridica\AFamiliaresController;
-use App\Http\Controllers\Nav\educacion\EducBasicController;
-use App\Http\Controllers\Nav\educacion\EducSupController;
-use App\Http\Controllers\Nav\psicopedag\AtenPersController;
-use App\Http\Controllers\Nav\psicopedag\ProcGrupController;
-use App\Http\Controllers\Nav\TalleresController;
-use App\Http\Controllers\Nav\EventosController;
-use App\Http\Controllers\Nav\ColoniasController;
+use App\Http\Controllers\Sistema\AreasEjes\AreasController;
+use App\Http\Controllers\Sistema\AreasEjes\EjesController;
+use App\Http\Controllers\Sistema\ColoniasController;
+use App\Http\Controllers\Sistema\educacion\EducBasicController;
+use App\Http\Controllers\Sistema\educacion\EducSupController;
+use App\Http\Controllers\Sistema\EducacionController;
+use App\Http\Controllers\Sistema\EventosController;
+use App\Http\Controllers\Sistema\InvolucradosController;
+use App\Http\Controllers\Sistema\Juridica\AFamiliaresController;
+use App\Http\Controllers\Sistema\Juridica\AJuridicasController;
+use App\Http\Controllers\Sistema\Personas\PCentroController;
+use App\Http\Controllers\Sistema\Personas\PComunidadController;
+use App\Http\Controllers\Sistema\Personas\PExternoController;
+use App\Http\Controllers\Sistema\ProyectosController;
+use App\Http\Controllers\Sistema\Psicopegagogia\atencion_personal\AtenPersController;
+use App\Http\Controllers\Sistema\Psicopegagogia\ProcGrupController;
+use App\Http\Controllers\Sistema\Talleres\TalleresController;
+use App\Http\Controllers\Sistema\Talleres\TalleresGenController;
+use Illuminate\Support\Facades\Route;
 
 // Para usuarios sin inicio de sesión
 Route::middleware('guest')->group(function () {
@@ -75,7 +75,7 @@ Route::middleware('auth:centro')->group(function () {
     Route::get      ('/sistema/educ_sup/{id}/edit', [EducacionController::class, 'edit'])           ->whereNumber('id') ->defaults('nivel', 'sup')->name('educ_sup.edit');
     Route::get      ('/sistema/educ_sup/{id}', [EducacionController::class, 'show'])                ->whereNumber('id') ->defaults('nivel', 'sup')->name('educ_sup.show');
     Route::put      ('/sistema/educ_sup/{id}', [EducacionController::class, 'update'])              ->whereNumber('id') ->defaults('nivel', 'sup')->name('educ_sup.update');
-    Route::delete   ('/sistema/educ_sup/{id}', [EducacionController::class, 'destroy'])             ->whereNumber('id') ->defaults('nivel', 'sup')->name('educ_sup.destroy');    
+    Route::delete   ('/sistema/educ_sup/{id}', [EducacionController::class, 'destroy'])             ->whereNumber('id') ->defaults('nivel', 'sup')->name('educ_sup.destroy');
     Route::get      ('/sistema/educ_sup/{id}/curso', [EducacionController::class, 'create_curso'])  ->whereNumber('id') ->defaults('nivel', 'sup')->name('educ_sup_curso.create');
     Route::post     ('/sistema/educ_sup/{id}/curso', [EducacionController::class, 'store_curso'])   ->whereNumber('id') ->defaults('nivel', 'sup')->name('educ_sup_curso.store');
     Route::delete   ('/sistema/educ_sup/{id}/curso', [EducacionController::class, 'destroy_curso'])  ->whereNumber('id') ->defaults('nivel', 'sup')->name('educ_sup_curso.destroy');
@@ -101,15 +101,15 @@ Route::middleware('auth:centro')->group(function () {
 
     //Rutas para talleres
     Route::resource('/sistema/talleres', TalleresController::class);
-    Route::get('/sistema/talleres/{taller}/participantes', [ParticipantesController::class, 'edit_taller'])->name('talleres.participantes.edit');
-    Route::put('/sistema/talleres/{taller}/participantes', [ParticipantesController::class, 'update_taller'])->name('talleres.participantes.update');
+    Route::get('/sistema/talleres/{taller}/participantes', [InvolucradosController::class, 'edit_taller'])->name('talleres.participantes.edit');
+    Route::put('/sistema/talleres/{taller}/participantes', [InvolucradosController::class, 'update_taller'])->name('talleres.participantes.update');
     Route::get('/sistema/talleres/{taller}/gen', [TalleresGenController::class, 'create_gen'])->name('talleres.gen.create');
     Route::post('/sistema/talleres/{taller}/gen', [TalleresGenController::class, 'store_gen'])->name('talleres.gen.store');
     Route::delete('/sistema/talleres/{taller}/gen', [TalleresGenController::class, 'delete_gen'])->name('talleres.gen.destroy');
     Route::get('/sistema/talleres/{grupo}/grupo', [TalleresGenController::class, 'edit_grupo'])->name('talleres.grupo.edit');
     Route::put('/sistema/talleres/{grupo}/grupo', [TalleresGenController::class, 'update_grupo'])->name('talleres.grupo.update');
-    Route::get('/sistema/talleres/{grupo}/talleristas', [ParticipantesController::class, 'edit_talleristas'])->name('talleres.talleristas.edit');
-    Route::put('/sistema/talleres/{grupo}/talleristar', [ParticipantesController::class, 'update_talleristas'])->name('talleres.talleristas.update');
+    Route::get('/sistema/talleres/{grupo}/talleristas', [InvolucradosController::class, 'edit_talleristas'])->name('talleres.talleristas.edit');
+    Route::put('/sistema/talleres/{grupo}/talleristar', [InvolucradosController::class, 'update_talleristas'])->name('talleres.talleristas.update');
 
     //Rutas para colonias
     Route::resource('/sistema/colonias', ColoniasController::class);
@@ -134,8 +134,8 @@ Route::middleware('auth:centro,externo')->group(function () {
 
     //Rutas para proyectos
     Route::resource('/sistema/proyectos', ProyectosController::class)->only(['index', 'show']);
-    Route::get('/sistema/proyectos/{proyecto}/participantes', [ParticipantesController::class, 'edit_proyecto'])->name('proyectos.participantes.edit');
-    Route::put('/sistema/proyectos/{proyecto}/participantes', [ParticipantesController::class, 'update_proyecto'])->name('proyectos.participantes.update');
+    Route::get('/sistema/proyectos/{proyecto}/participantes', [InvolucradosController::class, 'edit_proyecto'])->name('proyectos.participantes.edit');
+    Route::put('/sistema/proyectos/{proyecto}/participantes', [InvolucradosController::class, 'update_proyecto'])->name('proyectos.participantes.update');
     Route::get('/sistema/proyectos/{proyecto}/historial', [ProyectosController::class, 'create_historial'])->name('proyectos.historial.create');
     Route::post('/sistema/proyectos/{proyecto}/historial', [ProyectosController::class, 'store_historial'])->name('proyectos.historial.store');
     Route::delete('/sistema/proyectos/{id}/historial/', [ProyectosController::class, 'destroy_historial'])->name('proyectos.historial.destroy');

@@ -68,11 +68,11 @@ return [
     'providers' => [
         'centro' => [
             'driver' => 'eloquent',
-            'model' => App\Models\PCentro::class,
+            'model' => \App\Models\Personas\PCentro::class,
         ],
         'externo' => [
             'driver' => 'eloquent',
-            'model' => App\Models\PExterno::class,
+            'model' => \App\Models\Personas\PExterno::class,
         ],
     ],
 

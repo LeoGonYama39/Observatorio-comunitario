@@ -2,11 +2,10 @@
 
 namespace App\Models\Talleres;
 
+use App\Models\Personas\Participacion;
+use App\Models\Personas\PCentro;
+use App\Models\Personas\PComunidad;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\PCentro;
-use App\Models\PExterno;
-use App\Models\PComunidad;
-use App\Models\Participacion;
 
 class TallerGen extends Model
 {

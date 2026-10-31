@@ -2,11 +2,11 @@
 
 namespace App\Models\Psicopedagogia\atencion_individual;
 
+use App\Models\Personas\Participacion;
+use App\Models\Personas\PCentro;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use App\Models\PCentro;
-use App\Models\Participacion;
 
 class SeguimientoCaso extends Model
 {

@@ -2,12 +2,12 @@
 
 namespace App\Models\Psicopedagogia\atencion_individual;
 
+use App\Models\Personas\PComunidad;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use App\Models\PComunidad;
 
 class Expediente extends Model
 {
@@ -50,5 +50,5 @@ class Expediente extends Model
     //          Getters
     //--------------------------------
 
-    
+
 }

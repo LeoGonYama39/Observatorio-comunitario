@@ -6,8 +6,8 @@
 
 namespace App\Models\Areas;
 
-use App\Models\PCentro;
-use App\Models\PExterno;
+use App\Models\Personas\PCentro;
+use App\Models\Personas\PExterno;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 

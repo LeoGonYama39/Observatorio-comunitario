@@ -3,10 +3,10 @@
 namespace App\Models\Talleres;
 
 use App\Models\Areas\Eje;
-use App\Models\listas\Institucion;
-use App\Models\Participacion;
-use App\Models\PCentro;
-use App\Models\PComunidad;
+use App\Models\ListaOpciones\Institucion;
+use App\Models\Personas\Participacion;
+use App\Models\Personas\PCentro;
+use App\Models\Personas\PComunidad;
 use Illuminate\Database\Eloquent\Model;
 
 class Taller extends Model

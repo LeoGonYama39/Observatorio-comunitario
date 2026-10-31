@@ -6,8 +6,7 @@
 
 namespace App\Models\Educacion;
 
-use App\Models\Educacion\InscripcionCurso;
-use App\Models\PComunidad;
+use App\Models\Personas\PComunidad;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 

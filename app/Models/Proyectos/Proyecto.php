@@ -3,14 +3,13 @@
 namespace App\Models\Proyectos;
 
 use App\Models\Areas\Eje;
-use App\Models\listas\Institucion;
-use App\Models\listas\Problematica;
-use App\Models\Participacion;
-use App\Models\PCentro;
-use App\Models\PComunidad;
+use App\Models\Colonias\Colonia;
+use App\Models\ListaOpciones\Institucion;
+use App\Models\ListaOpciones\Problematica;
+use App\Models\Personas\Participacion;
+use App\Models\Personas\PCentro;
+use App\Models\Personas\PComunidad;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Colonia;
-use Carbon\Carbon;
 
 class Proyecto extends Model
 {

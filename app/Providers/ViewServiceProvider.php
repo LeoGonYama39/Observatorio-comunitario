@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
-use App\Http\Controllers\Sup\DatosUsuario;
+use App\Http\Controllers\Sup\SupportController;
 
 
 class ViewServiceProvider extends ServiceProvider
@@ -17,7 +17,7 @@ class ViewServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::composer('*', function ($view) {
-            $datosUsuario = new DatosUsuario();
+            $datosUsuario = new SupportController();
             [$persona, $otros] = $datosUsuario->getDatosUsuario();
 
             $view->with([
