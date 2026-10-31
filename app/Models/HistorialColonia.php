@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon $fecha
  * @property string $comentario
  *
- * @property Colonium $colonium
+ * @property Colonia $colonium
  *
  * @package App\Models
  */
