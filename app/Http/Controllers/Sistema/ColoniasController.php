@@ -75,12 +75,11 @@ class ColoniasController extends Controller
 
     public function show(Request $request, int $id)
     {
-        $datos = $this->getDatosShow($id);
+        $colonia = Colonia::with(['problematicas', 'proyectos', 'historial_colonia'])->find($id);
 
-        $colonia = $datos['colonia'];
-        $problematicas = $datos['problematicas'];
-        $proyectos = $datos['proyectos'];
-        $historial = $datos['historial'];
+        $problematicas = $colonia ? $colonia->problematicas->pluck('nombre') : collect();
+        $proyectos     = $colonia ? $colonia->proyectos->pluck('nombre') : collect();
+        $historial     = $colonia ? $colonia->historial_completo : collect();
 
         $view = view("system.modules.colonias.show", compact('colonia', 'problematicas', 'proyectos', 'historial'));
 
@@ -88,16 +87,13 @@ class ColoniasController extends Controller
             $sections = $view->renderSections();
             return response()->json([
                 'content' => $sections['content'],
-                'title' => $sections['title'],
+                'title'   => $sections['title'],
             ]);
         }
 
         return $view;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Request $request, int $id)
     {
         $colonia = Colonia::find($id);
@@ -269,66 +265,6 @@ class ColoniasController extends Controller
         ->get();
 
         return $colonias;
-    }
-
-    private function getDatosShow(int $id){
-        $colonia = Colonia::select(
-            'id',
-            'nombre',
-            'adultos',
-            'ninos',
-            'viviendas',)
-        ->where('id', $id)
-        ->first();
-
-        $problematicas = Colonia::join(
-            'problem_colonia',
-            'colonia.id',
-            '=',
-            'problem_colonia.colonia_id'
-        )
-        ->join(
-            'problematicas',
-            'problem_colonia.problematica_id',
-            '=',
-            'problematicas.id'
-        )
-        ->where('colonia.id', $id)
-        ->pluck('problematicas.nombre');
-
-        $proyectos = Colonia::join(
-            'proyecto_colonia',
-            'colonia.id',
-            '=',
-            'proyecto_colonia.colonia_id'
-        )
-        ->join(
-            'proyecto',
-            'proyecto_colonia.proyecto_id',
-            '=',
-            'proyecto.id'
-        )
-        ->where('colonia.id', $id)
-        ->pluck('proyecto.nombre');
-
-        $historial = HistorialColonia::where(
-            'colonia_id',
-            $id
-        )
-        ->select(
-            'fecha',
-            'comentario',
-            'id AS historial_id',
-        )
-        ->orderBy('fecha', 'desc')
-        ->get();
-
-        return [
-            'colonia' => $colonia,
-            'problematicas' => $problematicas,
-            'proyectos' => $proyectos,
-            'historial' => $historial,
-        ];
     }
 
     private function getValidate(Request $request) {

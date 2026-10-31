@@ -166,14 +166,15 @@
         </div>
         <div class="timeline-card">
             <div class="timeline">
-                @if ($historial->isNotEmpty())
-                    @foreach($historial as $historia)
-                        <div class="timeline-item">
-                            <div class="timeline-dot"></div>
+                @forelse ($historial as $historia)
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+
+                        @if ($historia->historial_id)
                             <button type="button" class="timeline-delete-btn"
                                     aria-label="Eliminar registro del historial"
                                     onclick="document.getElementById('modalEliminarHistorial{{ $historia->historial_id }}').showModal()">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="1.8"
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
                                      stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M3 6h18"/>
                                     <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
@@ -182,32 +183,40 @@
                                     <path d="M14 11v6"/>
                                 </svg>
                             </button>
+                        @else
+                            <span class="timeline-info-badge"
+                                  data-tooltip="Generado automáticamente desde el módulo de Proyectos. Edita o elimina el proyecto para modificar esta fecha.">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                             stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 16v-4"/>
+                            <path d="M12 8h.01"/>
+                        </svg>
+                    </span>
+                        @endif
 
-                            <div class="timeline-date">
-                                {{ $historia->fecha_formateada ?? '-' }}
-                            </div>
-                            <p class="timeline-text">{{ $historia->comentario ?? '-' }}</p>
+                        <div class="timeline-date">
+                            {{ $historia->fecha_formateada ?? '-' }}
                         </div>
+                        <p class="timeline-text text-multiline">{{ trim($historia->comentario ?? '-') }}</p>
+                    </div>
+
+                    @if ($historia->historial_id)
                         @include('system.parts.alerts.confirm_delete', [
                             'modalId' => 'modalEliminarHistorial' . $historia->historial_id,
-                            'titulo' => '¿Eliminar registro del historial?',
+                            'titulo'  => '¿Eliminar registro del historial?',
                             'mensaje' => 'Esta acción no se puede deshacer. Se eliminará el registro del :nombre.',
-                            'nombre' => $historia->fecha_formateada ?? 'historial',
-                            'ruta' => route('colonias.historial.destroy', $historia->historial_id),
+                            'nombre'  => $historia->fecha_formateada ?? 'historial',
+                            'ruta'    => route('colonias.historial.destroy', $historia->historial_id),
                         ])
-                    @endforeach
-                @else
+                    @endif
+                @empty
                     <div class="timeline-item">
-                        <div class="timeline-dot">
-                        </div>
-                        <div class="timeline-date">
-                            ---
-                        </div>
-                        <p class="timeline-text">
-                            Sin registros
-                        </p>
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-date">---</div>
+                        <p class="timeline-text empty">Sin registros</p>
                     </div>
-                @endif
+                @endforelse
             </div>
         </div>
         @include('system.parts.alerts.confirm_delete', [

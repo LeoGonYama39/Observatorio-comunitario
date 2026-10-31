@@ -544,7 +544,7 @@ dialog.confirm-modal::backdrop {
 
 
 /* ============ Selector de una sola persona ============ */
- 
+
 /* Filas de gente que ya está registrada: atenuadas y sin poder seleccionarse */
 .selectable-row.row-registrado {
     opacity: .55;
@@ -553,12 +553,12 @@ dialog.confirm-modal::backdrop {
 .selectable-row.row-registrado:hover {
     background: transparent;
 }
- 
+
 .single-badge-cell {
     text-align: right;
     white-space: nowrap;
 }
- 
+
 /* Datos de la persona dentro de la tarjeta de seleccionado */
 .selected-entity-card .info-grid {
     gap: 10px 24px;
@@ -747,4 +747,61 @@ dialog.confirm-modal::backdrop {
 
 .text-multiline {
     white-space: pre-line;
+}
+
+/* Indicador y tooltip para registros automáticos en el timeline */
+.timeline-info-badge {
+    position: absolute;
+    top: 2px;
+    right: 0;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--steel);
+    border-radius: 7px;
+    cursor: help;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.timeline-info-badge svg {
+    stroke: currentColor;
+}
+
+.timeline-info-badge:hover {
+    background: var(--cloud);
+    color: var(--ink);
+}
+
+.timeline-info-badge::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    right: 0;
+    width: max-content;
+    max-width: 230px;
+    padding: 7px 11px;
+    background: var(--ink);
+    color: #fff;
+    font-family: var(--font-main);
+    font-size: 11.5px;
+    font-weight: 500;
+    line-height: 1.4;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(4px);
+    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
+    pointer-events: none;
+    z-index: 20;
+    text-align: left;
+    white-space: normal;
+}
+
+.timeline-info-badge:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
 }

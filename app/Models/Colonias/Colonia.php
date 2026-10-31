@@ -93,4 +93,46 @@ class Colonia extends Model
             'problematica_id'       //FK del otro modelo
         );
     }
+
+    //Para obtener el historial de la colonia, incluyendo el inicio y fin de proyectos
+    //vinculados a esta colonia.
+    public function getHistorialCompletoAttribute()
+    {
+        $eventos = collect();
+
+        foreach ($this->historial_colonia as $h) {
+            $eventos->push((object) [
+                'historial_id'     => $h->id,
+                'fecha_raw'        => $h->fecha,
+                'fecha_formateada' => $h->fecha_formateada,
+                'comentario'       => $h->comentario,
+                'es_automatico'    => false,
+            ]);
+        }
+
+        foreach ($this->proyectos as $proyecto) {
+            if ($proyecto->fecha_inicio) {
+                $eventos->push((object) [
+                    'historial_id'     => null,
+                    'fecha_raw'        => $proyecto->fecha_inicio,
+                    'fecha_formateada' => $proyecto->fecha_form_inicio,
+                    'comentario'       => "Inicio del proyecto: {$proyecto->nombre}",
+                    'es_automatico'    => true,
+                ]);
+            }
+
+            if ($proyecto->fecha_fin) {
+                $eventos->push((object) [
+                    'historial_id'     => null,
+                    'fecha_raw'        => $proyecto->fecha_fin,
+                    'fecha_formateada' => $proyecto->fecha_form_fin,
+                    'comentario'       => "Finalización del proyecto: {$proyecto->nombre}",
+                    'es_automatico'    => true,
+                ]);
+            }
+        }
+
+        // Ordenar por fecha descendente (de más reciente a más antiguo)
+        return $eventos->sortByDesc(fn($item) => $item->fecha_raw?->timestamp ?? 0)->values();
+    }
 }
