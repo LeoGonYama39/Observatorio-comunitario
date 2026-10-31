@@ -7,22 +7,9 @@
 namespace App\Models\ListaOpciones;
 
 use App\Models\Colonias\Colonia;
-use App\Models\ProblemColonium;
 use App\Models\Proyectos\Proyecto;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * Class Problematica
- *
- * @property int $id
- * @property string $nombre
- *
- * @property Collection|ProblemColonia[] $problem_colonia
- * @property Collection|Proyecto[] $proyectos
- *
- * @package App\Models
- */
 class Problematica extends Model
 {
 	protected $table = 'problematicas';
