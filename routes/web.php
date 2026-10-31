@@ -4,8 +4,6 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Sistema\AreasEjes\AreasController;
 use App\Http\Controllers\Sistema\AreasEjes\EjesController;
 use App\Http\Controllers\Sistema\ColoniasController;
-use App\Http\Controllers\Sistema\educacion\EducBasicController;
-use App\Http\Controllers\Sistema\educacion\EducSupController;
 use App\Http\Controllers\Sistema\EducacionController;
 use App\Http\Controllers\Sistema\EventosController;
 use App\Http\Controllers\Sistema\InvolucradosController;
@@ -16,6 +14,7 @@ use App\Http\Controllers\Sistema\Personas\PComunidadController;
 use App\Http\Controllers\Sistema\Personas\PExternoController;
 use App\Http\Controllers\Sistema\ProyectosController;
 use App\Http\Controllers\Sistema\Psicopegagogia\atencion_personal\AtenPersController;
+use App\Http\Controllers\Sistema\Psicopegagogia\atencion_personal\CasoController;
 use App\Http\Controllers\Sistema\Psicopegagogia\ProcGrupController;
 use App\Http\Controllers\Sistema\Talleres\TalleresController;
 use App\Http\Controllers\Sistema\Talleres\TalleresGenController;
@@ -93,11 +92,11 @@ Route::middleware('auth:centro')->group(function () {
     /////Psicopegagogía
     //Atención individual
     Route::resource('/sistema/aten_pers', AtenPersController::class);
-    Route::get('/sistema/aten_pers/{expediente}/caso', [AtenPersController::class, 'create_caso'])->name('aten_pers.caso.create');
-    Route::post('/sistema/aten_pers/{expediente}/caso', [AtenPersController::class, 'store_caso'])->name('aten_pers.caso.store');
-    Route::get('/sistema/aten_pers/{caso}/caso/edit', [AtenPersController::class, 'edit_caso'])->name('aten_pers.caso.edit');
-    Route::put('/sistema/aten_pers/{caso}/caso/', [AtenPersController::class, 'update_caso'])->name('aten_pers.caso.update');
-    Route::delete('/sistema/aten_pers/{expediente}/caso', [AtenPersController::class, 'destroy_caso'])->name('aten_pers.caso.destroy');
+    Route::get('/sistema/aten_pers/{expediente}/caso', [CasoController::class, 'create_caso'])->name('aten_pers.caso.create');
+    Route::post('/sistema/aten_pers/{expediente}/caso', [CasoController::class, 'store_caso'])->name('aten_pers.caso.store');
+    Route::get('/sistema/aten_pers/{caso}/caso/edit', [CasoController::class, 'edit_caso'])->name('aten_pers.caso.edit');
+    Route::put('/sistema/aten_pers/{caso}/caso/', [CasoController::class, 'update_caso'])->name('aten_pers.caso.update');
+    Route::delete('/sistema/aten_pers/{expediente}/caso', [CasoController::class, 'destroy_caso'])->name('aten_pers.caso.destroy');
 
     //Rutas para talleres
     Route::resource('/sistema/talleres', TalleresController::class);
