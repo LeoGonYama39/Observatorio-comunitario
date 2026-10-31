@@ -30,10 +30,10 @@ class AreasController extends Controller
 
     public function updateResponsableArea(Request $request, Area $area): JsonResponse {
         $validated = $request->validate([
-            'responsable_id' => ['required', 'exists:p_centro,id'],
+            'responsable_id' => ['nullable', 'exists:p_centro,id'],
         ]);
 
-        $area->update(['centro_id' => $validated['responsable_id']]);
+        $area->update(['centro_id' => $validated['responsable_id'] ?? null]);
 
         return response()->json(['ok' => true]);
     }
@@ -41,10 +41,10 @@ class AreasController extends Controller
     public function updateResponsableResponsabilidad(Request $request, Responsabilidad $responsabilidad): JsonResponse
     {
         $validated = $request->validate([
-            'responsable_id' => ['required', 'exists:p_centro,id'],
+            'responsable_id' => ['nullable', 'exists:p_centro,id'],
         ]);
 
-        $responsabilidad->update(['centro_id' => $validated['responsable_id']]);
+        $responsabilidad->update(['centro_id' => $validated['responsable_id'] ?? null]);
 
         return response()->json(['ok' => true]);
     }
