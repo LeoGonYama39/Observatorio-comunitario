@@ -80,6 +80,14 @@
                         </div>
                     </div>
                 @endif
+                <div class="info-field">
+                    <label>
+                        Acceso al sistema
+                    </label>
+                    <div class="value">
+                        {{ $centro->usuario ? 'Activo' : 'Inactivo' }}
+                    </div>
+                </div>
             </div>
         </div>
 
