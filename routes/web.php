@@ -12,6 +12,7 @@ use App\Http\Controllers\Sistema\Juridica\AJuridicasController;
 use App\Http\Controllers\Sistema\Personas\PCentroController;
 use App\Http\Controllers\Sistema\Personas\PComunidadController;
 use App\Http\Controllers\Sistema\Personas\PExternoController;
+use App\Http\Controllers\Sistema\AlianzasController;
 use App\Http\Controllers\Sistema\ProyectosController;
 use App\Http\Controllers\Sistema\Psicopegagogia\atencion_personal\AtenPersController;
 use App\Http\Controllers\Sistema\Psicopegagogia\atencion_personal\CasoController;
@@ -37,6 +38,7 @@ Route::middleware('auth:centro')->group(function () {
     Route::resource('/sistema/personas-centro', PCentroController::class);
     Route::resource('/sistema/personas-externo', PExternoController::class);
     Route::resource('/sistema/personas-usuarias', PComunidadController::class);
+    Route::resource('/sistema/alianzas', AlianzasController::class);
     Route::resource('/sistema/a-juridicas', AJuridicasController::class);
     Route::resource('/sistema/a-familiares', AFamiliaresController::class);
     Route::resource('/sistema/proc_grup', ProcGrupController::class);

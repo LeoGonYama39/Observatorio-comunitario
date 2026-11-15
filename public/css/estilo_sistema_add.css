@@ -920,3 +920,67 @@ tr.is-dirty .btn-save-inline {
     pointer-events: auto;
     transform: translateX(0);
 }
+
+
+/* Icono de ayuda inline para labels y campos */
+.label-with-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.field-info-tooltip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    color: var(--steel);
+    border-radius: 50%;
+    cursor: help;
+    transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.field-info-tooltip svg {
+    stroke: currentColor;
+}
+
+.field-info-tooltip:hover {
+    color: var(--ink);
+    background-color: var(--pearl);
+}
+
+.field-info-tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 7px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    width: max-content;
+    max-width: 240px;
+    padding: 7px 11px;
+    background: var(--ink);
+    color: #fff;
+    font-family: var(--font-main);
+    font-size: 11.5px;
+    font-weight: 500;
+    line-height: 1.4;
+    text-transform: none;
+    letter-spacing: normal;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
+    pointer-events: none;
+    z-index: 30;
+    text-align: left;
+    white-space: normal;
+}
+
+.field-info-tooltip:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}

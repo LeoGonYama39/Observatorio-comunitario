@@ -60,7 +60,6 @@ class PComunidadController extends Controller
         $esColoniaOtro   = $request->input('colonia_id') === 'otro';
         $esAlcaldiaOtros = $request->input('alcaldia') === 'otro';
 
-        // Texto opcional: recortado, o null si viene vacío
         $limpiar = fn ($valor) => filled($valor) ? trim($valor) : null;
 
         try {

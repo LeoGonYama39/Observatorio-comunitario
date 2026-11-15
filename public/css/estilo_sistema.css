@@ -1,6 +1,5 @@
  :root {
      --font-main: 'Inter', -apple-system, sans-serif;
-    /* <- cambia la tipografía aquí */
      --ink: #111111;
      --graphite: #3d3d3d;
      --steel: #8a8b8b;
@@ -564,7 +563,7 @@
 
 /* Texto: "1–20 de 25 personas" */
 .table-pagination-info {
-    color: var(--text-secondary, #6b7280);
+    color: var(--steel, #6b7280);
     font-size: 13px;
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
@@ -581,13 +580,13 @@
     border: none;
     border-radius: 50%;
     background: transparent;
-    color: var(--text-primary, #374151);
+    color: var(--ink, #374151);
     cursor: pointer;
     transition: background-color 0.15s ease;
 }
 
 .table-pagination-btn:not(:disabled):hover {
-    background-color: var(--hover-bg, #f1f3f4);
+    background-color: var(--pearl, #f1f3f4);
 }
 
 .table-pagination-btn:disabled {
@@ -596,7 +595,7 @@
 }
 
 .table-pagination-btn:focus-visible {
-    outline: 2px solid var(--primary, #64748b);
+    outline: 2px solid var(--steel, #64748b);
     outline-offset: 2px;
 }
 
