@@ -805,3 +805,118 @@ dialog.confirm-modal::backdrop {
     visibility: visible;
     transform: translateY(0);
 }
+
+/* =========================================================
+   CATÁLOGOS: BARRA DE CREACIÓN RÁPIDA Y TABLA EDITABLE INLINE
+   ========================================================= */
+.quick-add-card {
+    background: var(--white, #fff);
+    border: 1.5px solid var(--mist);
+    border-radius: 14px;
+    padding: 16px 22px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.quick-add-card .form-input {
+    flex: 1;
+    min-width: 220px;
+}
+
+/* Input de edición directa en la fila (estilo hoja de cálculo limpia) */
+.inline-edit-input {
+    width: 100%;
+    background: transparent;
+    border: 1.5px solid transparent;
+    border-radius: 8px;
+    padding: 7px 10px;
+    margin-left: -10px;
+    font-family: var(--font-main);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.inline-edit-input:hover {
+    border-color: var(--mist);
+    background: var(--pearl, #f8f9fa);
+}
+
+.inline-edit-input:focus {
+    outline: none;
+    border-color: var(--ink);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.04);
+}
+
+/* Acciones por fila en la tabla editable */
+.catalog-row-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.btn-save-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--cloud, #f1f3f5);
+    color: var(--steel, #6c757d);
+    border: 1.5px solid var(--mist, #dee2e6);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-family: var(--font-main);
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-save-inline svg {
+    stroke: currentColor;
+}
+
+/* Botón Eliminar en fila de tabla: siempre visible */
+.btn-row-delete {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    color: var(--steel, #6c757d);
+    border: 1.5px solid var(--mist, #dee2e6);
+    border-radius: 8px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-row-delete svg {
+     stroke: currentColor;
+ }
+
+.btn-row-delete:hover {
+    background: #fdf2f2;
+    color: #b3261e;
+    border-color: #f8b4b4;
+}
+
+.btn-save-inline:hover,
+tr.is-dirty .btn-save-inline {
+    background: var(--ink, #111);
+    color: #fff;
+    border-color: var(--ink, #111);
+}
+
+/* Mostrar el botón "Guardar" cuando la fila fue modificada */
+tr.is-dirty .btn-save-inline {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+}

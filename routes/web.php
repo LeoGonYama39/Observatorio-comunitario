@@ -18,6 +18,7 @@ use App\Http\Controllers\Sistema\Psicopegagogia\atencion_personal\CasoController
 use App\Http\Controllers\Sistema\Psicopegagogia\ProcGrupController;
 use App\Http\Controllers\Sistema\Talleres\TalleresController;
 use App\Http\Controllers\Sistema\Talleres\TalleresGenController;
+use App\Http\Controllers\Sistema\CatalogoController;
 use Illuminate\Support\Facades\Route;
 
 // Para usuarios sin inicio de sesión
@@ -124,6 +125,15 @@ Route::middleware('auth:centro')->group(function () {
     ->name('areas.updateResponsable');
     Route::patch('/responsabilidades/{responsabilidad}/responsable', [AreasController::class, 'updateResponsableResponsabilidad'])
     ->name('responsabilidades.updateResponsable');
+
+    //Rutas para Catálogos
+    Route::prefix('sistema/catalogos')->name('catalogos.')->group(function () {
+        Route::get('/', [CatalogoController::class, 'index'])->name('index');
+        Route::get('/{catalogo}', [CatalogoController::class, 'show'])->name('show');
+        Route::post('/{catalogo}', [CatalogoController::class, 'store'])->name('store');
+        Route::put('/{catalogo}/{id}', [CatalogoController::class, 'update'])->name('update');
+        Route::delete('/{catalogo}/{id}', [CatalogoController::class, 'destroy'])->name('destroy');
+    });
 });
 
 // Rutas para usuarios del centro y externos (con acceso al sistema)
