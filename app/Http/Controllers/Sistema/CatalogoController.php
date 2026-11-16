@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Sistema;
 use App\Http\Controllers\Controller;
 use App\Models\ListaOpciones\Institucion;
 use App\Models\ListaOpciones\Problematica;
+use App\Models\Psicopedagogia\atencion_individual\ListPadecCaso;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -28,6 +29,19 @@ class CatalogoController extends Controller
                 'relaciones'  => [
                     'colonias'  => ['colonia', 'colonias'],
                     'proyectos' => ['proyecto', 'proyectos'],
+                ],
+            ],
+            'list_padec_caso' => [
+                'slug'        => 'list_padec_caso',
+                'titulo'      => 'Padecimientos (Psicopedagogía)',
+                'singular'    => 'padecimiento',
+                'has_bool'    => false,
+                'descripcion' => 'Padecimientos para atención individual en psicopegagogía.',
+                'modelo'      => ListPadecCaso::class,
+                'tabla'       => 'list_padec_caso',
+                'max_length'  => 50,
+                'relaciones'  => [
+                    'casos'  => ['caso', 'casos'],
                 ],
             ],
         ];
