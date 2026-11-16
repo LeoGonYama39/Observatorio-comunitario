@@ -16,10 +16,12 @@ use App\Models\ListaOpciones\Sustento;
 use App\Models\Psicopedagogia\atencion_individual\Expediente;
 use App\Models\Talleres\Taller;
 use App\Models\Talleres\TallerGen;
+use App\Models\Juridica\AJuridica;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 
 class PComunidad extends Model
@@ -284,5 +286,10 @@ class PComunidad extends Model
             'comunidad_id',
             'expediente_id'
         )->withPivot('parentesco', 'otro');
+    }
+
+    public function asesoriasJuridicas(): HasMany
+    {
+        return $this->hasMany(AJuridica::class, 'comunidad_id');
     }
 }
