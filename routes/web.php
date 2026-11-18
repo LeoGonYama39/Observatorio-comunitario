@@ -9,6 +9,7 @@ use App\Http\Controllers\Sistema\EventosController;
 use App\Http\Controllers\Sistema\InvolucradosController;
 use App\Http\Controllers\Sistema\Juridica\AFamiliaresController;
 use App\Http\Controllers\Sistema\Juridica\AJuridicasController;
+use App\Http\Controllers\Sistema\Juridica\JuridicaController;
 use App\Http\Controllers\Sistema\Personas\PCentroController;
 use App\Http\Controllers\Sistema\Personas\PComunidadController;
 use App\Http\Controllers\Sistema\Personas\PExternoController;
@@ -91,8 +92,11 @@ Route::middleware('auth:centro')->group(function () {
     ->name('educacion.materia.toggle');
 
     //Rutas para jurídica, se usa un controlador en común
-    Route::resource('/sistema/a-juridicas', AJuridicasController::class);
-    Route::resource('/sistema/a-familiares', AFamiliaresController::class);
+    Route::get('/sistema/a-juridicas', [JuridicaController::class, 'index'])->defaults('tipo', 'juridica')->name('a-juridicas.index');
+    Route::get('/sistema/a-juridicas/{id}', [JuridicaController::class, 'show'])->defaults('tipo', 'juridica')->name('a-juridicas.show');
+
+    Route::get('/sistema/a-familiares', [JuridicaController::class, 'index'])->defaults('tipo', 'familiar')->name('a-familiares.index');
+    Route::get('/sistema/a-familiares/{id}', [JuridicaController::class, 'show'])->defaults('tipo', 'familiar')->name('a-familiares.show');
 
 
     /////Psicopegagogía
