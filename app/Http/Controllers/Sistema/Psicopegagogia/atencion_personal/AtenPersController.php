@@ -18,7 +18,7 @@ class AtenPersController extends Controller
         $expedientes = $this->getDatosIndex();
         $tipos = $support->getEnumValues('caso', 'tipo');
         $estados = $support->getEnumValues('caso', 'estado');
-        $view = view("system.modules.psicopedag.aten_pers.index",
+        $view = view("system.modules.psicopedagogia.aten_pers.index",
             compact('expedientes',
                     'estados',
                     'tipos'));
@@ -38,7 +38,7 @@ class AtenPersController extends Controller
     {
         [$personasComunidad, $yaRegistrados] = $this->getUsuarias();
 
-        $view = view("system.modules.psicopedag.aten_pers.create",
+        $view = view("system.modules.psicopedagogia.aten_pers.create",
                 compact('personasComunidad',
                         'yaRegistrados'));
 
@@ -85,7 +85,7 @@ class AtenPersController extends Controller
     public function show(Request $request, int $id)
     {
         $expediente = $this->getDatosShow($id);
-        $view = view("system.modules.psicopedag.aten_pers.show",
+        $view = view("system.modules.psicopedagogia.aten_pers.show",
                 compact('expediente'));
 
         if ($request->ajax()) {
@@ -102,7 +102,7 @@ class AtenPersController extends Controller
     public function edit(Request $request, int $id)
     {
         $datos = $this->getDatosEdit($id);
-        $view = view('system.modules.psicopedag.aten_pers.edit',
+        $view = view('system.modules.psicopedagogia.aten_pers.edit',
             array_merge($datos ?? ['expediente' => null]));
 
         if ($request->ajax()) {

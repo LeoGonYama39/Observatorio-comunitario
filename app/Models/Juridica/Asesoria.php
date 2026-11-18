@@ -23,6 +23,29 @@ class Asesoria extends Model
         'init' => 'date',
     ];
 
+    protected $appends = [
+        'fecha_formateada',
+        'anio'
+    ];
+
+    //--------------------------
+    //       appends
+    //--------------------------
+
+    public function getFechaFormateadaAttribute()
+    {
+        if(!$this->init) return null;
+        return $this->init
+            ->locale('es')
+            ->translatedFormat('j \d\e F');
+    }
+
+    public function getAnioAttribute()
+    {
+        if(!$this->init) return null;
+        return $this->init->format('Y');
+    }
+
     // Modalidad individual
     public function juridica(): HasOne
     {

@@ -16,7 +16,7 @@ class ProcGrupController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.psicopedag.proc_grup.index", compact('persona', 'otros'));
+        $view = view("system.modules.psicopedagogia.proc_grup.index", compact('persona', 'otros'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();
@@ -52,7 +52,7 @@ class ProcGrupController extends Controller
         $persona = $aux[0];
         $otros = $aux[1];
 
-        $view = view("system.modules.psicopedag.proc_grup.show", compact('persona', 'otros'));
+        $view = view("system.modules.psicopedagogia.proc_grup.show", compact('persona', 'otros'));
 
         if ($request->ajax()) {
             $sections = $view->renderSections();

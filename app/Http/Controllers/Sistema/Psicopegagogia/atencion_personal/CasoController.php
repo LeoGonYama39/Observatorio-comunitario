@@ -23,7 +23,7 @@ class CasoController extends Controller
     {
         $datos = $this->getDatosCreateCaso($expediente);
 
-        $view = view('system.modules.psicopedag.aten_pers.create_caso',
+        $view = view('system.modules.psicopedagogia.aten_pers.create_caso',
             array_merge($datos ?? ['expediente' => null]));
 
         if ($request->ajax()) {
@@ -76,7 +76,7 @@ class CasoController extends Controller
 
     public function edit_caso(Request $request, int $caso) {
         $datos = $this->getDatosEditCaso($caso);
-        $view = view('system.modules.psicopedag.aten_pers.edit_caso',
+        $view = view('system.modules.psicopedagogia.aten_pers.edit_caso',
             array_merge($datos ?? ['caso' => null]));
 
         if ($request->ajax()) {
@@ -149,7 +149,7 @@ class CasoController extends Controller
     public function create_seguimiento(Request $request, int $caso) {
         $datos = $this->getDatosCreateSeguimiento($caso);
 
-        $view = view('system.modules.psicopedag.aten_pers.create_seguimiento',
+        $view = view('system.modules.psicopedagogia.aten_pers.create_seguimiento',
             array_merge($datos ?? ['caso' => null]));
 
         if ($request->ajax()) {

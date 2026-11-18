@@ -15,8 +15,8 @@ class JuridicaController extends Controller
     public function index(Request $request, string $tipo)
     {
         $support = new SupportController();
-
         $config = $this->configJuridica($tipo);
+
         $tipoAsesoria = $config['tipo'];
         $ruta = $config['ruta'];
         $label = $config['label'];
@@ -48,6 +48,32 @@ class JuridicaController extends Controller
         return $view;
     }
 
+    public function show(Request $request, int $id, string $tipo)
+    {
+        $config = $this->configJuridica($tipo);
+
+        $tipoAsesoria = $config['tipo'];
+        $ruta = $config['ruta'];
+        $label = $config['label'];
+        $asesoria = $this->getDatosShow($config['modelo'], $id);
+
+        $view = view("system.modules.juridica.show",
+                compact('tipoAsesoria',
+                'ruta',
+                        'label',
+                        'asesoria'));
+
+        if ($request->ajax()) {
+            $sections = $view->renderSections();
+            return response()->json([
+                'content' => $sections['content'],
+                'title' => $sections['title'],
+            ]);
+        }
+
+        return $view;
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -62,21 +88,6 @@ class JuridicaController extends Controller
     public function store(Request $request)
     {
         //
-    }
-
-    public function show(Request $request, $id)
-    {
-        $view = view("system.modules.juridica.asesorias-familiares.show");
-
-        if ($request->ajax()) {
-            $sections = $view->renderSections();
-            return response()->json([
-                'content' => $sections['content'],
-                'title' => $sections['title'],
-            ]);
-        }
-
-        return $view;
     }
 
     /**
@@ -129,5 +140,9 @@ class JuridicaController extends Controller
 
     private function getDatosIndex(string $modelo) {
         return $modelo::with('asesoria')->get();
+    }
+
+    private function getDatosShow(string $modelo, int $id) {
+        return $modelo::find($id);
     }
 }

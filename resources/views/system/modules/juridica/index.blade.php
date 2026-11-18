@@ -159,7 +159,7 @@
             </thead>
             <tbody>
             @foreach($asesorias as $asesoria)
-                <tr data-url="{{ route($ruta . '.show', 1) }}"
+                <tr data-url="{{ route($ruta . '.show', $asesoria->id) }}"
                     data-estado="{{ $asesoria->asesoria->estado }}"
                     data-conflictos="{{ $asesoria->asesoria->conflictos->pluck('id')->join(',') ?: '-' }}"
                     data-ramas="{{ $asesoria->asesoria->ramas->pluck('id')->join(',') ?: '-' }}">
